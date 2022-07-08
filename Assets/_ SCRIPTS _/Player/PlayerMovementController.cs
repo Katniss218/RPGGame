@@ -12,11 +12,7 @@ namespace RPGGame.Player
         /// Camera pivot to fix the "forward" axis to.
         /// </summary>
         [SerializeField] private Transform cameraPivot;
-
-        void Start()
-        {
-
-        }
+        [SerializeField] private new Rigidbody rigidbody;
 
         void Update()
         {
@@ -57,7 +53,7 @@ namespace RPGGame.Player
         {
             Vector3 offset = GetDirectionFromInput();
 
-            this.transform.Translate( offset * Speed * Time.deltaTime, Space.World );
+            this.rigidbody.velocity = offset * Speed;
         }
     }
 }

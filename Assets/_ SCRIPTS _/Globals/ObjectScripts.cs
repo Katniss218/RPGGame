@@ -15,7 +15,7 @@ namespace RPGGame.Globals
     {
         [SerializeField] private GameObject _pickupPrefab;
 
-        public void OnDeathHandler( HealthHandler.OnDeathEventInfo e )
+        public void OnDeathHandler( HealthHandler.DeathEventInfo e )
         {
             Destroy( e.Self.gameObject );
         }

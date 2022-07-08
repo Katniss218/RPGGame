@@ -1,3 +1,4 @@
+using RPGGame.Audio;
 using RPGGame.Items;
 using System;
 using System.Collections;
@@ -14,12 +15,15 @@ namespace RPGGame.Globals
     {
         public void SwingMeleeWeapon( UsableItem.OnUseEventInfo e )
         {
-            Debug.Log( $"{e.Self.DisplayName} was swung." );
-
             WeaponItem weapon = e.Self as WeaponItem;
             if( weapon == null )
             {
                 throw new InvalidOperationException( $"Event Handler was attached to an invalid object'." );
+            }
+
+            if( e.Self.UseSound != null )
+            {
+                AudioManager.PlaySound( e.Self.UseSound, e.User.position );
             }
 
             Collider[] collidersInRange = Physics.OverlapSphere( e.User.position, weapon.MeleeRange );

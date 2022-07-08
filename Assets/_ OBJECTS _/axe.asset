@@ -31,5 +31,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   UseTime: 2
+  UseSound: {fileID: 8300000, guid: 983041bbf5ce75f4e8b9431d213e6f1d, type: 3}
   MeleeDamage: 20
   MeleeRange: 2

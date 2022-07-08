@@ -18,6 +18,8 @@ namespace RPGGame.Items
 
         public float UseTime;
 
+        public AudioClip UseSound;
+
         public virtual void Use(Transform user)
         {
             this.onUse?.Invoke( new OnUseEventInfo()
