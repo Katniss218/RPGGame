@@ -154,7 +154,7 @@ MonoBehaviour:
   m_ScrollSensitivity: 15
   m_Viewport: {fileID: 6681624593466573991}
   m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 0}
+  m_VerticalScrollbar: {fileID: 3150430802485073238}
   m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 0
   m_HorizontalScrollbarSpacing: 0
@@ -208,6 +208,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 6681624593466573991}
     m_Modifications:
+    - target: {fileID: 113180379585328138, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1730531717035195957, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -304,6 +308,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: scrollbar
       objectReference: {fileID: 0}
+    - target: {fileID: 8408110059434362639, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
@@ -312,3 +320,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4308827879568208014, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
   m_PrefabInstance: {fileID: 3038395840216981852}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3150430802485073238 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 113180379585328138, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
+  m_PrefabInstance: {fileID: 3038395840216981852}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

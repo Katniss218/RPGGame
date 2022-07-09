@@ -7,7 +7,7 @@ namespace RPGGame.Items
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
-    public class HumanInventory : Inventory
+    public class PlayerInventory : Inventory
     {
         public Item EquipHand;
         public Item EquipOffhand;

@@ -6,8 +6,10 @@ namespace RPGGame
 {
     public class CameraController : MonoBehaviour
     {
-        [SerializeField] private Transform pivot;
-        [SerializeField] private Transform target;
+        public Transform FollowTarget;
+
+        [SerializeField] private new Camera camera;
+        public Camera Camera { get => camera; }
 
         void Update()
         {
@@ -16,7 +18,13 @@ namespace RPGGame
 
         private void HandleMovement()
         {
-            pivot.position = target.position;
+            if( FollowTarget == null )
+            {
+                Debug.Log( "FollowTarget was null." );
+                return;
+            }
+
+            this.transform.position = FollowTarget.position;
         }
     }
 }

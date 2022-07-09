@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 namespace RPGGame.Items
 {
+    [DisallowMultipleComponent]
     public class Inventory : MonoBehaviour
     {
         public class PickupEventInfo

@@ -103,7 +103,7 @@ MonoBehaviour:
   m_ScrollSensitivity: 15
   m_Viewport: {fileID: 5484214570123521111}
   m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 0}
+  m_VerticalScrollbar: {fileID: 1799677752680909037}
   m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 0
   m_HorizontalScrollbarSpacing: 0
@@ -210,6 +210,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 5484214570123521111}
     m_Modifications:
+    - target: {fileID: 113180379585328138, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1730531717035195957, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -313,6 +317,17 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
+--- !u!114 &1799677752680909037 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 113180379585328138, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
+  m_PrefabInstance: {fileID: 1831739733462629607}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2497155514286492777 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4308827879568208014, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}

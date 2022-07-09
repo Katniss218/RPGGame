@@ -7,28 +7,36 @@ namespace RPGGame.UI
 {
     public class InventoryUI : MonoBehaviour
     {
-        [SerializeField] private HumanInventory _playerInv;
-        [SerializeField] private RectTransform _uiContainer;
+        [SerializeField] private PlayerInventory playerInv;
+        [SerializeField] private RectTransform uiContainer;
 
-        [SerializeField] private GameObject _itemUIPrefab;
+        [SerializeField] private GameObject itemUIPrefab;
 
-        Dictionary<int, RectTransform> _itemUIs = new Dictionary<int, RectTransform>();
-        
+        Dictionary<int, RectTransform> itemUIs = new Dictionary<int, RectTransform>();
+
+        void Start()
+        {
+            Ensure.NotNull( playerInv );
+            Ensure.NotNull( uiContainer );
+            Ensure.NotNull( itemUIPrefab );
+        }
+
         public void OnPickup( Inventory.PickupEventInfo e )
         {
-            GameObject obj = Instantiate( _itemUIPrefab, _uiContainer );
+            GameObject obj = Instantiate( itemUIPrefab, uiContainer );
             ItemUI itemUI = obj.GetComponent<ItemUI>();
-            itemUI.Inventory = _playerInv;
+            itemUI.Inventory = playerInv;
             itemUI.Slot = e.Slot;
+            itemUI.Text.text = e.Item.DisplayName;
 
-            _itemUIs.Add( e.Slot, (RectTransform)obj.transform );
+            itemUIs.Add( e.Slot, (RectTransform)obj.transform );
         }
 
         public void OnDrop( Inventory.DropEventInfo e )
         {
-            Destroy( _itemUIs[e.Slot].gameObject );
+            Destroy( itemUIs[e.Slot].gameObject );
 
-            _itemUIs.Remove( e.Slot );
+            itemUIs.Remove( e.Slot );
         }
     }
 }

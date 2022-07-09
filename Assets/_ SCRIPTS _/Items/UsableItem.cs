@@ -12,6 +12,7 @@ namespace RPGGame.Items
         {
             public UsableItem Self;
             public Transform User;
+            public Transform Target;
         }
 
         public UnityEvent<OnUseEventInfo> onUse;
@@ -20,12 +21,13 @@ namespace RPGGame.Items
 
         public AudioClip UseSound;
 
-        public virtual void Use(Transform user)
+        public virtual void Use( Transform user, Transform target = null )
         {
             this.onUse?.Invoke( new OnUseEventInfo()
             {
                 Self = this,
-                User = user
+                User = user,
+                Target = target
             } );
         }
     }

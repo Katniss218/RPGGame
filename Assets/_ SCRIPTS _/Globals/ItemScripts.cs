@@ -26,22 +26,40 @@ namespace RPGGame.Globals
                 AudioManager.PlaySound( e.Self.UseSound, e.User.position );
             }
 
-            Collider[] collidersInRange = Physics.OverlapSphere( e.User.position, weapon.MeleeRange );
-
-            foreach( var collider in collidersInRange )
+            if( e.Target == null )
             {
-                if( collider.transform == e.User )
+                Collider[] collidersInRange = Physics.OverlapSphere( e.User.position, weapon.MeleeRange );
+
+                foreach( var collider in collidersInRange )
                 {
-                    continue;
+                    if( collider.transform == e.User )
+                    {
+                        continue;
+                    }
+
+                    HealthHandler hitHealthScript = collider.GetComponent<HealthHandler>();
+                    if( hitHealthScript == null )
+                    {
+                        continue;
+                    }
+
+                    hitHealthScript.ChangeHealth( -weapon.MeleeDamage );
+                }
+            }
+            else
+            {
+                if( e.Target == e.Self )
+                {
+                    return;
                 }
 
-                HealthHandler hitHealthScript = collider.GetComponent<HealthHandler>();
+                HealthHandler hitHealthScript = e.Target.GetComponent<HealthHandler>();
                 if( hitHealthScript == null )
                 {
-                    continue;
+                    return;
                 }
 
-                hitHealthScript.TakeDamage( weapon.MeleeDamage );
+                hitHealthScript.ChangeHealth( -weapon.MeleeDamage );
             }
         }
     }

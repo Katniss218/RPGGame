@@ -4,19 +4,23 @@ using UnityEngine;
 
 namespace RPGGame.Player
 {
+    [DisallowMultipleComponent]
     public class PlayerMovementController : MonoBehaviour
     {
-        public float Speed;
-
         /// <summary>
         /// Camera pivot to fix the "forward" axis to.
         /// </summary>
-        [SerializeField] private Transform cameraPivot;
+        public Transform CameraPivot;
+
+        public float MovementSpeed;
+
         [SerializeField] private new Rigidbody rigidbody;
 
         void Update()
         {
             HandleMovement();
+
+            HandleRotation();
         }
 
         /// <summary>
@@ -28,20 +32,20 @@ namespace RPGGame.Player
 
             if( Input.GetKey( KeyCode.A ) )
             {
-                offset += cameraPivot.TransformDirection( new Vector3( -Speed, 0, 0 ).normalized );
+                offset += CameraPivot.TransformDirection( new Vector3( -1, 0, 0 ).normalized );
             }
             else if( Input.GetKey( KeyCode.D ) )
             {
-                offset += cameraPivot.TransformDirection( new Vector3( Speed, 0, 0 ).normalized );
+                offset += CameraPivot.TransformDirection( new Vector3( 1, 0, 0 ).normalized );
             }
 
             if( Input.GetKey( KeyCode.W ) )
             {
-                offset += cameraPivot.TransformDirection( new Vector3( 0, 0, Speed ).normalized );
+                offset += CameraPivot.TransformDirection( new Vector3( 0, 0, 1 ).normalized );
             }
             else if( Input.GetKey( KeyCode.S ) )
             {
-                offset += cameraPivot.TransformDirection( new Vector3( 0, 0, -Speed ).normalized );
+                offset += CameraPivot.TransformDirection( new Vector3( 0, 0, -1 ).normalized );
             }
 
             offset.Normalize();
@@ -53,7 +57,22 @@ namespace RPGGame.Player
         {
             Vector3 offset = GetDirectionFromInput();
 
-            this.rigidbody.velocity = offset * Speed;
+            this.rigidbody.velocity = offset * MovementSpeed;
+        }
+
+        private void HandleRotation()
+        {
+            Ray ray = Main.Camera.ScreenPointToRay( Input.mousePosition );
+            if( Physics.Raycast( ray, out RaycastHit hitInfo, float.PositiveInfinity, 1 << 3 ) )
+            {
+                Vector3 hitPointConstrained = hitInfo.point;
+                hitPointConstrained.y = this.transform.position.y;
+
+                Vector3 dir = hitPointConstrained - this.transform.position;
+                dir.Normalize();
+
+                this.transform.rotation = Quaternion.LookRotation( dir, Vector3.up );
+            }
         }
     }
 }

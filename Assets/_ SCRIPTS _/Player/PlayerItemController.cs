@@ -12,13 +12,21 @@ namespace RPGGame.Player
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
-    [RequireComponent(typeof(HumanInventory))]
+    [RequireComponent( typeof( PlayerInventory ) )]
+    [DisallowMultipleComponent]
     public class PlayerItemController : MonoBehaviour
     {
-        [SerializeField] private HumanInventory Inventory;
         [SerializeField] private float pickupRange;
 
+        private PlayerInventory inventory;
+
         private float lastUsedTimestamp;
+        private float timeSinceLastUsed => Time.time - lastUsedTimestamp;
+
+        void Awake()
+        {
+            inventory = this.GetComponent<PlayerInventory>();
+        }
 
         void Update()
         {
@@ -35,19 +43,69 @@ namespace RPGGame.Player
             }
         }
 
+        private Transform FindTarget()
+        {
+            // if weapon, target the closest to the cursor (or player, if cursor fails), but within range of the weapon.
+            // if not weapon, target nothing.
+
+            WeaponItem weaponHand = inventory.EquipHand as WeaponItem;
+            if( weaponHand == null )
+            {
+                return null;
+            }
+
+            Vector3 aoi = this.transform.position;
+
+            Ray ray = Main.Camera.ScreenPointToRay( Input.mousePosition );
+            if( Physics.Raycast( ray, out RaycastHit hitInfo, float.PositiveInfinity, 1 << 3 ) )
+            {
+                aoi = hitInfo.point;
+            }
+
+            Collider[] collidersInRange = Physics.OverlapSphere( this.transform.position, weaponHand.MeleeRange );
+
+            (Transform t, float d) closestEnemy = (null, float.PositiveInfinity);
+
+            foreach( var collider in collidersInRange )
+            {
+                if( collider.transform == this.transform )
+                {
+                    continue;
+                }
+
+                HealthHandler hitHealthScript = collider.GetComponent<HealthHandler>();
+                if( hitHealthScript == null )
+                {
+                    continue;
+                }
+
+                float distance = Vector3.Distance( aoi, collider.transform.position );
+                if( distance < closestEnemy.d )
+                {
+                    closestEnemy = (collider.transform, distance);
+                }
+            }
+
+            return closestEnemy.t;
+        }
+
         private void UseEquipHand()
         {
-            UsableItem usableEquipHand = Inventory.EquipHand as UsableItem;
-            if( usableEquipHand == null )
+            UsableItem usableHand = inventory.EquipHand as UsableItem;
+            if( usableHand == null )
             {
                 return;
             }
 
-            if( Time.time >= lastUsedTimestamp + usableEquipHand.UseTime )
+            if( timeSinceLastUsed < usableHand.UseTime )
             {
-                usableEquipHand.Use( this.transform );
-                lastUsedTimestamp = Time.time;
+                return;
             }
+
+            Transform target = FindTarget();
+
+            usableHand.Use( this.transform, target );
+            lastUsedTimestamp = Time.time;
         }
 
         /// <summary>
@@ -70,7 +128,7 @@ namespace RPGGame.Player
                     continue;
                 }
 
-                Inventory.PickUp( pickupInv );
+                inventory.PickUp( pickupInv );
                 // Do not skip any inventories due to some items might only fall into some slots (like weapons, etc).
             }
         }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace RPGGame.Globals
 {
@@ -15,11 +16,32 @@ namespace RPGGame.Globals
     {
         [SerializeField] private GameObject _pickupPrefab;
 
-        public void OnDeathHandler( HealthHandler.DeathEventInfo e )
+        public void OnDeathDestroy( HealthHandler.DeathEventInfo e )
         {
             Destroy( e.Self.gameObject );
         }
 
+        public void OnDeathDropInventory( HealthHandler.DeathEventInfo e )
+        {
+            Inventory inv = e.Self.GetComponent<Inventory>();
+
+            for( int i = 0; i < inv.MaxCapacity; i++ )
+            {
+                if( inv.CanDrop( i ) )
+                {
+                    inv.Drop( i );
+                }
+            }
+        }
+
+        public void OnDeathRespawnPlayer( HealthHandler.DeathEventInfo e )
+        {
+            e.Self.transform.position = Main.PlayerRespawnPoint.transform.position;
+            e.Self.transform.rotation = Main.PlayerRespawnPoint.transform.rotation;
+
+            e.Self.SetHealth( e.Self.MaxHealth * 0.5f );
+        }
+        
         public void OnDropDestroyIfNone( Inventory.DropEventInfo e )
         {
             PickupInventory inv = e.Self as PickupInventory;
@@ -36,7 +58,12 @@ namespace RPGGame.Globals
 
         public void OnDropCreatePickup( Inventory.DropEventInfo e )
         {
-            GameObject go = Instantiate( _pickupPrefab, e.Self.transform.position, Quaternion.identity );
+            const float HEIGHT_OFFSET = 0.25f;
+            const float JITTER_RANGE = 0.05f;
+
+            Vector3 offset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
+
+            GameObject go = Instantiate( _pickupPrefab, e.Self.transform.position + offset, Quaternion.identity );
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetMaxCapacity( 1 );
             inventory.PickUp( e.Item );

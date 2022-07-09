@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,15 +32,78 @@ namespace RPGGame
         public UnityEvent<HealthChangeEventInfo> onHealthChange;
         public UnityEvent<DeathEventInfo> onDeath;
 
-        /// <param name="amount">Amount can be negative, to heal.</param>
-        public void TakeDamage( float amount )
+        private float lastDamageTimestamp;
+        public float TimeSinceLastDamage => Time.time - lastDamageTimestamp;
+
+        private float lastHealTimestamp;
+        public float TimeSinceLastHeal => Time.time - lastHealTimestamp;
+
+        public void Update()
         {
-            Health -= amount;
+            if( Input.GetKeyDown( KeyCode.C ) )
+            {
+                this.ChangeMaxHealth( 5 );
+            }
+        }
+
+        public void SetHealth( float amount, float? maxAmount = null )
+        {
+            float delta = amount - Health;
+            if( delta == 0 )
+            {
+                throw new ArgumentException( "Can't change health by '0'." );
+            }
+
+            if( maxAmount != null )
+            {
+                float maxDelta = maxAmount.Value - MaxHealth;
+                if( maxDelta == 0 )
+                {
+                    throw new ArgumentException( "Can't change max health by '0'." );
+                }
+
+                ChangeMaxHealth( maxDelta );
+            }
+
+            ChangeHealth( delta );
+        }
+
+        public void ChangeMaxHealth( float delta )
+        {
+            if( delta == 0 )
+            {
+                throw new ArgumentException( "Can't change max health by '0'." );
+            }
+
+            MaxHealth += delta;
+            onMaxHealthChange?.Invoke( new HealthChangeEventInfo()
+            {
+                Delta = delta,
+                Self = this
+            } );
+        }
+
+        public void ChangeHealth( float delta )
+        {
+            if( delta == 0 )
+            {
+                throw new ArgumentException( "Can't change health by '0'." );
+            }
+
+            Health += delta;
+            if( delta < 0 )
+            {
+                lastDamageTimestamp = Time.time;
+            }
+            else if( delta > 0 )
+            {
+                lastHealTimestamp = Time.time;
+            }
 
             onHealthChange?.Invoke( new HealthChangeEventInfo()
             {
                 Self = this,
-                Delta = amount
+                Delta = delta
             } );
 
             if( Health <= 0 )

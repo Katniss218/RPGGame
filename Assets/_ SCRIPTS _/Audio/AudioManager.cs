@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace RPGGame.Audio
 {
+    [DisallowMultipleComponent]
     public class AudioManager : MonoBehaviour
     {
         private static List<AudioSource> sources = new List<AudioSource>();
