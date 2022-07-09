@@ -128,8 +128,20 @@ namespace RPGGame.Player
                     continue;
                 }
 
-                inventory.PickUp( pickupInv );
-                // Do not skip any inventories due to some items might only fall into some slots (like weapons, etc).
+                List<(Item i, int amt, Vector2Int orig)> items = pickupInv.GetItemSlots();
+
+                foreach( var itemStack in items )
+                {
+                    int leftover = inventory.PickUp( itemStack.i, itemStack.amt );
+
+                    int amtPickedUp = itemStack.amt - leftover;
+
+                    if( amtPickedUp > 0 )
+                    {
+                        pickupInv.Drop( itemStack.i, amtPickedUp );
+                    }
+                    // Do not skip any inventories due to some items might only fall into some slots (mostly small items when your inventory is almost full).
+                }
             }
         }
     }

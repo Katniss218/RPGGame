@@ -25,13 +25,7 @@ namespace RPGGame.Globals
         {
             Inventory inv = e.Self.GetComponent<Inventory>();
 
-            for( int i = 0; i < inv.MaxCapacity; i++ )
-            {
-                if( inv.CanDrop( i ) )
-                {
-                    inv.Drop( i );
-                }
-            }
+            inv.Clear();
         }
 
         public void OnDeathRespawnPlayer( HealthHandler.DeathEventInfo e )
@@ -65,8 +59,7 @@ namespace RPGGame.Globals
 
             GameObject go = Instantiate( _pickupPrefab, e.Self.transform.position + offset, Quaternion.identity );
             PickupInventory inventory = go.GetComponent<PickupInventory>();
-            inventory.SetMaxCapacity( 1 );
-            inventory.PickUp( e.Item );
+            inventory.SetCapacityAndPickUp( e.Item, e.Amount );
         }
     }
 }

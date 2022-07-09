@@ -8,7 +8,7 @@ namespace RPGGame.UI
     public class ItemUI : MonoBehaviour
     {
         public PlayerInventory Inventory;
-        public int Slot;
+        public Vector2Int Slot;
 
         public TMPro.TextMeshProUGUI Text { get; private set; }
 
@@ -19,7 +19,7 @@ namespace RPGGame.UI
 
         public void OnClickDrop()
         {
-            Inventory.Drop( Slot );
+            Inventory.Drop( null, Slot );
         }
     }
 }

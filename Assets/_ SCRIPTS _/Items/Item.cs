@@ -17,5 +17,8 @@ namespace RPGGame.Items
 
         public string DisplayName;
         public string Description;
+
+        public int MaxStack = 1;
+        public Vector2Int Size;
     }
 }

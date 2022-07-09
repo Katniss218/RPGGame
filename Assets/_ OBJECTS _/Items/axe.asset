@@ -15,6 +15,8 @@ MonoBehaviour:
   ID: item.axe
   DisplayName: Axe
   Description: A heavy Axe, can chop off a head.
+  MaxStack: 1
+  Size: {x: 2, y: 2}
   onUse:
     m_PersistentCalls:
       m_Calls:
