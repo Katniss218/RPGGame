@@ -15,6 +15,8 @@ MonoBehaviour:
   ID: item.sword
   DisplayName: Sword
   Description: A nimble Sword, can slice off an arm.
+  mesh: {fileID: -2432090755550338912, guid: 88de496807b61eb4f8fc11ea2dce7a3a, type: 3}
+  material: {fileID: -3033667219593020291, guid: 88de496807b61eb4f8fc11ea2dce7a3a, type: 3}
   MaxStack: 1
   Size: {x: 1, y: 2}
   onUse:

@@ -18,6 +18,9 @@ namespace RPGGame.Items
         public string DisplayName;
         public string Description;
 
+        public Mesh mesh;
+        public Material material;
+
         public int MaxStack = 1;
         public Vector2Int Size;
     }

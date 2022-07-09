@@ -58,6 +58,13 @@ namespace RPGGame.Globals
             Vector3 offset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
 
             GameObject go = Instantiate( _pickupPrefab, e.Self.transform.position + offset, Quaternion.identity );
+
+            MeshFilter meshFilter = go.GetComponentInChildren<MeshFilter>();
+            meshFilter.mesh = e.Item.mesh;
+
+            MeshRenderer meshRenderer = go.GetComponentInChildren<MeshRenderer>();
+            meshRenderer.material = e.Item.material;
+
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetCapacityAndPickUp( e.Item, e.Amount );
         }
