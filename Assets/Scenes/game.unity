@@ -760,8 +760,9 @@ GameObject:
   - component: {fileID: 894473973}
   - component: {fileID: 894473977}
   - component: {fileID: 894473978}
-  - component: {fileID: 894473980}
   - component: {fileID: 894473981}
+  - component: {fileID: 894473980}
+  - component: {fileID: 894473982}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -843,7 +844,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924fee0040bfef94d83da13db2815100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupRange: 1
 --- !u!114 &894473978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -996,6 +996,19 @@ MonoBehaviour:
   EquipHead: {fileID: 0}
   EquipBody: {fileID: 0}
   EquipLegs: {fileID: 0}
+--- !u!114 &894473982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894473970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c9c999ea31c7b40bf7587b24ad9967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PickupRange: 2
 --- !u!1 &922788401
 GameObject:
   m_ObjectHideFlags: 0
@@ -1144,9 +1157,6 @@ MonoBehaviour:
   playerInv: {fileID: 894473981}
   slotContainer: {fileID: 112752429}
   itemContainer: {fileID: 595499589}
-  inventorySlotUIPrefab: {fileID: 251969781532376843, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
-  itemUIPrefab: {fileID: 251969781532376843, guid: e95d91dbefd669f47b3b35ded759613e, type: 3}
-  slotSize: 50
 --- !u!114 &1242854725
 MonoBehaviour:
   m_ObjectHideFlags: 0

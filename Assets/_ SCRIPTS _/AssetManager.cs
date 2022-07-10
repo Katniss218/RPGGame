@@ -17,10 +17,12 @@ namespace RPGGame
         const string PREFABS_PATH = "Prefabs";
         const string MESHES_PATH = "Meshes";
         const string MATERIALS_PATH = "Materials";
+        const string SOUNDS_PATH = "Sounds";
 
         private static Dictionary<string, GameObject> allPrefabs = new Dictionary<string, GameObject>();
         private static Dictionary<string, Mesh> allMeshes = new Dictionary<string, Mesh>();
         private static Dictionary<string, Material> allMaterials = new Dictionary<string, Material>();
+        private static Dictionary<string, AudioClip> allAudioClips = new Dictionary<string, AudioClip>();
 
         //
         //      ITEMS
@@ -178,6 +180,31 @@ namespace RPGGame
             }
             allMaterials.Add( path, material );
             return material;
+        }
+
+        //
+        //      SOUNDS / AUDIO CLIPS
+        //
+
+        public static AudioClip GetAudioClip( string path )
+        {
+            if( allAudioClips.TryGetValue( path, out AudioClip audioClip ) )
+            {
+                return audioClip;
+            }
+
+            if( !path.StartsWith( SOUNDS_PATH ) )
+            {
+                throw new Exception( "Tried to look up a audio clip in a wrong folder." );
+            }
+
+            audioClip = Resources.Load<AudioClip>( path );
+            if( audioClip == null )
+            {
+                throw new InvalidOperationException( $"Couldn't get the audio clip with a path '{path}'. Audio clip doesn't exist." );
+            }
+            allAudioClips.Add( path, audioClip );
+            return audioClip;
         }
     }
 }

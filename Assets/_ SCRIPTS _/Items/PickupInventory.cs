@@ -13,6 +13,11 @@ namespace RPGGame.Items
     /// </remarks>
     public class PickupInventory : Inventory
     {
+        public float createdTime;
 
+        private void OnEnable()
+        {
+            createdTime = Time.time;
+        }
     }
 }

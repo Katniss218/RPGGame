@@ -1,3 +1,4 @@
+using RPGGame.Audio;
 using RPGGame.Items;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +17,6 @@ namespace RPGGame.Player
     [DisallowMultipleComponent]
     public class PlayerItemController : MonoBehaviour
     {
-        [SerializeField] private float pickupRange;
-
         private PlayerInventory inventory;
 
         private float lastUsedTimestamp;
@@ -36,10 +35,6 @@ namespace RPGGame.Player
                 {
                     UseEquipHand();
                 }
-            }
-            if( Input.GetKeyDown( KeyCode.X ) )
-            {
-                TryPickupNearby();
             }
         }
 
@@ -106,43 +101,6 @@ namespace RPGGame.Player
 
             usableHand.Use( this.transform, target );
             lastUsedTimestamp = Time.time;
-        }
-
-        /// <summary>
-        /// Try to pickup every item that's on the ground and is in range.
-        /// </summary>
-        private void TryPickupNearby()
-        {
-            Collider[] collidersInRange = Physics.OverlapSphere( this.transform.position, pickupRange );
-
-            foreach( var collider in collidersInRange )
-            {
-                if( collider.transform == this.transform )
-                {
-                    continue;
-                }
-
-                PickupInventory pickupInv = collider.GetComponent<PickupInventory>();
-                if( pickupInv == null )
-                {
-                    continue;
-                }
-
-                List<(Item i, int amt, Vector2Int orig)> items = pickupInv.GetItemSlots();
-
-                foreach( var itemStack in items )
-                {
-                    int leftover = inventory.PickUp( itemStack.i, itemStack.amt );
-
-                    int amtPickedUp = itemStack.amt - leftover;
-
-                    if( amtPickedUp > 0 )
-                    {
-                        pickupInv.Drop( itemStack.i, amtPickedUp );
-                    }
-                    // Do not skip any inventories due to some items might only fall into some slots (mostly small items when your inventory is almost full).
-                }
-            }
         }
     }
 }

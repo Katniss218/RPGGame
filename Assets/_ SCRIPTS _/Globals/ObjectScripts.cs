@@ -67,6 +67,13 @@ namespace RPGGame.Globals
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetCapacityAndPickUp( e.Item, e.Amount );
+
+            if( e.Self is PlayerInventory )
+            {
+                Rigidbody rigidbody = go.GetComponent<Rigidbody>();
+                Vector3 dir = (e.Self.transform.forward + new Vector3( 0.0f, 0.4f, 0.0f )).normalized;
+                rigidbody.velocity = dir * 60f;
+            }
         }
     }
 }
