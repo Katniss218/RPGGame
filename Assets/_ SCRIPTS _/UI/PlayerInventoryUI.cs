@@ -1,11 +1,11 @@
 using RPGGame.Items;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPGGame.UI
 {
-    public class InventoryUI : MonoBehaviour
+    [DisallowMultipleComponent]
+    public class PlayerInventoryUI : UIWindow
     {
         [SerializeField] private PlayerInventory playerInv;
         [SerializeField] private RectTransform slotContainer;
@@ -16,16 +16,23 @@ namespace RPGGame.UI
         private const float SLOT_SIZE = 50.0f;
         private const float SLOT_ITEM_SIZE = 60.0f;
 
-        void Start()
+        protected override void Awake()
         {
             Ensure.NotNull( playerInv );
             Ensure.NotNull( slotContainer );
             Ensure.NotNull( itemContainer );
 
-            Redraw();
+            base.Awake();
         }
 
-        public void Redraw()
+        protected override void Start()
+        {
+            RedrawSlots();
+
+            base.Start();
+        }
+
+        public void RedrawSlots()
         {
             bool[,] slotMask = playerInv.GetBlockingSlotMask();
             for( int y = 0; y < playerInv.InvSizeY; y++ )
@@ -40,16 +47,16 @@ namespace RPGGame.UI
             }
         }
 
-        private void SpawnSlot( int x, int y )
+        private void SpawnSlot( int posX, int posY )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_slot" ), slotContainer );
             RectTransform rt = (RectTransform)go.transform;
 
-            rt.anchoredPosition = new Vector2( x * SLOT_SIZE, y * -SLOT_SIZE );
+            rt.anchoredPosition = new Vector2( posX * SLOT_SIZE, posY * -SLOT_SIZE );
             rt.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
         }
 
-        private void SpawnNew( Inventory.PickupEventInfo e )
+        private void SpawnItem( Inventory.PickupEventInfo e )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_item" ), itemContainer );
             ItemUI itemUI = go.GetComponent<ItemUI>();
@@ -75,7 +82,7 @@ namespace RPGGame.UI
             itemUIs.Add( e.SlotOrigin, itemUI );
         }
 
-        private void UpdateExisting( Inventory.PickupEventInfo e )
+        private void UpdateItem( Inventory.PickupEventInfo e )
         {
             (_, int amount) = e.Self.GetItemSlot( e.SlotOrigin );
 
@@ -85,18 +92,18 @@ namespace RPGGame.UI
 
         public void OnResize( Inventory.ResizeEventInfo e )
         {
-            Redraw();
+            RedrawSlots();
         }
 
         public void OnPickup( Inventory.PickupEventInfo e )
         {
             if( itemUIs.ContainsKey( e.SlotOrigin ) )
             {
-                UpdateExisting( e );
+                UpdateItem( e );
             }
             else
             {
-                SpawnNew( e );
+                SpawnItem( e );
             }
         }
 
