@@ -11,6 +11,8 @@ namespace RPGGame.Items
     {
         public Item EquipHand;
 
+        public Item[] Drops;
+
         public override void Clear()
         {
             Item tempitem = EquipHand;
@@ -23,6 +25,21 @@ namespace RPGGame.Items
                 OriginSlot = Vector2Int.zero,
                 Self = this
             } );
+
+            Item[] dropsTemp = Drops;
+
+            Drops = null;
+
+            foreach( var item in dropsTemp )
+            {
+                onDrop?.Invoke( new DropEventInfo()
+                {
+                    Amount = 1,
+                    Item = item,
+                    OriginSlot = Vector2Int.zero,
+                    Self = this
+                } );
+            }
 
             base.Clear();
         }

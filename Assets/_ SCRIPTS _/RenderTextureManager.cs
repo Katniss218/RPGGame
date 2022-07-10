@@ -1,6 +1,7 @@
 using RPGGame.Items;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,30 +9,54 @@ namespace RPGGame
 {
     public class RenderTextureManager : MonoBehaviour
     {
-        [SerializeField] private Item[] items;
+        public const int RESOLUTION_SIZE_MULTIPLIER = 64;
 
-        private static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, (Texture2D tex, float worldSize)> textures = new Dictionary<string, (Texture2D tex, float worldSize)>();
 
         const int ICON_RENDER_LAYER = 31;
 
-        
+
         void Start()
         {
-            foreach( var item in items )
+            Item[] items2 = Resources.LoadAll<Item>( "_ OBJECTS _/Items" );
+
+            foreach( var item in items2 )
             {
                 // Doing this in awake seems to produce weird highlight artifacts and things (ambient light-related??)
                 // So we do it in Start.
-                ScreenMesh( item.ID, 128, item.mesh, item.materials, Quaternion.Euler( -11.25f, 180, 22.5f ), Quaternion.Euler( 10, -30, 0 ) );
+                Quaternion modelRot = Quaternion.Euler( -11.25f, 180, 22.5f );
+                if( item.UseCustomCamera )
+                {
+                    modelRot = Quaternion.Euler( item.CustomCameraRot );
+                }
+
+                int texResolution = RESOLUTION_SIZE_MULTIPLIER * Mathf.Max( item.Size.x, item.Size.y );
+
+                if( texResolution < 128 )
+                {
+                    texResolution = 128;
+                }
+
+                ScreenMesh( item.ID, texResolution, item.mesh, item.materials, modelRot, Quaternion.Euler( 10, -30, 0 ) );
             }
         }
 
         /// <summary>
-        /// Looks up a result in the database.
+        /// Looks up a icon texture in the database.
         /// </summary>
         /// <param name="name">Unique name of the result to look up.</param>
         public static Texture2D GetTexture( string name )
         {
-            return textures[name];
+            return textures[name].tex;
+        }
+
+        /// <summary>
+        /// Looks up the world size of an item (the max dimention along the object's principal axes).
+        /// </summary>
+        /// <param name="name">Unique name of the result to look up.</param>
+        public static float GetTextureWorldSize( string name )
+        {
+            return textures[name].worldSize;
         }
 
         /// <summary>
@@ -43,7 +68,9 @@ namespace RPGGame
             RenderTexture renderTex = new RenderTexture( resolutionXY, resolutionXY, 8, RenderTextureFormat.ARGB32 );
             renderTex.Create();
 
-            (GameObject camGo, Camera cam) = CreateCamera( Vector3.zero, Quaternion.identity, renderTex );
+            float max = Mathf.Max( mesh.bounds.extents.x, mesh.bounds.extents.y, mesh.bounds.extents.z );
+
+            (GameObject camGo, Camera cam) = CreateCamera( Vector3.zero, Quaternion.identity, max, renderTex );
             GameObject lightGo = CreateLight( Vector3.zero, lightRot );
             GameObject modelGo = CreateModel( Vector2.zero, modelRot, mesh, materials );
 
@@ -55,11 +82,11 @@ namespace RPGGame
             DestroyImmediate( lightGo );
             DestroyImmediate( modelGo );
 
-            textures.Add( name, tex );
+            textures.Add( name, (tex, max * 2.0f) );
             return tex;
         }
 
-        private static (GameObject g, Camera c) CreateCamera( Vector3 position, Quaternion rotation, RenderTexture renderTexture )
+        private static (GameObject g, Camera c) CreateCamera( Vector3 position, Quaternion rotation, float meshHalfSizeMax, RenderTexture renderTexture )
         {
             GameObject gameObj = new GameObject( "cam" );
             gameObj.layer = ICON_RENDER_LAYER;
@@ -69,11 +96,11 @@ namespace RPGGame
             transform.rotation = rotation;
 
             Camera camera = gameObj.AddComponent<Camera>();
-            camera.nearClipPlane = -0.5f;
-            camera.farClipPlane = 0.5f;
+            camera.nearClipPlane = -meshHalfSizeMax;
+            camera.farClipPlane = meshHalfSizeMax;
             camera.cullingMask = 1 << ICON_RENDER_LAYER;
             camera.orthographic = true;
-            camera.orthographicSize = 0.5f;
+            camera.orthographicSize = meshHalfSizeMax;
             camera.targetTexture = renderTexture;
             camera.forceIntoRenderTexture = true;
             camera.clearFlags = CameraClearFlags.SolidColor;

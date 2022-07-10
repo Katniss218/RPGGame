@@ -21,7 +21,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: aef8cfd06c6a2f249b1c0ef9efa05ce6, type: 2}
   - {fileID: 2100000, guid: 64254739f4149f043895baceb9fd6c6d, type: 2}
   MaxStack: 1
-  Size: {x: 2, y: 2}
+  Size: {x: 1, y: 2}
   onUse:
     m_PersistentCalls:
       m_Calls:

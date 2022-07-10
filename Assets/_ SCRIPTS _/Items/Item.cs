@@ -19,7 +19,12 @@ namespace RPGGame.Items
         public string Description;
 
         public Mesh mesh;
+        public Mesh Mesh => mesh;
         public Material[] materials;
+        public Material[] Materials => materials;
+
+        public bool UseCustomCamera;
+        public Vector3 CustomCameraRot;
 
         public int MaxStack = 1;
         public Vector2Int Size;

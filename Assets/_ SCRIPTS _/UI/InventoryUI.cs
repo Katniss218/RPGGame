@@ -16,7 +16,8 @@ namespace RPGGame.UI
 
         Dictionary<Vector2Int, ItemUI> itemUIs = new Dictionary<Vector2Int, ItemUI>();
 
-        [SerializeField] private float slotSize = 50.0f;
+        private const float SLOT_SIZE = 50.0f;
+        private const float SLOT_ITEM_SIZE = 60.0f;
 
         void Start()
         {
@@ -49,8 +50,8 @@ namespace RPGGame.UI
             GameObject go = Instantiate( inventorySlotUIPrefab, slotContainer );
             RectTransform rt = (RectTransform)go.transform;
 
-            rt.anchoredPosition = new Vector2( x * slotSize, y * -slotSize );
-            rt.sizeDelta = new Vector2( slotSize, slotSize );
+            rt.anchoredPosition = new Vector2( x * SLOT_SIZE, y * -SLOT_SIZE );
+            rt.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
         }
 
         private void SpawnNew( Inventory.PickupEventInfo e )
@@ -62,16 +63,19 @@ namespace RPGGame.UI
             itemUI.SetAmount( e.Amount );
 
             Texture2D tex = RenderTextureManager.GetTexture( e.Item.ID );
+            float texWorldSize = RenderTextureManager.GetTextureWorldSize( e.Item.ID );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
 
             itemUI.SetIcon( sprite );
 
             RectTransform rt = (RectTransform)go.transform;
             // slot offset + center
-            float x = (e.OriginSlot.x * slotSize) + ((e.Item.Size.x * slotSize) * 0.5f);
-            float y = (e.OriginSlot.y * -slotSize) + ((e.Item.Size.y * -slotSize) * 0.5f);
+            float x = (e.OriginSlot.x * SLOT_SIZE) + ((e.Item.Size.x * SLOT_SIZE) * 0.5f);
+            float y = (e.OriginSlot.y * -SLOT_SIZE) + ((e.Item.Size.y * -SLOT_SIZE) * 0.5f);
 
             rt.anchoredPosition = new Vector2( x, y );
+
+            rt.sizeDelta = new Vector2( texWorldSize * SLOT_ITEM_SIZE, texWorldSize * SLOT_ITEM_SIZE );
 
             itemUIs.Add( e.OriginSlot, itemUI );
         }
@@ -99,7 +103,6 @@ namespace RPGGame.UI
             {
                 SpawnNew( e );
             }
-#warning todo - if the item was added to the count, don't spawn new.
         }
 
         public void OnDrop( Inventory.DropEventInfo e )
