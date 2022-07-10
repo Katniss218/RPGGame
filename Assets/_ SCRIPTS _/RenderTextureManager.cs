@@ -1,3 +1,4 @@
+using RPGGame.Items;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,7 @@ namespace RPGGame
 {
     public class RenderTextureManager : MonoBehaviour
     {
-        [SerializeField] private Mesh rmesh;
-        [SerializeField] private Material rmat;
+        [SerializeField] private Item[] items;
 
         static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
 
@@ -17,17 +17,10 @@ namespace RPGGame
         // Start is called before the first frame update
         void Awake()
         {
-            ScreenMesh( "item.axe", 128, rmesh, rmat, Quaternion.identity, Quaternion.Euler( 15, 45, 0 ) );
-            ScreenMesh( "item.sword", 128, rmesh, rmat, Quaternion.Euler( 0, 50, 23 ), Quaternion.Euler( 15, 45, 0 ) );
-            ScreenMesh( "item.goblin_mace", 128, rmesh, rmat, Quaternion.Euler( 60, 50, 0 ), Quaternion.Euler( 15, 45, 0 ) );
-
-            //Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
-            //img.sprite = sprite;
-
-
-
-            //Sprite sprite2 = Sprite.Create( tex2, new Rect( 0, 0, tex2.width, tex2.height ), Vector2.zero );
-            //img2.sprite = sprite2;
+            foreach( var item in items )
+            {
+                ScreenMesh( item.ID, 128, item.mesh, item.materials, Quaternion.Euler( -11.25f, 180, 22.5f ), Quaternion.Euler( 10, -30, 0 ) );
+            }
         }
 
         /// <summary>
@@ -43,19 +36,14 @@ namespace RPGGame
         /// Screenstors a model, adds the result to the database, and returns the resulting texture.
         /// </summary>
         /// <param name="name">Unique name to save the result under.</param>
-        /// <param name="resolutionXY"></param>
-        /// <param name="mesh"></param>
-        /// <param name="material"></param>
-        /// <param name="modelRot"></param>
-        /// <param name="lightRot"></param>
-        public static Texture2D ScreenMesh( string name, int resolutionXY, Mesh mesh, Material material, Quaternion modelRot, Quaternion lightRot )
+        public static Texture2D ScreenMesh( string name, int resolutionXY, Mesh mesh, Material[] materials, Quaternion modelRot, Quaternion lightRot )
         {
             RenderTexture renderTex = new RenderTexture( resolutionXY, resolutionXY, 8, RenderTextureFormat.ARGB32 );
             renderTex.Create();
 
             (GameObject camGo, Camera cam) = CreateCamera( Vector3.zero, Quaternion.identity, renderTex );
             GameObject lightGo = CreateLight( Vector3.zero, lightRot );
-            GameObject modelGo = CreateModel( Vector2.zero, modelRot, mesh, material );
+            GameObject modelGo = CreateModel( Vector2.zero, modelRot, mesh, materials );
 
             cam.Render();
 
@@ -86,6 +74,8 @@ namespace RPGGame
             camera.orthographicSize = 0.5f;
             camera.targetTexture = renderTexture;
             camera.forceIntoRenderTexture = true;
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color( 0, 0, 0, 0 );
 
             return (gameObj, camera);
         }
@@ -106,7 +96,7 @@ namespace RPGGame
             return gameObj;
         }
 
-        private static GameObject CreateModel( Vector3 position, Quaternion rotation, Mesh mesh, Material material )
+        private static GameObject CreateModel( Vector3 position, Quaternion rotation, Mesh mesh, Material[] materials )
         {
             GameObject gameObj = new GameObject( "model" );
             gameObj.layer = LAYER;
@@ -119,7 +109,8 @@ namespace RPGGame
             meshFilter.mesh = mesh;
 
             MeshRenderer meshRenderer = gameObj.AddComponent<MeshRenderer>();
-            meshRenderer.material = material;
+            //meshRenderer.material = materials[0];
+            meshRenderer.materials = materials;
 
             return gameObj;
         }

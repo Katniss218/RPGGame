@@ -63,7 +63,7 @@ namespace RPGGame.Globals
             meshFilter.mesh = e.Item.mesh;
 
             MeshRenderer meshRenderer = go.GetComponentInChildren<MeshRenderer>();
-            meshRenderer.material = e.Item.material;
+            meshRenderer.materials = e.Item.materials;
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetCapacityAndPickUp( e.Item, e.Amount );
