@@ -25,6 +25,11 @@ namespace RPGGame.UI
             icon.sprite = sprite;
         }
 
+        public void SetIconSize( Vector2 size )
+        {
+            icon.rectTransform.sizeDelta = size;
+        }
+
         public void SetAmount( int amount )
         {
             amountText.text = $"{amount}";

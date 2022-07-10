@@ -250,9 +250,12 @@ namespace RPGGame.Items
             return true;
         }
 
+        /// <summary>
+        /// Returns a sequence of slot and amount pairs that can be used at the time to fill the inventory with the specified items.
+        /// A leftover value is provided, if the inventory can't fit all the items.
+        /// </summary>
         public virtual (List<(Vector2Int pos, int amt)>, int leftover) GetNeededSlots( Item item, int amount )
         {
-            // returns potential itemstacks (that would exist after picking them up).
             if( item == null )
             {
                 throw new ArgumentNullException( "Item can't be null" );
@@ -401,6 +404,7 @@ namespace RPGGame.Items
         {
             // returns how many items would fit into that slot.
             // returns null for slots that are incompatible or full.
+            // returns the maxstack if the slot is empty
 
             if( !IsWithinBounds( pos.x, pos.y, pos.x + item.Size.x, pos.y + item.Size.y ) )
             {
@@ -525,7 +529,7 @@ namespace RPGGame.Items
             }
             else
             {
-                amountToAdd = originSlot.SpaceLeft;
+                amountToAdd = Mathf.Min( originSlot.SpaceLeft, amount );
             }
 
             // Set the amount.

@@ -18,9 +18,9 @@ namespace RPGGame
 
         void Start()
         {
-            Item[] items2 = Resources.LoadAll<Item>( "_ OBJECTS _/Items" );
+            Item[] items = AssetManager.GetItems();
 
-            foreach( var item in items2 )
+            foreach( var item in items )
             {
                 // Doing this in awake seems to produce weird highlight artifacts and things (ambient light-related??)
                 // So we do it in Start.

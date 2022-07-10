@@ -33,10 +33,10 @@ RectTransform:
   m_Father: {fileID: 251969781532376842}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &251969781281142328
 CanvasRenderer:
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 8818669174872749593}
   - component: {fileID: 8566713980743585716}
   m_Layer: 5
-  m_Name: item_ui
+  m_Name: inventory_item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

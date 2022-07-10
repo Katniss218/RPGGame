@@ -11,9 +11,6 @@ namespace RPGGame.UI
         [SerializeField] private RectTransform slotContainer;
         [SerializeField] private RectTransform itemContainer;
 
-        [SerializeField] private GameObject inventorySlotUIPrefab;
-        [SerializeField] private GameObject itemUIPrefab;
-
         Dictionary<Vector2Int, ItemUI> itemUIs = new Dictionary<Vector2Int, ItemUI>();
 
         private const float SLOT_SIZE = 50.0f;
@@ -24,8 +21,6 @@ namespace RPGGame.UI
             Ensure.NotNull( playerInv );
             Ensure.NotNull( slotContainer );
             Ensure.NotNull( itemContainer );
-            Ensure.NotNull( inventorySlotUIPrefab );
-            Ensure.NotNull( itemUIPrefab );
 
             Redraw();
         }
@@ -47,7 +42,7 @@ namespace RPGGame.UI
 
         private void SpawnSlot( int x, int y )
         {
-            GameObject go = Instantiate( inventorySlotUIPrefab, slotContainer );
+            GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_slot" ), slotContainer );
             RectTransform rt = (RectTransform)go.transform;
 
             rt.anchoredPosition = new Vector2( x * SLOT_SIZE, y * -SLOT_SIZE );
@@ -56,14 +51,13 @@ namespace RPGGame.UI
 
         private void SpawnNew( Inventory.PickupEventInfo e )
         {
-            GameObject go = Instantiate( itemUIPrefab, itemContainer );
+            GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_item" ), itemContainer );
             ItemUI itemUI = go.GetComponent<ItemUI>();
             itemUI.Inventory = playerInv;
             itemUI.Slot = e.SlotOrigin;
             itemUI.SetAmount( e.Amount );
 
             Texture2D tex = RenderedIconManager.GetTexture( e.Item.ID );
-            float texWorldSize = RenderedIconManager.GetTextureWorldSize( e.Item.ID );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
 
             itemUI.SetIcon( sprite );
@@ -75,14 +69,15 @@ namespace RPGGame.UI
 
             rt.anchoredPosition = new Vector2( x, y );
 
-            rt.sizeDelta = new Vector2( texWorldSize * SLOT_ITEM_SIZE, texWorldSize * SLOT_ITEM_SIZE );
+            float texWorldSize = RenderedIconManager.GetTextureWorldSize( e.Item.ID );
+            itemUI.SetIconSize( new Vector2( texWorldSize * SLOT_ITEM_SIZE, texWorldSize * SLOT_ITEM_SIZE ) );
 
             itemUIs.Add( e.SlotOrigin, itemUI );
         }
 
         private void UpdateExisting( Inventory.PickupEventInfo e )
         {
-            (Item item, int amount) = e.Self.GetItemSlot( e.SlotOrigin );
+            (_, int amount) = e.Self.GetItemSlot( e.SlotOrigin );
 
             ItemUI itemUI = itemUIs[e.SlotOrigin];
             itemUI.SetAmount( amount );
