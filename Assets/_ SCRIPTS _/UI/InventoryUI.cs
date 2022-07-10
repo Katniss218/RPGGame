@@ -14,7 +14,7 @@ namespace RPGGame.UI
         [SerializeField] private GameObject inventorySlotUIPrefab;
         [SerializeField] private GameObject itemUIPrefab;
 
-        Dictionary<Vector2Int, RectTransform> itemUIs = new Dictionary<Vector2Int, RectTransform>();
+        Dictionary<Vector2Int, ItemUI> itemUIs = new Dictionary<Vector2Int, ItemUI>();
 
         [SerializeField] private float slotSize = 50.0f;
 
@@ -53,19 +53,13 @@ namespace RPGGame.UI
             rt.sizeDelta = new Vector2( slotSize, slotSize );
         }
 
-        public void OnResize( Inventory.ResizeEventInfo e )
+        private void SpawnNew( Inventory.PickupEventInfo e )
         {
-            Redraw();
-        }
-
-        public void OnPickup( Inventory.PickupEventInfo e )
-        {
-#warning todo - if the item was added to the count, don't spawn new.
             GameObject go = Instantiate( itemUIPrefab, itemContainer );
             ItemUI itemUI = go.GetComponent<ItemUI>();
             itemUI.Inventory = playerInv;
             itemUI.Slot = e.OriginSlot;
-            itemUI.SetCount( e.Amount );
+            itemUI.SetAmount( e.Amount );
 
             Texture2D tex = RenderTextureManager.GetTexture( e.Item.ID );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
@@ -79,7 +73,33 @@ namespace RPGGame.UI
 
             rt.anchoredPosition = new Vector2( x, y );
 
-            itemUIs.Add( e.OriginSlot, rt );
+            itemUIs.Add( e.OriginSlot, itemUI );
+        }
+
+        private void UpdateExisting( Inventory.PickupEventInfo e )
+        {
+            (Item item, int amount) = e.Self.GetItemSlot( e.OriginSlot );
+
+            ItemUI itemUI = itemUIs[e.OriginSlot];
+            itemUI.SetAmount( amount );
+        }
+
+        public void OnResize( Inventory.ResizeEventInfo e )
+        {
+            Redraw();
+        }
+
+        public void OnPickup( Inventory.PickupEventInfo e )
+        {
+            if( itemUIs.ContainsKey( e.OriginSlot ) )
+            {
+                UpdateExisting( e );
+            }
+            else
+            {
+                SpawnNew( e );
+            }
+#warning todo - if the item was added to the count, don't spawn new.
         }
 
         public void OnDrop( Inventory.DropEventInfo e )

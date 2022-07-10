@@ -34,6 +34,7 @@ namespace RPGGame.Mobs
 
             HealthbarUI healthbar = hud.GetComponent<HealthbarUI>();
             healthHandler.onHealthChange.AddListener( healthbar.OnHealthOrMaxHealthChange );
+            healthHandler.onMaxHealthChange.AddListener( healthbar.OnHealthOrMaxHealthChange );
             healthHandler.onDeath.AddListener( healthbar.OnDeath );
         }
     }

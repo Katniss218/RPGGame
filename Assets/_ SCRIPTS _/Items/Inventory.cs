@@ -333,6 +333,22 @@ namespace RPGGame.Items
             return (orderedSlots, amountLeft);
         }
 
+        public virtual (Item i, int amt) GetItemSlot( Vector2Int orig )
+        {
+            ItemSlot slot = inventorySlots[orig.x, orig.y];
+            if( !slot.IsOrigin )
+            {
+                throw new ArgumentException( $"Given slot ({orig}) was not origin." );
+            }
+
+            if( slot.IsEmpty )
+            {
+                return (null, 0);
+            }
+
+            return (slot.Item, slot.Amount);
+        }
+
         /// <summary>
         /// Returns the complete list of items in the inventory.
         /// </summary>
@@ -501,7 +517,7 @@ namespace RPGGame.Items
             if( originSlot.IsEmpty )
             {
                 originSlot.Item = item;
-                amountToAdd = Mathf.Max( item.MaxStack, amount );
+                amountToAdd = Mathf.Min( item.MaxStack, amount );
             }
             else
             {

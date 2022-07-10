@@ -25,7 +25,7 @@ namespace RPGGame.UI
             icon.sprite = sprite;
         }
 
-        public void SetCount( int amount )
+        public void SetAmount( int amount )
         {
             amountText.text = $"{amount}";
         }
