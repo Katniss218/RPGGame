@@ -59,7 +59,7 @@ namespace RPGGame.UI
             GameObject go = Instantiate( itemUIPrefab, itemContainer );
             ItemUI itemUI = go.GetComponent<ItemUI>();
             itemUI.Inventory = playerInv;
-            itemUI.Slot = e.OriginSlot;
+            itemUI.Slot = e.SlotOrigin;
             itemUI.SetAmount( e.Amount );
 
             Texture2D tex = RenderedIconManager.GetTexture( e.Item.ID );
@@ -70,21 +70,21 @@ namespace RPGGame.UI
 
             RectTransform rt = (RectTransform)go.transform;
             // slot offset + center
-            float x = (e.OriginSlot.x * SLOT_SIZE) + ((e.Item.Size.x * SLOT_SIZE) * 0.5f);
-            float y = (e.OriginSlot.y * -SLOT_SIZE) + ((e.Item.Size.y * -SLOT_SIZE) * 0.5f);
+            float x = (e.SlotOrigin.x * SLOT_SIZE) + ((e.Item.Size.x * SLOT_SIZE) * 0.5f);
+            float y = (e.SlotOrigin.y * -SLOT_SIZE) + ((e.Item.Size.y * -SLOT_SIZE) * 0.5f);
 
             rt.anchoredPosition = new Vector2( x, y );
 
             rt.sizeDelta = new Vector2( texWorldSize * SLOT_ITEM_SIZE, texWorldSize * SLOT_ITEM_SIZE );
 
-            itemUIs.Add( e.OriginSlot, itemUI );
+            itemUIs.Add( e.SlotOrigin, itemUI );
         }
 
         private void UpdateExisting( Inventory.PickupEventInfo e )
         {
-            (Item item, int amount) = e.Self.GetItemSlot( e.OriginSlot );
+            (Item item, int amount) = e.Self.GetItemSlot( e.SlotOrigin );
 
-            ItemUI itemUI = itemUIs[e.OriginSlot];
+            ItemUI itemUI = itemUIs[e.SlotOrigin];
             itemUI.SetAmount( amount );
         }
 
@@ -95,7 +95,7 @@ namespace RPGGame.UI
 
         public void OnPickup( Inventory.PickupEventInfo e )
         {
-            if( itemUIs.ContainsKey( e.OriginSlot ) )
+            if( itemUIs.ContainsKey( e.SlotOrigin ) )
             {
                 UpdateExisting( e );
             }
@@ -107,9 +107,9 @@ namespace RPGGame.UI
 
         public void OnDrop( Inventory.DropEventInfo e )
         {
-            Destroy( itemUIs[e.OriginSlot].gameObject );
+            Destroy( itemUIs[e.SlotOrigin].gameObject );
 
-            itemUIs.Remove( e.OriginSlot );
+            itemUIs.Remove( e.SlotOrigin );
         }
     }
 }
