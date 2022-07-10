@@ -11,10 +11,10 @@ namespace RPGGame.UI
         [SerializeField] private RectTransform slotContainer;
         [SerializeField] private RectTransform itemContainer;
 
-        Dictionary<Vector2Int, ItemUI> itemUIs = new Dictionary<Vector2Int, ItemUI>();
+        Dictionary<Vector2Int, InventoryItemUI> itemUIs = new Dictionary<Vector2Int, InventoryItemUI>();
 
-        private const float SLOT_SIZE = 50.0f;
-        private const float SLOT_ITEM_SIZE = 60.0f;
+        public const float SLOT_SIZE = 50.0f;
+        public const float SLOT_ITEM_SIZE = 60.0f;
 
         protected override void Awake()
         {
@@ -52,6 +52,10 @@ namespace RPGGame.UI
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_slot" ), slotContainer );
             RectTransform rt = (RectTransform)go.transform;
 
+            InventorySlotUI slotUI = go.GetComponent<InventorySlotUI>();
+            slotUI.Inventory = playerInv;
+            slotUI.Slot = new Vector2Int( posX, posY );
+
             rt.anchoredPosition = new Vector2( posX * SLOT_SIZE, posY * -SLOT_SIZE );
             rt.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
         }
@@ -59,9 +63,7 @@ namespace RPGGame.UI
         private void SpawnItem( Inventory.PickupEventInfo e )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_item" ), itemContainer );
-            ItemUI itemUI = go.GetComponent<ItemUI>();
-            itemUI.Inventory = playerInv;
-            itemUI.Slot = e.SlotOrigin;
+            InventoryItemUI itemUI = go.GetComponent<InventoryItemUI>();
             itemUI.SetAmount( e.Amount );
 
             Texture2D tex = RenderedIconManager.GetTexture( e.Item.ID );
@@ -84,9 +86,9 @@ namespace RPGGame.UI
 
         private void UpdateItem( Inventory.PickupEventInfo e )
         {
-            (_, int amount) = e.Self.GetItemSlot( e.SlotOrigin );
+            (_, int amount, _) = e.Self.GetItemSlot( e.SlotOrigin );
 
-            ItemUI itemUI = itemUIs[e.SlotOrigin];
+            InventoryItemUI itemUI = itemUIs[e.SlotOrigin];
             itemUI.SetAmount( amount );
         }
 

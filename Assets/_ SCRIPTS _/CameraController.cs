@@ -20,7 +20,7 @@ namespace RPGGame
         {
             if( FollowTarget == null )
             {
-                Debug.Log( "FollowTarget was null." );
+                Debug.Log( "Camera Controller - FollowTarget was null." ); // this happens when the scene is loaded and the method is called before the field can be set.
                 return;
             }
 

@@ -340,20 +340,21 @@ namespace RPGGame.Items
             return (orderedSlots, amountLeft);
         }
 
-        public virtual (Item i, int amt) GetItemSlot( Vector2Int orig )
+        public virtual (Item i, int amt, Vector2Int orig) GetItemSlot( Vector2Int pos )
         {
-            ItemSlot slot = inventorySlots[orig.x, orig.y];
+            ItemSlot slot = inventorySlots[pos.x, pos.y];
             if( !slot.IsOrigin )
             {
-                throw new ArgumentException( $"Given slot ({orig}) was not origin." );
+                slot = inventorySlots[slot.Origin.x, slot.Origin.y];
+                pos = slot.Origin;
             }
 
             if( slot.IsEmpty )
             {
-                return (null, 0);
+                return (null, 0, pos);
             }
 
-            return (slot.Item, slot.Amount);
+            return (slot.Item, slot.Amount, pos );
         }
 
         /// <summary>

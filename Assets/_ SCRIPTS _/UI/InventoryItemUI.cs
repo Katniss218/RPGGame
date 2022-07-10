@@ -6,11 +6,9 @@ using UnityEngine.UI;
 
 namespace RPGGame.UI
 {
-    public class ItemUI : MonoBehaviour
+    [DisallowMultipleComponent]
+    public class InventoryItemUI : MonoBehaviour
     {
-        public PlayerInventory Inventory;
-        public Vector2Int Slot;
-
         private Image __icon;
         private Image icon
         {
@@ -33,6 +31,14 @@ namespace RPGGame.UI
 
         public void SetIcon( Sprite sprite )
         {
+            if( sprite == null )
+            {
+                icon.gameObject.SetActive( false );
+            }
+            else
+            {
+                icon.gameObject.SetActive( true );
+            }
             icon.sprite = sprite;
         }
 
@@ -41,17 +47,13 @@ namespace RPGGame.UI
             icon.rectTransform.sizeDelta = size;
         }
 
-        public void SetAmount( int amount )
+        public void SetAmount( int? amount )
         {
-            amountText.text = $"{amount}";
-        }
-
-        public void OnClickDrop()
-        {
-            if( Inventory != null )
+            if( amount == null )
             {
-                Inventory.Drop( null, Slot );
+                amountText.text = null;
             }
+            amountText.text = $"{amount}";
         }
     }
 }
