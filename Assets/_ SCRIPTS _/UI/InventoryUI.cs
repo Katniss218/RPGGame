@@ -62,8 +62,8 @@ namespace RPGGame.UI
             itemUI.Slot = e.OriginSlot;
             itemUI.SetAmount( e.Amount );
 
-            Texture2D tex = RenderTextureManager.GetTexture( e.Item.ID );
-            float texWorldSize = RenderTextureManager.GetTextureWorldSize( e.Item.ID );
+            Texture2D tex = RenderedIconManager.GetTexture( e.Item.ID );
+            float texWorldSize = RenderedIconManager.GetTextureWorldSize( e.Item.ID );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
 
             itemUI.SetIcon( sprite );

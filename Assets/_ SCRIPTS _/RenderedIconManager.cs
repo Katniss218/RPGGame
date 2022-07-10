@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace RPGGame
 {
-    public class RenderTextureManager : MonoBehaviour
+    public class RenderedIconManager : MonoBehaviour
     {
         public const int RESOLUTION_SIZE_MULTIPLIER = 64;
 
