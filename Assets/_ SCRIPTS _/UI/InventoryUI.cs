@@ -60,11 +60,12 @@ namespace RPGGame.UI
 
         public void OnPickup( Inventory.PickupEventInfo e )
         {
+#warning todo - if the item was added to the count, don't spawn new.
             GameObject go = Instantiate( itemUIPrefab, itemContainer );
             ItemUI itemUI = go.GetComponent<ItemUI>();
             itemUI.Inventory = playerInv;
             itemUI.Slot = e.OriginSlot;
-            itemUI.Text.text = e.Item.DisplayName;
+            itemUI.SetCount( e.Amount );
 
             Texture2D tex = RenderTextureManager.GetTexture( e.Item.ID );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );

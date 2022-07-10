@@ -10,15 +10,17 @@ namespace RPGGame
     {
         [SerializeField] private Item[] items;
 
-        static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
 
-        const int LAYER = 31;
+        const int ICON_RENDER_LAYER = 31;
 
-        // Start is called before the first frame update
-        void Awake()
+        
+        void Start()
         {
             foreach( var item in items )
             {
+                // Doing this in awake seems to produce weird highlight artifacts and things (ambient light-related??)
+                // So we do it in Start.
                 ScreenMesh( item.ID, 128, item.mesh, item.materials, Quaternion.Euler( -11.25f, 180, 22.5f ), Quaternion.Euler( 10, -30, 0 ) );
             }
         }
@@ -60,7 +62,7 @@ namespace RPGGame
         private static (GameObject g, Camera c) CreateCamera( Vector3 position, Quaternion rotation, RenderTexture renderTexture )
         {
             GameObject gameObj = new GameObject( "cam" );
-            gameObj.layer = LAYER;
+            gameObj.layer = ICON_RENDER_LAYER;
 
             Transform transform = gameObj.transform;
             transform.position = position;
@@ -69,7 +71,7 @@ namespace RPGGame
             Camera camera = gameObj.AddComponent<Camera>();
             camera.nearClipPlane = -0.5f;
             camera.farClipPlane = 0.5f;
-            camera.cullingMask = 1 << LAYER;
+            camera.cullingMask = 1 << ICON_RENDER_LAYER;
             camera.orthographic = true;
             camera.orthographicSize = 0.5f;
             camera.targetTexture = renderTexture;
@@ -83,7 +85,7 @@ namespace RPGGame
         private static GameObject CreateLight( Vector3 position, Quaternion rotation )
         {
             GameObject gameObj = new GameObject( "light" );
-            gameObj.layer = LAYER;
+            gameObj.layer = ICON_RENDER_LAYER;
 
             Transform transform = gameObj.transform;
             transform.position = position;
@@ -91,7 +93,7 @@ namespace RPGGame
 
             Light light = gameObj.AddComponent<Light>();
             light.type = LightType.Directional;
-            light.cullingMask = 1 << LAYER;
+            light.cullingMask = 1 << ICON_RENDER_LAYER;
 
             return gameObj;
         }
@@ -99,7 +101,7 @@ namespace RPGGame
         private static GameObject CreateModel( Vector3 position, Quaternion rotation, Mesh mesh, Material[] materials )
         {
             GameObject gameObj = new GameObject( "model" );
-            gameObj.layer = LAYER;
+            gameObj.layer = ICON_RENDER_LAYER;
 
             Transform transform = gameObj.transform;
             transform.position = position;

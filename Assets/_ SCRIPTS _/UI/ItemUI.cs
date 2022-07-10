@@ -11,23 +11,31 @@ namespace RPGGame.UI
         public PlayerInventory Inventory;
         public Vector2Int Slot;
 
-        public Image Icon { get; private set; }
-        public TMPro.TextMeshProUGUI Text { get; private set; }
+        private Image icon;
+        private TMPro.TextMeshProUGUI amountText;
 
         void Awake()
         {
-            Text = this.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-            Icon = this.GetComponentInChildren<Image>();
+            amountText = this.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            icon = this.GetComponentInChildren<Image>();
         }
 
         public void SetIcon( Sprite sprite )
         {
-            Icon.sprite = sprite;
+            icon.sprite = sprite;
+        }
+
+        public void SetCount( int amount )
+        {
+            amountText.text = $"{amount}";
         }
 
         public void OnClickDrop()
         {
-            Inventory.Drop( null, Slot );
+            if( Inventory != null )
+            {
+                Inventory.Drop( null, Slot );
+            }
         }
     }
 }
