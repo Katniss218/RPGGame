@@ -66,6 +66,11 @@ namespace RPGGame.UI
             itemUI.Slot = e.OriginSlot;
             itemUI.Text.text = e.Item.DisplayName;
 
+            Texture2D tex = RenderTextureManager.GetTexture( e.Item.ID );
+            Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
+
+            itemUI.SetIcon( sprite );
+
             RectTransform rt = (RectTransform)go.transform;
             // slot offset + center
             float x = (e.OriginSlot.x * slotSize) + ((e.Item.Size.x * slotSize) * 0.5f);
