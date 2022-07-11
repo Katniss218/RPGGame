@@ -227,11 +227,19 @@ namespace RPGGame.Items
 
         public static (int x, int y) GetSlotCoords( int slotIndex, int InvSizeX )
         {
+            if( slotIndex < 0 )
+            {
+                throw new Exception( "Slot index can't be less than 0" );
+            }
             return (slotIndex % InvSizeX, slotIndex / InvSizeX);
         }
 
         public static int GetSlotIndex( int x, int y, int InvSizeX )
         {
+            if( x < 0 || y < 0 || x >= InvSizeX )
+            {
+                throw new Exception( "Slot position can't be less than 0 or more than or equal to size" );
+            }
             return (y * InvSizeX) + x;
         }
 
@@ -325,21 +333,21 @@ namespace RPGGame.Items
             return (orderedSlots, amountLeft);
         }
 
-        public virtual (Item i, int amt, int orig) GetItemSlot( int index )
+        public virtual (Item i, int amt, int orig) GetItemSlot( int slotIndex )
         {
-            ItemSlot slot = GetSlot( index );
+            ItemSlot slot = GetSlot( slotIndex );
             if( !slot.IsOrigin )
             {
                 slot = GetSlot( slot.OriginIndex );
-                index = slot.OriginIndex;
+                slotIndex = slot.OriginIndex;
             }
 
             if( slot.IsEmpty )
             {
-                return (null, 0, index);
+                return (null, 0, slotIndex);
             }
 
-            return (slot.Item, slot.Amount, index);
+            return (slot.Item, slot.Amount, slotIndex);
         }
 
         /// <summary>
@@ -386,18 +394,18 @@ namespace RPGGame.Items
         //      PICK UP (ADD)
         //
 
-        public virtual int? CanPickUp( Item item, int index )
+        public virtual int? CanPickUp( Item item, int slotIndex )
         {
             // returns how many items would fit into that slot.
             // returns null for slots that are incompatible or full.
             // returns the maxstack if the slot is empty
 
-            if( !IsValidIndex( index, item.Size.x, item.Size.y ) )
+            if( !IsValidIndex( slotIndex, item.Size.x, item.Size.y ) )
             {
                 return null;
             }
 
-            ItemSlot clickedSlot = GetSlot( index );
+            ItemSlot clickedSlot = GetSlot( slotIndex );
 
             if( ItemSlot.IsBlockingSlot( clickedSlot ) )
             {
@@ -407,7 +415,7 @@ namespace RPGGame.Items
             int origin = clickedSlot.OriginIndex;
             ItemSlot originSlot = GetSlot( origin );
 
-            (int posX, int posY) = GetSlotCoords( index, InvSizeX );
+            (int posX, int posY) = GetSlotCoords( slotIndex, InvSizeX );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {
@@ -558,16 +566,16 @@ namespace RPGGame.Items
         /// </summary>
         /// <param name="pos">(doesn't need to be origin)</param>
         /// <returns></returns>
-        public virtual int? CanDrop( int index )
+        public virtual int? CanDrop( int slotIndex )
         {
             // false if you click outside the area, or on a blocking slot.
 
-            if( !IsValidIndex( index, 0, 0 ) )
+            if( !IsValidIndex( slotIndex, 0, 0 ) )
             {
                 return null;
             }
 
-            ItemSlot slot = GetSlot( index );
+            ItemSlot slot = GetSlot( slotIndex );
 
             if( ItemSlot.IsBlockingSlot( slot ) )
             {
@@ -629,7 +637,7 @@ namespace RPGGame.Items
         /// <param name="amount">How many items to drop. Null for the entire stack.</param>
         /// <param name="pos">The slot you want to drop from (doesn't need to be origin).</param>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int Drop( int? amount, int index )
+        public virtual int Drop( int? amount, int slotIndex )
         {
             if( amount != null && amount <= 0 )
             {
@@ -638,7 +646,7 @@ namespace RPGGame.Items
 
             // if the slot is empty, or blocking, it has undefined behaviour.
 
-            ItemSlot clickedSlot = GetSlot( index );
+            ItemSlot clickedSlot = GetSlot( slotIndex );
 
             if( ItemSlot.IsBlockingSlot( clickedSlot ) )
             {
@@ -667,7 +675,7 @@ namespace RPGGame.Items
             Item item = clickedSlot.Item;
 
             // Copy to the other slots.
-            (int posX, int posY) = GetSlotCoords( index, InvSizeX );
+            (int posX, int posY) = GetSlotCoords( slotIndex, InvSizeX );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {

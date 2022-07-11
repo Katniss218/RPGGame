@@ -474,6 +474,10 @@ PrefabInstance:
       value: offhand
       objectReference: {fileID: 0}
     - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
+      propertyPath: Slot
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: Slot.x
       value: -1
       objectReference: {fileID: 0}
@@ -592,6 +596,10 @@ PrefabInstance:
     - target: {fileID: 251969781532376843, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: m_Name
       value: chest
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
+      propertyPath: Slot
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: Slot.x
@@ -1015,6 +1023,10 @@ PrefabInstance:
     - target: {fileID: 251969781532376843, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: m_Name
       value: head
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
+      propertyPath: Slot
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: Slot.x
@@ -2559,6 +2571,7 @@ MonoBehaviour:
   Inventory: {fileID: 894473981}
   slotContainer: {fileID: 112752429}
   itemContainer: {fileID: 595499589}
+  equipSlotContainer: {fileID: 928155422}
 --- !u!1001 &1269410352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2654,6 +2667,10 @@ PrefabInstance:
     - target: {fileID: 251969781532376843, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: m_Name
       value: mainhand
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
+      propertyPath: Slot
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: Slot.x
@@ -2865,6 +2882,10 @@ PrefabInstance:
     - target: {fileID: 251969781532376843, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: m_Name
       value: legs
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
+      propertyPath: Slot
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: Slot.x
@@ -3568,6 +3589,10 @@ PrefabInstance:
     - target: {fileID: 251969781532376843, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: m_Name
       value: feet
+      objectReference: {fileID: 0}
+    - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
+      propertyPath: Slot
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 3293199555703904442, guid: 4ea34d8ccb3acdc489e23d45648a8f4d, type: 3}
       propertyPath: Slot.x

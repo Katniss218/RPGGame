@@ -39,16 +39,16 @@ namespace RPGGame.Items
         void Clear();
 
         (List<(int index, int amt)>, int leftover) GetNeededSlots( Item item, int amount );
-        (Item i, int amt, int orig) GetItemSlot( int index );
+        (Item i, int amt, int orig) GetItemSlot( int slotIndex );
         List<(Item i, int amt, int orig)> GetItemSlots();
 
-        int? CanPickUp( Item item, int index );
+        int? CanPickUp( Item item, int slotIndex );
         int PickUp( Item item, int amount );
         int PickUp( Item item, int amount, int slotIndex );
 
-        int? CanDrop( int index );
+        int? CanDrop( int slotIndex );
         int Drop( Item item, int amount );
-        int Drop( int? amount, int index );
+        int Drop( int? amount, int slotIndex );
 
         public GameObject gameObject { get; }
         public Transform transform { get; }
