@@ -20,6 +20,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2e7146a9656681944aeb9b4f0fa4f5b4, type: 2}
   - {fileID: 2100000, guid: aef8cfd06c6a2f249b1c0ef9efa05ce6, type: 2}
   - {fileID: 2100000, guid: 64254739f4149f043895baceb9fd6c6d, type: 2}
+  UseCustomCamera: 0
+  CustomCameraRot: {x: 0, y: 0, z: 0}
   MaxStack: 1
   Size: {x: 1, y: 2}
   onUse:
@@ -38,6 +40,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   UseTime: 2
-  UseSound: {fileID: 8300000, guid: 983041bbf5ce75f4e8b9431d213e6f1d, type: 3}
+  UseSound: {fileID: 8300000, guid: 2cb4f608b366c854a8bcfa703f22114d, type: 3}
   MeleeDamage: 20
   MeleeRange: 2

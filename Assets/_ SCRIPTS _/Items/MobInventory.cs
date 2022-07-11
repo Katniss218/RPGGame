@@ -22,7 +22,7 @@ namespace RPGGame.Items
             {
                 Amount = 1,
                 Item = tempitem,
-                SlotOrigin = Vector2Int.zero,
+                SlotOrigin = 0,
                 Self = this
             } );
 
@@ -36,7 +36,7 @@ namespace RPGGame.Items
                 {
                     Amount = 1,
                     Item = item,
-                    SlotOrigin = Vector2Int.zero,
+                    SlotOrigin = 0,
                     Self = this
                 } );
             }

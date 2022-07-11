@@ -26,7 +26,24 @@ namespace RPGGame.Audio
         [SerializeField] private Transform audioClipContainer;
 
 
-        private static AudioSource CreateSourceAndPlay( AudioClip clip, float volume, float pitch, Vector3 position )
+        private static void SetClipAndPlay( AudioSource source, TimerHandler timerHandler, AudioClip clip, float volume, float pitch, Vector3 position, Transform target )
+        {
+            // Sets the source's clip, volume, and pitch.
+            // Also sets the timer's duration to the clip's length, as it should never be different.
+
+            source.GetComponent<Follower>().Target = target;
+            source.transform.position = position;
+
+            source.volume = volume;
+            source.pitch = pitch;
+            source.clip = clip;
+
+            timerHandler.duration = clip.length;
+
+            source.Play();
+        }
+
+        private static AudioSource CreateSourceAndPlay( AudioClip clip, float volume, float pitch, Vector3 position, Transform target )
         {
             if( audioSourceContainer == null )
             {
@@ -45,22 +62,21 @@ namespace RPGGame.Audio
             audioSource.minDistance = 1.5f;
             audioSource.maxDistance = 15.0f;
             TimerHandler timerHandler = gameObject.AddComponent<TimerHandler>();
+            Follower follower = gameObject.AddComponent<Follower>();
 
             // Setup the timer.
             timerHandler.onTimerEnd.AddListener( () =>
             {
                 audioSource.Stop();
+                follower.Target = null;
             } );
 
             // Setup the clip, volume, and pitch.
-            SetClipAndPlay( audioSource, timerHandler, clip, volume, pitch );
+            SetClipAndPlay( audioSource, timerHandler, clip, volume, pitch, position, target );
             return audioSource;
         }
 
-        /// <summary>
-        /// Plays a new sound. Can specify the sound, volume and pitch.
-        /// </summary>
-        public static void PlaySound( AudioClip clip, Vector3 position, float volume = 1.0f, float pitch = 1.0f )
+        private static void PlaySound( AudioClip clip, Vector3 position, Transform target, float volume = 1.0f, float pitch = 1.0f )
         {
             foreach( AudioSource audioSource in sources )
             {
@@ -74,17 +90,35 @@ namespace RPGGame.Audio
                     continue;
                 }
 
-                audioSource.transform.position = position;
-                SetClipAndPlay( audioSource, audioSource.GetComponent<TimerHandler>(), clip, volume, pitch );
+                SetClipAndPlay( audioSource, audioSource.GetComponent<TimerHandler>(), clip, volume, pitch, position, target );
                 return;
             }
 
             // If no source GameObject can be reused (every single one is playing at the moment):
-            AudioSource newAudioSource = CreateSourceAndPlay( clip, volume, pitch, position );
+            AudioSource newAudioSource = CreateSourceAndPlay( clip, volume, pitch, position, target );
 
             sources.Add( newAudioSource );
         }
 
+        /// <summary>
+        /// Plays a new sound. Can specify the sound, volume and pitch.
+        /// </summary>
+        public static void PlaySound( AudioClip clip, Vector3 position, float volume = 1.0f, float pitch = 1.0f )
+        {
+            PlaySound( clip, position, null, volume, pitch );
+        }
+        
+        /// <summary>
+        /// Plays a new sound to follow an object. Can specify the sound, volume and pitch.
+        /// </summary>
+        public static void PlaySound( AudioClip clip, Transform target, float volume = 1.0f, float pitch = 1.0f )
+        {
+            PlaySound( clip, target.position, target, volume, pitch );
+        }
+
+        /// <summary>
+        /// Stops all sounds of the specified clip. Null to stop every sound.
+        /// </summary>
         public static void StopSounds( AudioClip matchClip = null )
         {
             foreach( AudioSource audioSource in sources )
@@ -99,23 +133,10 @@ namespace RPGGame.Audio
                     if( matchClip == null || audioSource.clip == matchClip )
                     {
                         audioSource.Stop();
+                        audioSource.GetComponent<Follower>().Target = null;
                     }
                 }
             }
-        }
-
-        private static void SetClipAndPlay( AudioSource source, TimerHandler timerHandler, AudioClip clip, float volume, float pitch )
-        {
-            // Sets the source's clip, volume, and pitch.
-            // Also sets the timer's duration to the clip's length, as it should never be different.
-
-            source.volume = volume;
-            source.pitch = pitch;
-            source.clip = clip;
-
-            timerHandler.duration = clip.length;
-
-            source.Play();
         }
     }
 }

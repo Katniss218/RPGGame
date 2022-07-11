@@ -62,7 +62,7 @@ namespace RPGGame.Abilities
                     continue;
                 }
 
-                List<(Item i, int amt, Vector2Int orig)> items = pickupInv.GetItemSlots();
+                List<(Item i, int amt, int orig)> items = pickupInv.GetItemSlots();
 
                 foreach( var itemStack in items )
                 {

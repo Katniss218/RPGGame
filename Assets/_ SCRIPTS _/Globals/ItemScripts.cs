@@ -23,7 +23,7 @@ namespace RPGGame.Globals
 
             if( e.Self.UseSound != null )
             {
-                AudioManager.PlaySound( e.Self.UseSound, e.User.position );
+                AudioManager.PlaySound( e.Self.UseSound, e.User );
             }
 
             if( e.Target == null )

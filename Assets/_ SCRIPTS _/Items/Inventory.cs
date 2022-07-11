@@ -16,7 +16,7 @@ namespace RPGGame.Items
 
             public Item Item;
             public int Amount;
-            public Vector2Int SlotOrigin;
+            public int SlotOrigin;
         }
 
         public class DropEventInfo
@@ -25,7 +25,7 @@ namespace RPGGame.Items
 
             public Item Item;
             public int Amount;
-            public Vector2Int SlotOrigin;
+            public int SlotOrigin;
         }
 
         public class ResizeEventInfo
@@ -51,12 +51,11 @@ namespace RPGGame.Items
 
             public static bool IsBlockingSlot( ItemSlot slot ) => slot == null;
 
-            public static bool PointsTo( ItemSlot slot, ItemSlot originSlot ) => slot.Origin == originSlot.Coordinates;
+            public static bool PointsTo( ItemSlot slot, ItemSlot originSlot ) => slot.OriginIndex == originSlot.Index;
 
-            public static ItemSlot Empty( int posX, int posY )
+            public static ItemSlot Empty( int index )
             {
-                Vector2Int coords = new Vector2Int( posX, posY );
-                return new ItemSlot( null, 0, coords, coords );
+                return new ItemSlot( null, 0, index, index );
             }
 
             public static ItemSlot BlockingSlot() => null;
@@ -74,41 +73,41 @@ namespace RPGGame.Items
             /// <summary>
             /// Points at the top-left corner of each item.
             /// </summary>
-            public Vector2Int Origin;
+            public int OriginIndex;
 
             /// <summary>
             /// The coordinates of the slot in an inventory.
             /// </summary>
-            public Vector2Int Coordinates;
+            public int Index;
 
             public int MaxAmount => Item.MaxStack;
 
             public int SpaceLeft => Item.MaxStack - Amount;
 
 
-            public bool IsOrigin => Origin == Coordinates;
+            public bool IsOrigin => OriginIndex == Index;
             public bool IsEmpty => Item == null;
             public bool IsFull => Item != null && Amount >= Item.MaxStack;
 
-            public ItemSlot( Item item, int amount, Vector2Int origin, Vector2Int coordinates )
+            public ItemSlot( Item item, int amount, int originIndex, int index )
             {
                 this.Item = item;
                 this.Amount = amount;
-                this.Origin = origin;
-                this.Coordinates = coordinates;
+                this.OriginIndex = originIndex;
+                this.Index = index;
             }
 
             /// <summary>
             /// Copies the slot with a change in coordinates.
             /// </summary>
-            public ItemSlot Copy( int posX, int posY )
+            public ItemSlot Copy( int index )
             {
                 if( this.IsEmpty )
                 {
-                    return Empty( posX, posY );
+                    return Empty( index );
                 }
 
-                return new ItemSlot( this.Item, this.Amount, this.Origin, new Vector2Int( posX, posY ) );
+                return new ItemSlot( this.Item, this.Amount, this.OriginIndex, index );
             }
         }
 
@@ -173,9 +172,9 @@ namespace RPGGame.Items
 
                     Item item = slot.Item;
                     int amt = slot.Amount;
-                    Vector2Int orig = slot.Origin;
+                    int orig = slot.OriginIndex;
 
-                    inventorySlots[x, y] = ItemSlot.Empty( x, y );
+                    inventorySlots[x, y] = ItemSlot.Empty( MapIndexSlot( x, y ) );
 
                     if( playEvent )
                     {
@@ -200,7 +199,7 @@ namespace RPGGame.Items
             {
                 for( int x = 0; x < InvSizeX; x++ )
                 {
-                    inventorySlots[x, y] = ItemSlot.Empty( x, y );
+                    inventorySlots[x, y] = ItemSlot.Empty( MapIndexSlot( x, y ) );
                 }
             }
         }
@@ -225,7 +224,44 @@ namespace RPGGame.Items
                 Self = this
             } );
 
-            PickUp( item, amount, new Vector2Int( 0, 0 ) );
+            PickUp( item, amount, 0 );
+        }
+
+        private bool IsValidIndex( int slotIndex, int sizeX, int sizeY )
+        {
+            (int x, int y) = MapSlotIndexCoord( slotIndex );
+
+            if( x < 0 || y < 0 || (x + sizeX) > InvSizeX || (y + sizeY) > InvSizeY )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        protected virtual ItemSlot MapSlotIndex( int slotIndex )
+        {
+            return inventorySlots[(slotIndex % InvSizeX), (slotIndex / InvSizeX)];
+        }
+
+        protected virtual (int x, int y) MapSlotIndexCoord( int slotIndex )
+        {
+            return (slotIndex % InvSizeX, slotIndex / InvSizeX);
+        }
+        
+        public static (int x, int y) MapSlotIndexCoord( int slotIndex, int InvSizeX )
+        {
+            return (slotIndex % InvSizeX, slotIndex / InvSizeX);
+        }
+
+        private int MapIndexSlot( int x, int y )
+        {
+            return (y * InvSizeX) + x;
+        }
+
+        public static int MapIndexSlot( int x, int y, int InvSizeX )
+        {
+            return (y * InvSizeX) + x;
         }
 
         private bool IsWithinBounds( int minX, int minY )
@@ -254,7 +290,7 @@ namespace RPGGame.Items
         /// Returns a sequence of slot and amount pairs that can be used at the time to fill the inventory with the specified items.
         /// A leftover value is provided, if the inventory can't fit all the items.
         /// </summary>
-        public virtual (List<(Vector2Int pos, int amt)>, int leftover) GetNeededSlots( Item item, int amount )
+        public virtual (List<(int index, int amt)>, int leftover) GetNeededSlots( Item item, int amount )
         {
             if( item == null )
             {
@@ -278,7 +314,7 @@ namespace RPGGame.Items
 
             int amountLeft = amount;
 
-            List<(Vector2Int pos, int amt)> orderedSlots = new List<(Vector2Int pos, int amt)>();
+            List<(int index, int amt)> orderedSlots = new List<(int index, int amt)>();
 
             int invSizeX = InvSizeX;
             int invSizeY = InvSizeY;
@@ -310,7 +346,7 @@ namespace RPGGame.Items
                         continue;
                     }
 
-                    int? spaceLeft = CanPickUp( item, new Vector2Int( x, y ) );
+                    int? spaceLeft = CanPickUp( item, MapIndexSlot( x, y ) );
 
                     // If the item can't fit, mark as 0 and move on.
                     if( spaceLeft == null )
@@ -323,7 +359,7 @@ namespace RPGGame.Items
                     amountLeft -= amountToPut;
 
                     PickUp( ref amounts, amountToPut, x, y, x + sizeX, y + sizeY );
-                    orderedSlots.Add( (new Vector2Int( x, y ), amountToPut) );
+                    orderedSlots.Add( (MapIndexSlot( x, y ), amountToPut) );
 
                     if( amountLeft < 0 )
                     {
@@ -340,29 +376,29 @@ namespace RPGGame.Items
             return (orderedSlots, amountLeft);
         }
 
-        public virtual (Item i, int amt, Vector2Int orig) GetItemSlot( Vector2Int pos )
+        public virtual (Item i, int amt, int orig) GetItemSlot( int index )
         {
-            ItemSlot slot = inventorySlots[pos.x, pos.y];
+            ItemSlot slot = MapSlotIndex( index );
             if( !slot.IsOrigin )
             {
-                slot = inventorySlots[slot.Origin.x, slot.Origin.y];
-                pos = slot.Origin;
+                slot = MapSlotIndex( slot.OriginIndex );
+                index = slot.OriginIndex;
             }
 
             if( slot.IsEmpty )
             {
-                return (null, 0, pos);
+                return (null, 0, index);
             }
 
-            return (slot.Item, slot.Amount, pos );
+            return (slot.Item, slot.Amount, index);
         }
 
         /// <summary>
         /// Returns the complete list of items in the inventory.
         /// </summary>
-        public virtual List<(Item i, int amt, Vector2Int orig)> GetItemSlots()
+        public virtual List<(Item i, int amt, int orig)> GetItemSlots()
         {
-            List<(Item i, int amt, Vector2Int orig)> items = new List<(Item i, int amt, Vector2Int orig)>();
+            List<(Item i, int amt, int orig)> items = new List<(Item i, int amt, int orig)>();
 
             foreach( var slot in inventorySlots ) // this won't loop over blocking slots cuz they're null, yey!
             {
@@ -372,7 +408,7 @@ namespace RPGGame.Items
                 }
                 if( slot.IsOrigin )
                 {
-                    items.Add( (slot.Item, slot.Amount, slot.Origin) );
+                    items.Add( (slot.Item, slot.Amount, slot.Index) );
                 }
             }
 
@@ -401,28 +437,32 @@ namespace RPGGame.Items
         //      PICK UP (ADD)
         //
 
-        public virtual int? CanPickUp( Item item, Vector2Int pos )
+        public virtual int? CanPickUp( Item item, int index )
         {
             // returns how many items would fit into that slot.
             // returns null for slots that are incompatible or full.
             // returns the maxstack if the slot is empty
 
-            if( !IsWithinBounds( pos.x, pos.y, pos.x + item.Size.x, pos.y + item.Size.y ) )
+            if( !IsValidIndex( index, item.Size.x, item.Size.y ) )
             {
                 return null;
             }
 
-            if( ItemSlot.IsBlockingSlot( inventorySlots[pos.x, pos.y] ) )
+            ItemSlot clickedSlot = MapSlotIndex( index );
+
+            if( ItemSlot.IsBlockingSlot( clickedSlot ) )
             {
                 return null;
             }
 
-            Vector2Int origin = inventorySlots[pos.x, pos.y].Origin;
-            ItemSlot originSlot = inventorySlots[origin.x, origin.y];
+            int origin = clickedSlot.OriginIndex;
+            ItemSlot originSlot = MapSlotIndex( origin );
 
-            for( int y = pos.y; y < pos.y + item.Size.y; y++ )
+            (int posX, int posY) = MapSlotIndexCoord( index );
+
+            for( int y = posY; y < posY + item.Size.y; y++ )
             {
-                for( int x = pos.x; x < pos.x + item.Size.x; x++ )
+                for( int x = posX; x < posX + item.Size.x; x++ )
                 {
                     ItemSlot slot = inventorySlots[x, y]; // The first slot will get compared to itself, no big deal, it's always the same, and if a (1,1) sized item comes in, it never goes across boundaries.
 
@@ -480,11 +520,11 @@ namespace RPGGame.Items
                 throw new ArgumentException( "Amount can't be less than 1." );
             }
 
-            (List<(Vector2Int pos, int amt)>, int leftover) seq = GetNeededSlots( item, amount );
+            (List<(int index, int amt)>, int leftover) seq = GetNeededSlots( item, amount );
 
             foreach( var slotInfo in seq.Item1 )
             {
-                PickUp( item, slotInfo.amt, slotInfo.pos );
+                PickUp( item, slotInfo.amt, slotInfo.index );
             }
 
             return seq.leftover;
@@ -497,7 +537,7 @@ namespace RPGGame.Items
         /// <param name="amount"></param>
         /// <param name="pos">The slot to pick the item up to (doesn't need to be origin)</param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int PickUp( Item item, int amount, Vector2Int pos )
+        public virtual int PickUp( Item item, int amount, int index )
         {
             if( item == null )
             {
@@ -514,8 +554,9 @@ namespace RPGGame.Items
             // if called with values out of bounds, it will throw. Make sure to call 'CanPickUp' first.
             // if the box is across item boundaries it will cover up parts of the items, possibly the origin, rendering it broken.
 
-            Vector2Int origin = inventorySlots[pos.x, pos.y].Origin;
-            ItemSlot originSlot = inventorySlots[origin.x, origin.y];
+
+            int origin = MapSlotIndex( index ).OriginIndex;
+            ItemSlot originSlot = MapSlotIndex( origin );
 
             if( !originSlot.IsEmpty && originSlot.Item.ID != item.ID )
             {
@@ -535,14 +576,16 @@ namespace RPGGame.Items
 
             // Set the amount.
             originSlot.Amount += amountToAdd;
-            originSlot.Origin = origin;
+            originSlot.OriginIndex = origin;
 
             // Copy to the other slots.
-            for( int y = pos.y; y < pos.y + item.Size.y; y++ )
+            (int posX, int posY) = MapSlotIndexCoord( index );
+
+            for( int y = posY; y < posY + item.Size.y; y++ )
             {
-                for( int x = pos.x; x < pos.x + item.Size.x; x++ )
+                for( int x = posX; x < posX + item.Size.x; x++ )
                 {
-                    inventorySlots[x, y] = originSlot.Copy( x, y );
+                    inventorySlots[x, y] = originSlot.Copy( MapIndexSlot( x, y ) );
                 }
             }
 
@@ -608,7 +651,7 @@ namespace RPGGame.Items
             }
 
             int amountLeft = amount;
-            List<(Item i, int amt, Vector2Int orig)> items = GetItemSlots();
+            List<(Item i, int amt, int orig)> items = GetItemSlots();
 
             foreach( var itemStack in items )
             {
@@ -637,7 +680,7 @@ namespace RPGGame.Items
         /// <param name="amount">How many items to drop. Null for the entire stack.</param>
         /// <param name="pos">The slot you want to drop from (doesn't need to be origin).</param>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int Drop( int? amount, Vector2Int pos )
+        public virtual int Drop( int? amount, int index )
         {
             if( amount != null && amount <= 0 )
             {
@@ -646,19 +689,19 @@ namespace RPGGame.Items
 
             // if the slot is empty, or blocking, it has undefined behaviour.
 
-            ItemSlot slot = inventorySlots[pos.x, pos.y];
+            ItemSlot clickedSlot = MapSlotIndex( index );
 
-            if( ItemSlot.IsBlockingSlot( slot ) )
+            if( ItemSlot.IsBlockingSlot( clickedSlot ) )
             {
                 throw new InvalidOperationException( "Tried dropping from a blocking slot" );
             }
-            if( slot.IsEmpty )
+            if( clickedSlot.IsEmpty )
             {
                 throw new InvalidOperationException( "Tried dropping from an empty slot" );
             }
 
-            Vector2Int origin = slot.Origin;
-            ItemSlot originSlot = inventorySlots[origin.x, origin.y];
+            int origin = clickedSlot.OriginIndex;
+            ItemSlot originSlot = MapSlotIndex( origin );
 
             if( amount == null )
             {
@@ -669,18 +712,19 @@ namespace RPGGame.Items
             originSlot.Amount -= amountToRemove;
             if( originSlot.Amount == 0 )
             {
-                originSlot = ItemSlot.Empty( origin.x, origin.y );
+                originSlot = ItemSlot.Empty( origin );
             }
 
-
-            Item item = slot.Item;
+            Item item = clickedSlot.Item;
 
             // Copy to the other slots.
-            for( int y = pos.y; y < pos.y + item.Size.y; y++ )
+            (int posX, int posY) = MapSlotIndexCoord( index );
+
+            for( int y = posY; y < posY + item.Size.y; y++ )
             {
-                for( int x = pos.x; x < pos.x + item.Size.x; x++ )
+                for( int x = posX; x < posX + item.Size.x; x++ )
                 {
-                    inventorySlots[x, y] = originSlot.Copy( x, y );
+                    inventorySlots[x, y] = originSlot.Copy( MapIndexSlot( x, y ) );
                 }
             }
 

@@ -7,18 +7,18 @@ namespace RPGGame.UI
     [DisallowMultipleComponent]
     public class PlayerInventoryUI : UIWindow
     {
-        [SerializeField] private PlayerInventory playerInv;
+        public PlayerInventory Inventory;
         [SerializeField] private RectTransform slotContainer;
         [SerializeField] private RectTransform itemContainer;
 
-        Dictionary<Vector2Int, InventoryItemUI> itemUIs = new Dictionary<Vector2Int, InventoryItemUI>();
+        Dictionary<int, InventoryItemUI> itemUIs = new Dictionary<int, InventoryItemUI>();
 
-        public const float SLOT_SIZE = 50.0f;
-        public const float SLOT_ITEM_SIZE = 60.0f;
+        public const float SLOT_SIZE = 40.0f;
+        public const float SLOT_ITEM_SIZE = 50.0f;
 
         protected override void Awake()
         {
-            Ensure.NotNull( playerInv );
+            Ensure.NotNull( Inventory );
             Ensure.NotNull( slotContainer );
             Ensure.NotNull( itemContainer );
 
@@ -34,10 +34,10 @@ namespace RPGGame.UI
 
         public void RedrawSlots()
         {
-            bool[,] slotMask = playerInv.GetBlockingSlotMask();
-            for( int y = 0; y < playerInv.InvSizeY; y++ )
+            bool[,] slotMask = Inventory.GetBlockingSlotMask();
+            for( int y = 0; y < Inventory.InvSizeY; y++ )
             {
-                for( int x = 0; x < playerInv.InvSizeX; x++ )
+                for( int x = 0; x < Inventory.InvSizeX; x++ )
                 {
                     if( !slotMask[x, y] )
                     {
@@ -53,8 +53,8 @@ namespace RPGGame.UI
             RectTransform rt = (RectTransform)go.transform;
 
             InventorySlotUI slotUI = go.GetComponent<InventorySlotUI>();
-            slotUI.Inventory = playerInv;
-            slotUI.Slot = new Vector2Int( posX, posY );
+            slotUI.InventoryUI = this;
+            slotUI.Slot = Items.Inventory.MapIndexSlot( posX, posY, Inventory.InvSizeX );
 
             rt.anchoredPosition = new Vector2( posX * SLOT_SIZE, posY * -SLOT_SIZE );
             rt.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
@@ -73,8 +73,8 @@ namespace RPGGame.UI
 
             RectTransform rt = (RectTransform)go.transform;
             // slot offset + center
-            float x = (e.SlotOrigin.x * SLOT_SIZE) + ((e.Item.Size.x * SLOT_SIZE) * 0.5f);
-            float y = (e.SlotOrigin.y * -SLOT_SIZE) + ((e.Item.Size.y * -SLOT_SIZE) * 0.5f);
+            float x = (Items.Inventory.MapSlotIndexCoord( e.SlotOrigin, Inventory.InvSizeX ).x * SLOT_SIZE) + ((e.Item.Size.x * SLOT_SIZE) * 0.5f);
+            float y = (Items.Inventory.MapSlotIndexCoord( e.SlotOrigin, Inventory.InvSizeX ).y * -SLOT_SIZE) + ((e.Item.Size.y * -SLOT_SIZE) * 0.5f);
 
             rt.anchoredPosition = new Vector2( x, y );
 

@@ -11,9 +11,14 @@ namespace RPGGame.UI
     public class InventorySlotUI : MonoBehaviour
     {
         private Button btn;
-        public Inventory Inventory;
+        public PlayerInventoryUI InventoryUI;
 
-        public Vector2Int Slot;
+        public Inventory Inventory { get => InventoryUI.Inventory; }
+
+        public int Slot;
+
+#warning TODO - A universal single-number public way of accessing slots in an inventory. Instead of a vector2int. This will also help with compatibility with different inventory types.
+        // also related - the inventory UI should provide a way of mapping slot indices to display positions.
 
         void Awake()
         {
@@ -23,7 +28,7 @@ namespace RPGGame.UI
 
         private void OnClick()
         {
-            (Item i, int amt, Vector2Int orig) = Inventory.GetItemSlot( Slot );
+            (Item i, int amt, int orig) = Inventory.GetItemSlot( Slot );
 
             if( i != null ) // pick up to hand
             {
