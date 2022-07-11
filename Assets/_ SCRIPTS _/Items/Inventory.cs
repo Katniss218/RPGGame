@@ -227,9 +227,9 @@ namespace RPGGame.Items
             PickUp( item, amount, 0 );
         }
 
-        private bool IsValidIndex( int slotIndex, int sizeX, int sizeY )
+        private bool IsValidIndex( int slotIndex, int sizeX = 0, int sizeY = 0 )
         {
-            (int x, int y) = MapSlotIndexCoord( slotIndex );
+            (int x, int y) = GetSlotCoords( slotIndex );
 
             if( x < 0 || y < 0 || (x + sizeX) > InvSizeX || (y + sizeY) > InvSizeY )
             {
@@ -239,16 +239,16 @@ namespace RPGGame.Items
             return true;
         }
 
-        protected virtual ItemSlot MapSlotIndex( int slotIndex )
+        protected virtual ItemSlot GetSlot( int slotIndex )
         {
             return inventorySlots[(slotIndex % InvSizeX), (slotIndex / InvSizeX)];
         }
 
-        protected virtual (int x, int y) MapSlotIndexCoord( int slotIndex )
+        protected virtual (int x, int y) GetSlotCoords( int slotIndex )
         {
             return (slotIndex % InvSizeX, slotIndex / InvSizeX);
         }
-        
+
         public static (int x, int y) MapSlotIndexCoord( int slotIndex, int InvSizeX )
         {
             return (slotIndex % InvSizeX, slotIndex / InvSizeX);
@@ -262,28 +262,6 @@ namespace RPGGame.Items
         public static int MapIndexSlot( int x, int y, int InvSizeX )
         {
             return (y * InvSizeX) + x;
-        }
-
-        private bool IsWithinBounds( int minX, int minY )
-        {
-            if( minX < 0 || minY < 0 || minX > InvSizeX || minY > InvSizeY )
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private bool IsWithinBounds( int minX, int minY, int maxX, int maxY )
-        {
-            if( minX > maxX || minY > maxY )
-            {
-                throw new ArgumentException( "Max must be greater or equal to Min." );
-            }
-            if( minX < 0 || minY < 0 || maxX > InvSizeX || maxY > InvSizeY )
-            {
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
@@ -378,10 +356,10 @@ namespace RPGGame.Items
 
         public virtual (Item i, int amt, int orig) GetItemSlot( int index )
         {
-            ItemSlot slot = MapSlotIndex( index );
+            ItemSlot slot = GetSlot( index );
             if( !slot.IsOrigin )
             {
-                slot = MapSlotIndex( slot.OriginIndex );
+                slot = GetSlot( slot.OriginIndex );
                 index = slot.OriginIndex;
             }
 
@@ -448,7 +426,7 @@ namespace RPGGame.Items
                 return null;
             }
 
-            ItemSlot clickedSlot = MapSlotIndex( index );
+            ItemSlot clickedSlot = GetSlot( index );
 
             if( ItemSlot.IsBlockingSlot( clickedSlot ) )
             {
@@ -456,9 +434,9 @@ namespace RPGGame.Items
             }
 
             int origin = clickedSlot.OriginIndex;
-            ItemSlot originSlot = MapSlotIndex( origin );
+            ItemSlot originSlot = GetSlot( origin );
 
-            (int posX, int posY) = MapSlotIndexCoord( index );
+            (int posX, int posY) = GetSlotCoords( index );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {
@@ -537,7 +515,7 @@ namespace RPGGame.Items
         /// <param name="amount"></param>
         /// <param name="pos">The slot to pick the item up to (doesn't need to be origin)</param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int PickUp( Item item, int amount, int index )
+        public virtual int PickUp( Item item, int amount, int slotIndex )
         {
             if( item == null )
             {
@@ -555,8 +533,8 @@ namespace RPGGame.Items
             // if the box is across item boundaries it will cover up parts of the items, possibly the origin, rendering it broken.
 
 
-            int origin = MapSlotIndex( index ).OriginIndex;
-            ItemSlot originSlot = MapSlotIndex( origin );
+            int originIndex = GetSlot( slotIndex ).OriginIndex;
+            ItemSlot originSlot = GetSlot( originIndex );
 
             if( !originSlot.IsEmpty && originSlot.Item.ID != item.ID )
             {
@@ -576,10 +554,10 @@ namespace RPGGame.Items
 
             // Set the amount.
             originSlot.Amount += amountToAdd;
-            originSlot.OriginIndex = origin;
+            originSlot.OriginIndex = originIndex;
 
             // Copy to the other slots.
-            (int posX, int posY) = MapSlotIndexCoord( index );
+            (int posX, int posY) = GetSlotCoords( slotIndex );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {
@@ -594,7 +572,7 @@ namespace RPGGame.Items
                 Self = this,
                 Item = item,
                 Amount = amountToAdd,
-                SlotOrigin = origin
+                SlotOrigin = originIndex
             } );
 
             return amountToAdd;
@@ -609,16 +587,16 @@ namespace RPGGame.Items
         /// </summary>
         /// <param name="pos">(doesn't need to be origin)</param>
         /// <returns></returns>
-        public virtual int? CanDrop( Vector2Int pos )
+        public virtual int? CanDrop( int index )
         {
             // false if you click outside the area, or on a blocking slot.
 
-            if( !IsWithinBounds( pos.x, pos.y ) )
+            if( !IsValidIndex( index, 0, 0 ) )
             {
                 return null;
             }
 
-            ItemSlot slot = inventorySlots[pos.x, pos.y];
+            ItemSlot slot = GetSlot( index );
 
             if( ItemSlot.IsBlockingSlot( slot ) )
             {
@@ -689,7 +667,7 @@ namespace RPGGame.Items
 
             // if the slot is empty, or blocking, it has undefined behaviour.
 
-            ItemSlot clickedSlot = MapSlotIndex( index );
+            ItemSlot clickedSlot = GetSlot( index );
 
             if( ItemSlot.IsBlockingSlot( clickedSlot ) )
             {
@@ -701,7 +679,7 @@ namespace RPGGame.Items
             }
 
             int origin = clickedSlot.OriginIndex;
-            ItemSlot originSlot = MapSlotIndex( origin );
+            ItemSlot originSlot = GetSlot( origin );
 
             if( amount == null )
             {
@@ -718,7 +696,7 @@ namespace RPGGame.Items
             Item item = clickedSlot.Item;
 
             // Copy to the other slots.
-            (int posX, int posY) = MapSlotIndexCoord( index );
+            (int posX, int posY) = GetSlotCoords( index );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {

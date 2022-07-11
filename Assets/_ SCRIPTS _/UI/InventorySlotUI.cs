@@ -17,8 +17,7 @@ namespace RPGGame.UI
 
         public int Slot;
 
-#warning TODO - A universal single-number public way of accessing slots in an inventory. Instead of a vector2int. This will also help with compatibility with different inventory types.
-        // also related - the inventory UI should provide a way of mapping slot indices to display positions.
+#warning TODO - the inventory UI should provide a way of mapping slot indices to display positions.
 
         void Awake()
         {
