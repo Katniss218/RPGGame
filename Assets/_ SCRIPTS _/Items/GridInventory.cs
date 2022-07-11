@@ -8,36 +8,13 @@ using UnityEngine.Events;
 namespace RPGGame.Items
 {
     [DisallowMultipleComponent]
-    public class Inventory : MonoBehaviour
+    public class GridInventory : MonoBehaviour, IInventory
     {
-        public class PickupEventInfo
-        {
-            public Inventory Self;
-
-            public Item Item;
-            public int Amount;
-            public int SlotOrigin;
-        }
-
-        public class DropEventInfo
-        {
-            public Inventory Self;
-
-            public Item Item;
-            public int Amount;
-            public int SlotOrigin;
-        }
-
-        public class ResizeEventInfo
-        {
-            public Inventory Self;
-        }
-
         /// <summary>
         /// Represents a single cell in the inventory grid.
         /// </summary>
         [Serializable]
-        public class ItemSlot
+        protected class ItemSlot
         {
             // The inventory is a grid comprised of ItemSlots.
             // An item can take up multiple slots (diablo/metin2 style).
@@ -113,9 +90,12 @@ namespace RPGGame.Items
 
         [SerializeField] protected ItemSlot[,] inventorySlots = new ItemSlot[2, 2]; // each slot points to an object containing the reference to the and amount.
 
-        public UnityEvent<PickupEventInfo> onPickup;
-        public UnityEvent<DropEventInfo> onDrop;
-        public UnityEvent<ResizeEventInfo> onResize;
+        [SerializeField] UnityEvent<IInventory.PickupEventInfo> __onPickup;
+        public UnityEvent<IInventory.PickupEventInfo> onPickup { get => __onPickup; }
+        [SerializeField] UnityEvent<IInventory.DropEventInfo> __onDrop;
+        public UnityEvent<IInventory.DropEventInfo> onDrop { get => __onDrop; }
+        [SerializeField] UnityEvent<IInventory.ResizeEventInfo> __onResize;
+        public UnityEvent<IInventory.ResizeEventInfo> onResize { get => __onResize; }
 
         public int InvSizeX => inventorySlots.GetLength( 0 );
         public int InvSizeY => inventorySlots.GetLength( 1 );
@@ -139,14 +119,15 @@ namespace RPGGame.Items
             return true;
         }
 
-        public bool[,] GetBlockingSlotMask()
+        public bool[] GetBlockingSlotMask()
         {
-            bool[,] mask = new bool[InvSizeX, InvSizeY];
+            bool[] mask = new bool[InvSizeX * InvSizeY];
             for( int y = 0; y < InvSizeY; y++ )
             {
                 for( int x = 0; x < InvSizeX; x++ )
                 {
-                    mask[x, y] = ItemSlot.IsBlockingSlot( inventorySlots[x, y] );
+                    int index = GetSlotIndex( x, y, InvSizeX );
+                    mask[index] = ItemSlot.IsBlockingSlot( inventorySlots[x, y] );
                 }
             }
             return mask;
@@ -174,11 +155,11 @@ namespace RPGGame.Items
                     int amt = slot.Amount;
                     int orig = slot.OriginIndex;
 
-                    inventorySlots[x, y] = ItemSlot.Empty( MapIndexSlot( x, y ) );
+                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, InvSizeX ) );
 
                     if( playEvent )
                     {
-                        onDrop?.Invoke( new DropEventInfo()
+                        onDrop?.Invoke( new IInventory.DropEventInfo()
                         {
                             Self = this,
                             Item = item,
@@ -199,7 +180,7 @@ namespace RPGGame.Items
             {
                 for( int x = 0; x < InvSizeX; x++ )
                 {
-                    inventorySlots[x, y] = ItemSlot.Empty( MapIndexSlot( x, y ) );
+                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, InvSizeX ) );
                 }
             }
         }
@@ -219,7 +200,7 @@ namespace RPGGame.Items
 
             MakeEmptyWithNoBlocking();
 
-            onResize?.Invoke( new ResizeEventInfo()
+            onResize?.Invoke( new IInventory.ResizeEventInfo()
             {
                 Self = this
             } );
@@ -229,7 +210,7 @@ namespace RPGGame.Items
 
         private bool IsValidIndex( int slotIndex, int sizeX = 0, int sizeY = 0 )
         {
-            (int x, int y) = GetSlotCoords( slotIndex );
+            (int x, int y) = GetSlotCoords( slotIndex, InvSizeX );
 
             if( x < 0 || y < 0 || (x + sizeX) > InvSizeX || (y + sizeY) > InvSizeY )
             {
@@ -239,27 +220,17 @@ namespace RPGGame.Items
             return true;
         }
 
-        protected virtual ItemSlot GetSlot( int slotIndex )
+        private ItemSlot GetSlot( int slotIndex )
         {
             return inventorySlots[(slotIndex % InvSizeX), (slotIndex / InvSizeX)];
         }
 
-        protected virtual (int x, int y) GetSlotCoords( int slotIndex )
+        public static (int x, int y) GetSlotCoords( int slotIndex, int InvSizeX )
         {
             return (slotIndex % InvSizeX, slotIndex / InvSizeX);
         }
 
-        public static (int x, int y) MapSlotIndexCoord( int slotIndex, int InvSizeX )
-        {
-            return (slotIndex % InvSizeX, slotIndex / InvSizeX);
-        }
-
-        private int MapIndexSlot( int x, int y )
-        {
-            return (y * InvSizeX) + x;
-        }
-
-        public static int MapIndexSlot( int x, int y, int InvSizeX )
+        public static int GetSlotIndex( int x, int y, int InvSizeX )
         {
             return (y * InvSizeX) + x;
         }
@@ -324,7 +295,7 @@ namespace RPGGame.Items
                         continue;
                     }
 
-                    int? spaceLeft = CanPickUp( item, MapIndexSlot( x, y ) );
+                    int? spaceLeft = CanPickUp( item, GetSlotIndex( x, y, InvSizeX ) );
 
                     // If the item can't fit, mark as 0 and move on.
                     if( spaceLeft == null )
@@ -337,7 +308,7 @@ namespace RPGGame.Items
                     amountLeft -= amountToPut;
 
                     PickUp( ref amounts, amountToPut, x, y, x + sizeX, y + sizeY );
-                    orderedSlots.Add( (MapIndexSlot( x, y ), amountToPut) );
+                    orderedSlots.Add( (GetSlotIndex( x, y, InvSizeX ), amountToPut) );
 
                     if( amountLeft < 0 )
                     {
@@ -436,7 +407,7 @@ namespace RPGGame.Items
             int origin = clickedSlot.OriginIndex;
             ItemSlot originSlot = GetSlot( origin );
 
-            (int posX, int posY) = GetSlotCoords( index );
+            (int posX, int posY) = GetSlotCoords( index, InvSizeX );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {
@@ -557,17 +528,17 @@ namespace RPGGame.Items
             originSlot.OriginIndex = originIndex;
 
             // Copy to the other slots.
-            (int posX, int posY) = GetSlotCoords( slotIndex );
+            (int posX, int posY) = GetSlotCoords( slotIndex, InvSizeX );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {
                 for( int x = posX; x < posX + item.Size.x; x++ )
                 {
-                    inventorySlots[x, y] = originSlot.Copy( MapIndexSlot( x, y ) );
+                    inventorySlots[x, y] = originSlot.Copy( GetSlotIndex( x, y, InvSizeX ) );
                 }
             }
 
-            onPickup?.Invoke( new PickupEventInfo()
+            onPickup?.Invoke( new IInventory.PickupEventInfo()
             {
                 Self = this,
                 Item = item,
@@ -696,17 +667,17 @@ namespace RPGGame.Items
             Item item = clickedSlot.Item;
 
             // Copy to the other slots.
-            (int posX, int posY) = GetSlotCoords( index );
+            (int posX, int posY) = GetSlotCoords( index, InvSizeX );
 
             for( int y = posY; y < posY + item.Size.y; y++ )
             {
                 for( int x = posX; x < posX + item.Size.x; x++ )
                 {
-                    inventorySlots[x, y] = originSlot.Copy( MapIndexSlot( x, y ) );
+                    inventorySlots[x, y] = originSlot.Copy( GetSlotIndex( x, y, InvSizeX ) );
                 }
             }
 
-            onDrop?.Invoke( new DropEventInfo()
+            onDrop?.Invoke( new IInventory.DropEventInfo()
             {
                 Self = this,
                 Item = item,

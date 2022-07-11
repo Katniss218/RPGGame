@@ -13,11 +13,15 @@ namespace RPGGame.UI
         private Button btn;
         public PlayerInventoryUI InventoryUI;
 
-        public Inventory Inventory { get => InventoryUI.Inventory; }
+        public GridInventory Inventory { get => InventoryUI.Inventory; }
 
         public int Slot;
 
-#warning TODO - the inventory UI should provide a way of mapping slot indices to display positions.
+#warning TODO - Add generic class inventory UI, from which all inv UI subclasses derive. It should provide a method mapping slot indices to display positions (and item centers given size), and require subclasses to override.
+        // slot position for slot (center?)
+        // item position for slot (center, given size)
+        // item scale for slot.
+
 
         void Awake()
         {

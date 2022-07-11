@@ -23,7 +23,7 @@ namespace RPGGame.Globals
 
         public void OnDeathDropInventory( HealthHandler.DeathEventInfo e )
         {
-            Inventory inv = e.Self.GetComponent<Inventory>();
+            GridInventory inv = e.Self.GetComponent<GridInventory>();
 
             inv.Clear();
         }
@@ -36,7 +36,7 @@ namespace RPGGame.Globals
             e.Self.SetHealth( e.Self.MaxHealth * 0.5f );
         }
         
-        public void OnDropDestroyIfNone( Inventory.DropEventInfo e )
+        public void OnDropDestroyIfNone( IInventory.DropEventInfo e )
         {
             PickupInventory inv = e.Self as PickupInventory;
             if( inv == null )
@@ -50,7 +50,7 @@ namespace RPGGame.Globals
             }
         }
 
-        public void OnDropCreatePickup( Inventory.DropEventInfo e )
+        public void OnDropCreatePickup( IInventory.DropEventInfo e )
         {
             const float HEIGHT_OFFSET = 0.25f;
             const float JITTER_RANGE = 0.05f;

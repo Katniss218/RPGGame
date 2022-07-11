@@ -7,7 +7,7 @@ namespace RPGGame.Items
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
-    public class MobInventory : Inventory
+    public class MobInventory : GridInventory
     {
         public Item EquipHand;
 
@@ -18,7 +18,7 @@ namespace RPGGame.Items
             Item tempitem = EquipHand;
             EquipHand = null;
 
-            onDrop?.Invoke( new DropEventInfo()
+            onDrop?.Invoke( new IInventory.DropEventInfo()
             {
                 Amount = 1,
                 Item = tempitem,
@@ -32,7 +32,7 @@ namespace RPGGame.Items
 
             foreach( var item in dropsTemp )
             {
-                onDrop?.Invoke( new DropEventInfo()
+                onDrop?.Invoke( new IInventory.DropEventInfo()
                 {
                     Amount = 1,
                     Item = item,

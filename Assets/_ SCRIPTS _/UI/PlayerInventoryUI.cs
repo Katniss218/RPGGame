@@ -32,35 +32,45 @@ namespace RPGGame.UI
             base.Start();
         }
 
+        public Vector2 GetCenter( int slotIndex, Vector2Int itemSize )
+        {
+            // some mapping with other slots here.
+
+            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, Inventory.InvSizeX );
+
+            return new Vector2(
+                x * SLOT_SIZE + ((itemSize.x * SLOT_SIZE) * 0.5f),
+                y * -SLOT_SIZE + ((itemSize.y * -SLOT_SIZE) * 0.5f) );
+        }
+
         public void RedrawSlots()
         {
-            bool[,] slotMask = Inventory.GetBlockingSlotMask();
-            for( int y = 0; y < Inventory.InvSizeY; y++ )
+            bool[] slotMask = Inventory.GetBlockingSlotMask();
+
+            for( int i = 0; i < Inventory.InvSizeX * Inventory.InvSizeY; i++ )
             {
-                for( int x = 0; x < Inventory.InvSizeX; x++ )
+                if( !slotMask[i] )
                 {
-                    if( !slotMask[x, y] )
-                    {
-                        SpawnSlot( x, y );
-                    }
+                    SpawnSlot( i );
                 }
             }
         }
 
-        private void SpawnSlot( int posX, int posY )
+        private void SpawnSlot( int index )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_slot" ), slotContainer );
             RectTransform rt = (RectTransform)go.transform;
 
             InventorySlotUI slotUI = go.GetComponent<InventorySlotUI>();
             slotUI.InventoryUI = this;
-            slotUI.Slot = Items.Inventory.MapIndexSlot( posX, posY, Inventory.InvSizeX );
+            slotUI.Slot = index;
 
-            rt.anchoredPosition = new Vector2( posX * SLOT_SIZE, posY * -SLOT_SIZE );
+            (int x, int y) = GridInventory.GetSlotCoords( index, Inventory.InvSizeX );
+            rt.anchoredPosition = new Vector2( x * SLOT_SIZE, y * -SLOT_SIZE );
             rt.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
         }
 
-        private void SpawnItem( Inventory.PickupEventInfo e )
+        private void SpawnItem( IInventory.PickupEventInfo e )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_item" ), itemContainer );
             InventoryItemUI itemUI = go.GetComponent<InventoryItemUI>();
@@ -72,11 +82,8 @@ namespace RPGGame.UI
             itemUI.SetIcon( sprite );
 
             RectTransform rt = (RectTransform)go.transform;
-            // slot offset + center
-            float x = (Items.Inventory.MapSlotIndexCoord( e.SlotOrigin, Inventory.InvSizeX ).x * SLOT_SIZE) + ((e.Item.Size.x * SLOT_SIZE) * 0.5f);
-            float y = (Items.Inventory.MapSlotIndexCoord( e.SlotOrigin, Inventory.InvSizeX ).y * -SLOT_SIZE) + ((e.Item.Size.y * -SLOT_SIZE) * 0.5f);
 
-            rt.anchoredPosition = new Vector2( x, y );
+            rt.anchoredPosition = GetCenter( e.SlotOrigin, e.Item.Size );
 
             float texWorldSize = RenderedIconManager.GetTextureWorldSize( e.Item.ID );
             itemUI.SetIconSize( new Vector2( texWorldSize * SLOT_ITEM_SIZE, texWorldSize * SLOT_ITEM_SIZE ) );
@@ -84,7 +91,7 @@ namespace RPGGame.UI
             itemUIs.Add( e.SlotOrigin, itemUI );
         }
 
-        private void UpdateItem( Inventory.PickupEventInfo e )
+        private void UpdateItem( IInventory.PickupEventInfo e )
         {
             (_, int amount, _) = e.Self.GetItemSlot( e.SlotOrigin );
 
@@ -92,12 +99,7 @@ namespace RPGGame.UI
             itemUI.SetAmount( amount );
         }
 
-        public void OnResize( Inventory.ResizeEventInfo e )
-        {
-            RedrawSlots();
-        }
-
-        public void OnPickup( Inventory.PickupEventInfo e )
+        public void OnPickup( IInventory.PickupEventInfo e )
         {
             if( itemUIs.ContainsKey( e.SlotOrigin ) )
             {
@@ -109,11 +111,16 @@ namespace RPGGame.UI
             }
         }
 
-        public void OnDrop( Inventory.DropEventInfo e )
+        public void OnDrop( IInventory.DropEventInfo e )
         {
             Destroy( itemUIs[e.SlotOrigin].gameObject );
 
             itemUIs.Remove( e.SlotOrigin );
+        }
+
+        public void OnResize( IInventory.ResizeEventInfo e )
+        {
+            RedrawSlots();
         }
     }
 }

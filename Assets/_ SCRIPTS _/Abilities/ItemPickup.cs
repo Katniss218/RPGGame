@@ -7,7 +7,7 @@ using UnityEngine;
 namespace RPGGame.Abilities
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(Inventory))]
+    [RequireComponent(typeof(GridInventory))]
     public class ItemPickup : MonoBehaviour
     {
         public float PickupRange = 1.25f;
@@ -19,11 +19,11 @@ namespace RPGGame.Abilities
         float lastPickupTimestamp;
         float timeSinceLastPickup => Time.time - lastPickupTimestamp;
 
-        Inventory inventory;
+        GridInventory inventory;
 
         private void Awake()
         {
-            inventory = GetComponent<Inventory>();
+            inventory = GetComponent<GridInventory>();
         }
 
         void Update()

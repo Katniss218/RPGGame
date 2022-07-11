@@ -178,10 +178,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 085aefe51b3e99747933daa2af8bdd87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onPickup:
+  __onPickup:
     m_PersistentCalls:
       m_Calls: []
-  onDrop:
+  __onDrop:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11400000, guid: 9dee400a192360e438ef794cd5e85f74, type: 2}
@@ -196,7 +196,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onResize:
+  __onResize:
     m_PersistentCalls:
       m_Calls: []
   EquipHand: {fileID: 11400000, guid: a07fe23057fa9b3478bd1ca01420ed2a, type: 2}

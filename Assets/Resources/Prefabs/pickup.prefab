@@ -159,10 +159,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dce8e9966d83924385adcec7f58dd0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onPickup:
+  __onPickup:
     m_PersistentCalls:
       m_Calls: []
-  onDrop:
+  __onDrop:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11400000, guid: 9dee400a192360e438ef794cd5e85f74, type: 2}
@@ -177,6 +177,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onResize:
+  __onResize:
     m_PersistentCalls:
       m_Calls: []
+  createdTime: 0
