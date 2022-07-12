@@ -35,7 +35,7 @@ namespace RPGGame.UI
 
         public abstract Vector2 GetSlotPosition( int slotIndex );
 
-        public abstract Vector2 GetItemPosition( int slotIndex, Item item );
+        public abstract Vector2 GetItemPosition( RectTransform transform, int slotIndex, Item item );
 
         public abstract Vector2 GetItemSize( int slotIndex, Item item );
 
@@ -67,7 +67,7 @@ namespace RPGGame.UI
 
             RectTransform rt = (RectTransform)go.transform;
 
-            rt.anchoredPosition = GetItemPosition( e.SlotOrigin, e.Item );
+            rt.anchoredPosition = GetItemPosition( rt, e.SlotOrigin, e.Item );
             itemUI.SetIconSize( GetItemSize( e.SlotOrigin, e.Item ) );
 
             itemUIs.Add( e.SlotOrigin, itemUI );

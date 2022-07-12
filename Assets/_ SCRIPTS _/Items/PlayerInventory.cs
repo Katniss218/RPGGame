@@ -34,7 +34,7 @@ namespace RPGGame.Items
             inventorySlots[5, 11] = ItemSlot.BlockingSlot();
         }
 
-#warning TODO - finish adding equipment slots. Add a "reason" for the item being picked up and dropped off, to filter slots based on what's happening (do not auto-pick up to equipment slots, but player can manually put weapons there)
+#warning TODO - Add a "reason" for the item being picked up and dropped off, to filter slots based on what's happening (do not auto-pick up to equipment slots, but player can manually put weapons there)
         // reasons:
         // - GENERIC
         // - INVENTORY_REARRANGEMENT
@@ -47,7 +47,7 @@ namespace RPGGame.Items
             SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1), -1 );
         }
 
-        private int MapSlotIndexToEquipIndex( int slotIndex )
+        public int MapSlotIndexToEquipIndex( int slotIndex )
         {
             // -1 => 0
             // -2 => 1
@@ -110,30 +110,13 @@ namespace RPGGame.Items
 
         public override int TryRemove( int amount, int slotIndex )
         {
-#warning TODO - I don't like how this is duplicated here, and in the grid inventory (and basically in any other inventory that supports rearrangement).
-            // Moving this to a separate helper class would probably be the best idea.
-
             if( slotIndex < 0 )
             {
                 int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
 
                 Item item = Equip[equipIndex].Item;
                 int amountRemoved = Equip[equipIndex].Sub( amount );
-                /*
-                int amountToRemove = Mathf.Min( amount, Equip[equipIndex].Amount );
-
-                if( amountToRemove <= 0 )
-                {
-                    return 0;
-                }
-
-                Item item = Equip[equipIndex].Item;
-                Equip[equipIndex].Amount -= amountToRemove;
-                if( Equip[equipIndex].Amount == 0 )
-                {
-                    Equip[equipIndex].MakeEmpty();
-                }
-                */
+                
                 onDrop?.Invoke( new IInventory.DropEventInfo()
                 {
                     Self = this,
