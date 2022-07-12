@@ -37,7 +37,7 @@ namespace RPGGame.UI
         {
             // This one returns the position that'll make the pivot of 'to' be directly over pivot of 'from's.
 
-            Vector2 fromPivotDerivedOffset = new Vector2( from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin );
+            Vector2 fromPivotDerivedOffset = new Vector2( from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin ); // xmin = -30 ymin = -60 h/w = 60
             Vector2 screenP = RectTransformUtility.WorldToScreenPoint( null, from.position );
             screenP += fromPivotDerivedOffset;
 
