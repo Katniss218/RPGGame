@@ -18,7 +18,28 @@ namespace RPGGame.UI
 
         public override Vector2 GetSlotPosition( int slotIndex )
         {
+#warning TODO - add references to each slot position and do it based on this.
             if( slotIndex == -1 )
+            {
+                return new Vector2( 500, -500 );
+            }
+            if( slotIndex == -2 )
+            {
+                return new Vector2( 500, -500 );
+            }
+            if( slotIndex == -3 )
+            {
+                return new Vector2( 500, -500 );
+            }
+            if( slotIndex == -4 )
+            {
+                return new Vector2( 500, -500 );
+            }
+            if( slotIndex == -5 )
+            {
+                return new Vector2( 500, -500 );
+            }
+            if( slotIndex == -6 )
             {
                 return new Vector2( 500, -500 );
             }
@@ -34,6 +55,26 @@ namespace RPGGame.UI
         public override Vector2 GetItemPosition( int slotIndex, Item item )
         {
             if( slotIndex == -1 )
+            {
+                return new Vector2( 50, 215 );
+            }
+            if( slotIndex == -2 )
+            {
+                return new Vector2( 50, 215 );
+            }
+            if( slotIndex == -3 )
+            {
+                return new Vector2( 50, 215 );
+            }
+            if( slotIndex == -4 )
+            {
+                return new Vector2( 50, 215 );
+            }
+            if( slotIndex == -5 )
+            {
+                return new Vector2( 50, 215 );
+            }
+            if( slotIndex == -6 )
             {
                 return new Vector2( 50, 215 );
             }

@@ -23,7 +23,7 @@ namespace RPGGame.Globals
 
         public void OnDeathDropInventory( HealthHandler.DeathEventInfo e )
         {
-            GridInventory inv = e.Self.GetComponent<GridInventory>();
+            IInventory inv = e.Self.GetComponent<IInventory>();
 
             inv.Clear();
         }
@@ -38,7 +38,7 @@ namespace RPGGame.Globals
         
         public void OnDropDestroyIfNone( IInventory.DropEventInfo e )
         {
-            PickupInventory inv = e.Self as PickupInventory;
+            IInventory inv = e.Self;
             if( inv == null )
             {
                 throw new InvalidOperationException( $"Event Handler was attached to an invalid object'." );
@@ -66,7 +66,7 @@ namespace RPGGame.Globals
             meshRenderer.materials = e.Item.materials;
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
-            inventory.SetCapacityAndPickUp( e.Item, e.Amount );
+            inventory.SetCapacityAndPickUp( new ItemStack( e.Item, e.Amount ) );
 
             if( e.Self is PlayerInventory )
             {

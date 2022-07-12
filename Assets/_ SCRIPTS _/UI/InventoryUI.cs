@@ -75,10 +75,10 @@ namespace RPGGame.UI
 
         protected void UpdateItem( IInventory.PickupEventInfo e )
         {
-            (_, int amount, _) = e.Self.GetItemSlot( e.SlotOrigin );
+            (ItemStack itemStack, _) = e.Self.GetItemSlot( e.SlotOrigin );
 
             InventoryItemUI itemUI = itemUIs[e.SlotOrigin];
-            itemUI.SetAmount( amount );
+            itemUI.SetAmount( itemStack.Amount );
         }
 
         public virtual void OnPickup( IInventory.PickupEventInfo e )

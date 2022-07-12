@@ -24,43 +24,42 @@ namespace RPGGame.UI
 
         private void OnClick()
         {
-            (Item i, int amt, int orig) = Inventory.GetItemSlot( Slot );
+            (ItemStack itemStack, int orig) = Inventory.GetItemSlot( Slot );
 
-            if( i != null ) // pick up to hand
+            if( !itemStack.IsEmpty ) // pick up to hand
             {
-                if( ItemDragAndDrop.cursorItem.i != null ) // hand is not empty
+                if( !ItemDragAndDrop.cursorItem.IsEmpty ) // hand is not empty
                 {
                     return;
                 }
 
-                Texture2D tex = RenderedIconManager.GetTexture( i.ID );
+                Texture2D tex = RenderedIconManager.GetTexture( itemStack.Item.ID );
 
                 Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
                 ItemDragAndDrop.Instance.SetIcon( sprite );
-                ItemDragAndDrop.Instance.SetAmount( amt );
+                ItemDragAndDrop.Instance.SetAmount( itemStack.Amount );
 
-                float texWorldSize = RenderedIconManager.GetTextureWorldSize( i.ID );
+                float texWorldSize = RenderedIconManager.GetTextureWorldSize( itemStack.Item.ID );
                 ItemDragAndDrop.Instance.SetIconSize( new Vector2( texWorldSize * PlayerInventoryUI.SLOT_ITEM_SIZE, texWorldSize * PlayerInventoryUI.SLOT_ITEM_SIZE ) );
 
-
-                ItemDragAndDrop.cursorItem = (i, amt);
+                ItemDragAndDrop.cursorItem = itemStack.Copy();
 #warning TODO - This might lead to lost items if something drops from your inventory. The event callback creating pickups on player inv was removed because it was creating pickups when I dropped the items here.
-                Inventory.Drop( amt, orig );
+                Inventory.TryRemove( itemStack.Amount, orig );
             }
             else // drop from hand
             {
-                if( ItemDragAndDrop.cursorItem.i == null ) // hand is empty
+                if( ItemDragAndDrop.cursorItem.IsEmpty ) // hand is empty
                 {
                     return;
                 }
 
-                int? canFit = Inventory.CanPickUp( ItemDragAndDrop.cursorItem.i, orig );
+                int? canFit = Inventory.CanFit( ItemDragAndDrop.cursorItem, orig );
                 if( canFit == null )
                 {
                     return;
                 }
                 // TODO - can fit partially.
-                if( canFit < amt )
+                if( canFit < itemStack.Amount )
                 {
                     return;
                 }
@@ -68,8 +67,8 @@ namespace RPGGame.UI
                 ItemDragAndDrop.Instance.SetIcon( null );
                 ItemDragAndDrop.Instance.SetAmount( null );
 
-                Inventory.PickUp( ItemDragAndDrop.cursorItem.i, ItemDragAndDrop.cursorItem.amt, orig );
-                ItemDragAndDrop.cursorItem = (null, 0);
+                Inventory.SetItem( ItemDragAndDrop.cursorItem, orig );
+                ItemDragAndDrop.cursorItem.MakeEmpty();
             }
         }
     }

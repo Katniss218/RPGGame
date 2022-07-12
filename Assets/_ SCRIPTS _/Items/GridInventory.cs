@@ -14,7 +14,7 @@ namespace RPGGame.Items
         /// Represents a single cell in the inventory grid.
         /// </summary>
         [Serializable]
-        protected class ItemSlot
+        protected class ItemSlot : ItemStack
         {
             // The inventory is a grid comprised of ItemSlots.
             // An item can take up multiple slots (diablo/metin2 style).
@@ -30,22 +30,12 @@ namespace RPGGame.Items
 
             public static bool PointsTo( ItemSlot slot, ItemSlot originSlot ) => slot.OriginIndex == originSlot.Index;
 
-            public static ItemSlot Empty( int index )
+            public static new ItemSlot Empty( int index )
             {
                 return new ItemSlot( null, 0, index, index );
             }
 
             public static ItemSlot BlockingSlot() => null;
-
-            /// <summary>
-            /// The item contained in this slot.
-            /// </summary>
-            public Item Item;
-
-            /// <summary>
-            /// How many items are in this slot?
-            /// </summary>
-            public int Amount;
 
             /// <summary>
             /// Points at the top-left corner of each item.
@@ -57,21 +47,19 @@ namespace RPGGame.Items
             /// </summary>
             public int Index;
 
-            public int MaxAmount => Item.MaxStack;
-
-            public int SpaceLeft => Item.MaxStack - Amount;
-
-
             public bool IsOrigin => OriginIndex == Index;
-            public bool IsEmpty => Item == null;
-            public bool IsFull => Item != null && Amount >= Item.MaxStack;
 
-            public ItemSlot( Item item, int amount, int originIndex, int index )
+            public ItemSlot( Item item, int amount, int originIndex, int index ) : base( item, amount )
             {
-                this.Item = item;
-                this.Amount = amount;
                 this.OriginIndex = originIndex;
                 this.Index = index;
+            }
+
+            public override void MakeEmpty()
+            {
+                this.OriginIndex = this.Index;
+
+                base.MakeEmpty();
             }
 
             /// <summary>
@@ -101,6 +89,13 @@ namespace RPGGame.Items
         public int InvSizeY => inventorySlots.GetLength( 1 );
 
         // pos is top-left-based.
+
+        public void SetSize( int x, int y )
+        {
+            inventorySlots = new ItemSlot[x, y];
+
+            MakeEmptyWithNoBlocking();
+        }
 
         /// <summary>
         /// Checks whether or not the inventory doesn't contain any items.
@@ -138,35 +133,25 @@ namespace RPGGame.Items
         /// </summary>
         public virtual void Clear()
         {
-            for( int y = 0; y < InvSizeY; y++ )
+            foreach( var slot in inventorySlots )
             {
-                for( int x = 0; x < InvSizeX; x++ )
+                bool playEvent = slot.IsOrigin && !slot.IsEmpty;
+
+                Item item = slot.Item;
+                int amt = slot.Amount;
+                int orig = slot.OriginIndex;
+
+                slot.MakeEmpty();
+
+                if( playEvent )
                 {
-                    ItemSlot slot = inventorySlots[x, y];
-
-                    if( ItemSlot.IsBlockingSlot( slot ) )
+                    onDrop?.Invoke( new IInventory.DropEventInfo()
                     {
-                        continue;
-                    }
-
-                    bool playEvent = slot.IsOrigin && !slot.IsEmpty;
-
-                    Item item = slot.Item;
-                    int amt = slot.Amount;
-                    int orig = slot.OriginIndex;
-
-                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, InvSizeX ) );
-
-                    if( playEvent )
-                    {
-                        onDrop?.Invoke( new IInventory.DropEventInfo()
-                        {
-                            Self = this,
-                            Item = item,
-                            Amount = amt,
-                            SlotOrigin = orig
-                        } );
-                    }
+                        Self = this,
+                        Item = item,
+                        Amount = amt,
+                        SlotOrigin = orig
+                    } );
                 }
             }
         }
@@ -174,7 +159,7 @@ namespace RPGGame.Items
         /// <summary>
         /// Makes the inventory into a perfect grid of empty slots.
         /// </summary>
-        protected void MakeEmptyWithNoBlocking()
+        void MakeEmptyWithNoBlocking()
         {
             for( int y = 0; y < InvSizeY; y++ )
             {
@@ -183,29 +168,6 @@ namespace RPGGame.Items
                     inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, InvSizeX ) );
                 }
             }
-        }
-
-        public void SetCapacityAndPickUp( Item item, int amount )
-        {
-            if( item == null )
-            {
-                throw new ArgumentNullException( "Item can't be null" );
-            }
-            if( amount <= 0 )
-            {
-                throw new ArgumentException( "Amount can't be less than 1." );
-            }
-
-            inventorySlots = new ItemSlot[item.Size.x, item.Size.y];
-
-            MakeEmptyWithNoBlocking();
-
-            onResize?.Invoke( new IInventory.ResizeEventInfo()
-            {
-                Self = this
-            } );
-
-            PickUp( item, amount, 0 );
         }
 
         private bool IsValidIndex( int slotIndex, int sizeX = 0, int sizeY = 0 )
@@ -247,15 +209,15 @@ namespace RPGGame.Items
         /// Returns a sequence of slot and amount pairs that can be used at the time to fill the inventory with the specified items.
         /// A leftover value is provided, if the inventory can't fit all the items.
         /// </summary>
-        public virtual (List<(int index, int amt)>, int leftover) GetNeededSlots( Item item, int amount )
+        public virtual (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
         {
-            if( item == null )
+            if( itemStack == null )
             {
-                throw new ArgumentNullException( "Item can't be null" );
+                throw new ArgumentNullException( "ItemStack can't be null." );
             }
-            if( amount <= 0 )
+            if( itemStack.IsEmpty )
             {
-                throw new ArgumentException( "Amount can't be less than 1." );
+                throw new ArgumentException( "ItemStack can't be empty." );
             }
 
             // Returns a string of (position, amount) tuples, into which we can then sequentially put the items we want, along with how many items can fit there.
@@ -269,15 +231,15 @@ namespace RPGGame.Items
 
             // a new data structure, holding the amount that will be put there in each grid. for non-origin slots, slots that can't have the item put into them, and slots that are already used up by the process.
 
-            int amountLeft = amount;
+            int amountLeft = itemStack.Amount;
 
             List<(int index, int amt)> orderedSlots = new List<(int index, int amt)>();
 
             int invSizeX = InvSizeX;
             int invSizeY = InvSizeY;
 
-            int sizeX = item.Size.x;
-            int sizeY = item.Size.y;
+            int sizeX = itemStack.Item.Size.x;
+            int sizeY = itemStack.Item.Size.y;
 
             int[,] amounts = new int[invSizeX, invSizeY];
 
@@ -303,7 +265,7 @@ namespace RPGGame.Items
                         continue;
                     }
 
-                    int? spaceLeft = CanPickUp( item, GetSlotIndex( x, y, InvSizeX ) );
+                    int? spaceLeft = CanFit( itemStack, GetSlotIndex( x, y, InvSizeX ) );
 
                     // If the item can't fit, mark as 0 and move on.
                     if( spaceLeft == null )
@@ -333,40 +295,32 @@ namespace RPGGame.Items
             return (orderedSlots, amountLeft);
         }
 
-        public virtual (Item i, int amt, int orig) GetItemSlot( int slotIndex )
+        public virtual (ItemStack, int orig) GetItemSlot( int slotIndex )
         {
             ItemSlot slot = GetSlot( slotIndex );
-            if( !slot.IsOrigin )
+            if( ItemSlot.IsBlockingSlot( slot ) )
             {
-                slot = GetSlot( slot.OriginIndex );
-                slotIndex = slot.OriginIndex;
+                throw new InvalidOperationException( "Can't get an item from a blocking slot" );
             }
 
-            if( slot.IsEmpty )
-            {
-                return (null, 0, slotIndex);
-            }
-
-            return (slot.Item, slot.Amount, slotIndex);
+            return (GetSlot( slot.OriginIndex ), slot.OriginIndex);
         }
 
         /// <summary>
         /// Returns the complete list of items in the inventory.
         /// </summary>
-        public virtual List<(Item i, int amt, int orig)> GetItemSlots()
+        public virtual List<(ItemStack, int orig)> GetItemSlots()
         {
-            List<(Item i, int amt, int orig)> items = new List<(Item i, int amt, int orig)>();
+            List<(ItemStack, int orig)> items = new List<(ItemStack, int orig)>();
 
             foreach( var slot in inventorySlots ) // this won't loop over blocking slots cuz they're null, yey!
             {
-                if( slot.IsEmpty )
+                if( slot.IsEmpty || !slot.IsOrigin )
                 {
                     continue;
                 }
-                if( slot.IsOrigin )
-                {
-                    items.Add( (slot.Item, slot.Amount, slot.Index) );
-                }
+
+                items.Add( (slot, slot.Index) );
             }
 
             return items;
@@ -394,70 +348,45 @@ namespace RPGGame.Items
         //      PICK UP (ADD)
         //
 
-        public virtual int? CanPickUp( Item item, int slotIndex )
+        public virtual int? CanFit( ItemStack itemStack, int slotIndex )
         {
-            // returns how many items would fit into that slot.
-            // returns null for slots that are incompatible or full.
-            // returns the maxstack if the slot is empty
+            if( itemStack == null || itemStack.IsEmpty )
+            {
+                throw new ArgumentNullException( "ItemStack can't be null or empty." );
+            }
 
-            if( !IsValidIndex( slotIndex, item.Size.x, item.Size.y ) )
+            if( !IsValidIndex( slotIndex, itemStack.Item.Size.x, itemStack.Item.Size.y ) )
             {
                 return null;
             }
 
-            ItemSlot clickedSlot = GetSlot( slotIndex );
-
-            if( ItemSlot.IsBlockingSlot( clickedSlot ) )
-            {
-                return null;
-            }
-
-            int origin = clickedSlot.OriginIndex;
-            ItemSlot originSlot = GetSlot( origin );
+            // We must be placing the item over its own origin, or into a grid of all empties.
 
             (int posX, int posY) = GetSlotCoords( slotIndex, InvSizeX );
 
-            for( int y = posY; y < posY + item.Size.y; y++ )
+            for( int y = posY; y < posY + itemStack.Item.Size.y; y++ )
             {
-                for( int x = posX; x < posX + item.Size.x; x++ )
+                for( int x = posX; x < posX + itemStack.Item.Size.x; x++ )
                 {
-                    ItemSlot slot = inventorySlots[x, y]; // The first slot will get compared to itself, no big deal, it's always the same, and if a (1,1) sized item comes in, it never goes across boundaries.
+                    ItemSlot slot = inventorySlots[x, y];
 
-                    if( ItemSlot.IsBlockingSlot( slot ) )
+                    // Blocking slot or different item.
+                    if( ItemSlot.IsBlockingSlot( slot ) || (!slot.IsEmpty && !slot.Item.CanStackWith( itemStack.Item )) )
                     {
                         return null;
                     }
 
-                    // If the slot is empty, it's obviously available. We don't need to check it.
-                    if( slot.IsEmpty )
-                    {
-                        continue;
-                    }
-
-                    // If any of the slots are full, we are either trying to place across item boundaries or into a full slot.
-                    if( slot.IsFull )
-                    {
-                        return null;
-                    }
-
-                    // if any full slot doesn't point to the same item as the first slot, we are trying to place across boundaries.
-                    if( !ItemSlot.PointsTo( slot, originSlot ) )
+                    // The item is the same, but we're not placing it over the origin.
+                    if( !slot.IsEmpty && slot.OriginIndex != slotIndex )
                     {
                         return null;
                     }
                 }
             }
 
-            // We know the slot is not full.
-            if( originSlot.IsEmpty )
-            {
-                return item.MaxStack;
-            }
-            if( originSlot.Item.ID == item.ID )
-            {
-                return originSlot.SpaceLeft;
-            }
-            return null;
+            ItemSlot clickedSlot = GetSlot( slotIndex );
+
+            return clickedSlot.AmountToAdd( itemStack, false );
         }
 
         /// <summary>
@@ -466,22 +395,18 @@ namespace RPGGame.Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int PickUp( Item item, int amount )
+        public virtual int TryAdd( ItemStack itemStack )
         {
-            if( item == null )
+            if( itemStack == null || itemStack.IsEmpty )
             {
-                throw new ArgumentNullException( "Item can't be null" );
-            }
-            if( amount <= 0 )
-            {
-                throw new ArgumentException( "Amount can't be less than 1." );
+                throw new ArgumentNullException( "ItemStack can't be null or empty." );
             }
 
-            (List<(int index, int amt)>, int leftover) seq = GetNeededSlots( item, amount );
+            (List<(int index, int amt)>, int leftover) seq = GetNeededSlots( itemStack );
 
             foreach( var slotInfo in seq.Item1 )
             {
-                PickUp( item, slotInfo.amt, slotInfo.index );
+                SetItem( itemStack, slotInfo.index );
             }
 
             return seq.leftover;
@@ -494,53 +419,43 @@ namespace RPGGame.Items
         /// <param name="amount"></param>
         /// <param name="pos">The slot to pick the item up to (doesn't need to be origin)</param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int PickUp( Item item, int amount, int slotIndex )
+        public virtual int SetItem( ItemStack itemStack, int slotIndex )
         {
-            if( item == null )
+            if( itemStack == null || itemStack.IsEmpty )
             {
-                throw new ArgumentNullException( "Item can't be null" );
-            }
-            if( amount <= 0 )
-            {
-                throw new ArgumentException( "Amount can't be less than 1." );
+                throw new ArgumentNullException( "ItemStack can't be null or empty." );
             }
 
-            // forces every slot in the rect to hold the item.
-            // amount is added to the amount already present.
+            if( !IsValidIndex( slotIndex, itemStack.Item.Size.x, itemStack.Item.Size.y ) )
+            {
+                throw new ArgumentNullException( $"Slot index '{slotIndex}' is invalid." );
+            }
 
-            // if called with values out of bounds, it will throw. Make sure to call 'CanPickUp' first.
+            if( CanFit(itemStack, slotIndex) == null )
+            {
+                throw new ArgumentNullException( $"Placing an item in the slot '{slotIndex}' would replace another item." );
+            }
+
+#warning todo - fix undefined. This should set an item now. If the item can't be set (because it would result in an invalid state of the inventory), throw an exception.
+
             // if the box is across item boundaries it will cover up parts of the items, possibly the origin, rendering it broken.
-
 
             int originIndex = GetSlot( slotIndex ).OriginIndex;
             ItemSlot originSlot = GetSlot( originIndex );
 
-            if( !originSlot.IsEmpty && originSlot.Item.ID != item.ID )
+            if( !originSlot.CanStackWith( itemStack ) )
             {
-                throw new InvalidOperationException( $"Different item already present: {originSlot.Item.ID} => {item.ID}" );
+                throw new InvalidOperationException( $"ItemStack {originSlot} can't stack with {itemStack}." );
             }
 
-            int amountToAdd;
-            if( originSlot.IsEmpty )
-            {
-                originSlot.Item = item;
-                amountToAdd = Mathf.Min( item.MaxStack, amount );
-            }
-            else
-            {
-                amountToAdd = Mathf.Min( originSlot.SpaceLeft, amount );
-            }
-
-            // Set the amount.
-            originSlot.Amount += amountToAdd;
-            originSlot.OriginIndex = originIndex;
+            int amountAdded = originSlot.Add( itemStack, false );
 
             // Copy to the other slots.
             (int posX, int posY) = GetSlotCoords( slotIndex, InvSizeX );
 
-            for( int y = posY; y < posY + item.Size.y; y++ )
+            for( int y = posY; y < posY + itemStack.Item.Size.y; y++ )
             {
-                for( int x = posX; x < posX + item.Size.x; x++ )
+                for( int x = posX; x < posX + itemStack.Item.Size.x; x++ )
                 {
                     inventorySlots[x, y] = originSlot.Copy( GetSlotIndex( x, y, InvSizeX ) );
                 }
@@ -549,12 +464,12 @@ namespace RPGGame.Items
             onPickup?.Invoke( new IInventory.PickupEventInfo()
             {
                 Self = this,
-                Item = item,
-                Amount = amountToAdd,
+                Item = itemStack.Item,
+                Amount = amountAdded,
                 SlotOrigin = originIndex
             } );
 
-            return amountToAdd;
+            return amountAdded;
         }
 
         //
@@ -566,7 +481,7 @@ namespace RPGGame.Items
         /// </summary>
         /// <param name="pos">(doesn't need to be origin)</param>
         /// <returns></returns>
-        public virtual int? CanDrop( int slotIndex )
+        public virtual int? CanRemove( int slotIndex )
         {
             // false if you click outside the area, or on a blocking slot.
 
@@ -596,31 +511,21 @@ namespace RPGGame.Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int Drop( Item item, int amount )
+        public virtual int TryRemove( ItemStack itemStack )
         {
-            if( item == null )
+            if( itemStack == null || itemStack.IsEmpty )
             {
-                throw new ArgumentNullException( "Item can't be null" );
-            }
-            if( amount <= 0 )
-            {
-                throw new ArgumentException( "Amount can't be less than 1." );
+                throw new ArgumentNullException( "ItemStack can't be null or empty." );
             }
 
-            int amountLeft = amount;
-            List<(Item i, int amt, int orig)> items = GetItemSlots();
+            int amountLeft = itemStack.Amount;
+            List<(ItemStack, int orig)> items = GetItemSlots();
 
-            foreach( var itemStack in items )
+            foreach( var (existingItemStack, orig) in items )
             {
-                int amountToDrop = Mathf.Min( amountLeft, itemStack.amt );
-                Drop( amountToDrop, itemStack.orig );
+                int amountDropped = TryRemove( amountLeft, orig );
 
-                amountLeft -= amountToDrop;
-
-                if( amountLeft < 0 )
-                {
-                    throw new Exception( "AmountLeft was negative, wtf!" );
-                }
+                amountLeft -= amountDropped;
 
                 if( amountLeft == 0 )
                 {
@@ -637,9 +542,9 @@ namespace RPGGame.Items
         /// <param name="amount">How many items to drop. Null for the entire stack.</param>
         /// <param name="pos">The slot you want to drop from (doesn't need to be origin).</param>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int Drop( int? amount, int slotIndex )
+        public virtual int TryRemove( int amount, int slotIndex )
         {
-            if( amount != null && amount <= 0 )
+            if( amount <= 0 )
             {
                 throw new ArgumentException( "Amount can't be less than 1." );
             }
@@ -660,19 +565,9 @@ namespace RPGGame.Items
             int origin = clickedSlot.OriginIndex;
             ItemSlot originSlot = GetSlot( origin );
 
-            if( amount == null )
-            {
-                amount = originSlot.Amount;
-            }
-            int amountToRemove = Mathf.Min( amount.Value, originSlot.Amount );
+            Item item = originSlot.Item;
 
-            originSlot.Amount -= amountToRemove;
-            if( originSlot.Amount == 0 )
-            {
-                originSlot = ItemSlot.Empty( origin );
-            }
-
-            Item item = clickedSlot.Item;
+            int amountRemoved = originSlot.Sub( amount );
 
             // Copy to the other slots.
             (int posX, int posY) = GetSlotCoords( slotIndex, InvSizeX );
@@ -689,11 +584,11 @@ namespace RPGGame.Items
             {
                 Self = this,
                 Item = item,
-                Amount = amountToRemove,
+                Amount = amountRemoved,
                 SlotOrigin = origin
             } );
 
-            return amountToRemove;
+            return amountRemoved;
         }
 
         //
@@ -722,6 +617,5 @@ namespace RPGGame.Items
 
             return sb.ToString();
         }
-
     }
 }

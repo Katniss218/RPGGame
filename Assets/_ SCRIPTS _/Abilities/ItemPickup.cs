@@ -62,17 +62,17 @@ namespace RPGGame.Abilities
                     continue;
                 }
 
-                List<(Item i, int amt, int orig)> items = pickupInv.GetItemSlots();
+                List<(ItemStack, int orig)> items = pickupInv.GetItemSlots();
 
-                foreach( var itemStack in items )
+                foreach( var (itemStack, orig) in items )
                 {
-                    int leftover = inventory.PickUp( itemStack.i, itemStack.amt );
+                    int leftover = inventory.TryAdd( itemStack );
 
-                    int amtPickedUp = itemStack.amt - leftover;
+                    int amtPickedUp = itemStack.Amount - leftover;
 
                     if( amtPickedUp > 0 )
                     {
-                        pickupInv.Drop( itemStack.i, amtPickedUp );
+                        pickupInv.TryRemove( new ItemStack( itemStack.Item, amtPickedUp ) );
                         AudioManager.PlaySound( AssetManager.GetAudioClip( "Sounds/pickup" ), this.transform.position, 0.4f );
 
                         // Only count if we actually picked something up because \/

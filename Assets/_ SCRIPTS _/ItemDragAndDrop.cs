@@ -9,7 +9,7 @@ namespace RPGGame
     [DisallowMultipleComponent]
     public class ItemDragAndDrop : MonoBehaviour
     {
-        public static (Item i, int amt) cursorItem = (null, 0);
+        public static ItemStack cursorItem = ItemStack.Empty;
 
         static InventoryItemUI __instance = null;
         public static InventoryItemUI Instance

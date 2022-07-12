@@ -9,17 +9,23 @@ namespace RPGGame.Items
     /// </remarks>
     public sealed class PlayerInventory : GridInventory
     {
-        public (Item i, int amt) EquipHand;
-        public (Item i, int amt) EquipOffhand;
+        private ItemStack[] Equip = new ItemStack[6];
 
-        public (Item i, int amt) EquipHead;
-        public (Item i, int amt) EquipBody;
-        public (Item i, int amt) EquipLegs;
+        public ItemStack EquipHand => Equip[0];
+        public ItemStack EquipOffhand => Equip[1];
+
+        public ItemStack EquipHead => Equip[2];
+        public ItemStack EquipBody => Equip[3];
+        public ItemStack EquipLegs => Equip[4];
+        public ItemStack EquipFeet => Equip[5];
 
         void Awake()
         {
-            inventorySlots = new ItemSlot[6, 12];
-            MakeEmptyWithNoBlocking();
+            SetSize( 6, 12 );
+            for( int i = 0; i < Equip.Length; i++ )
+            {
+                Equip[i] = ItemStack.Empty;
+            }
 
             inventorySlots[0, 0] = ItemSlot.BlockingSlot();
             inventorySlots[5, 0] = ItemSlot.BlockingSlot();
@@ -38,95 +44,108 @@ namespace RPGGame.Items
 
         void Start()
         {
-            PickUp( AssetManager.GetItem( "item.axe" ), 1, -1 );
+            SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1), -1 );
         }
 
-        public override (Item i, int amt, int orig) GetItemSlot( int slotIndex )
+        private int MapSlotIndexToEquipIndex( int slotIndex )
         {
-            if( slotIndex == -1 )
+            // -1 => 0
+            // -2 => 1
+            // -3 => 2
+            // etc.
+            return -slotIndex - 1;
+        }
+
+        public override (ItemStack, int orig) GetItemSlot( int slotIndex )
+        {
+            if( slotIndex < 0 )
             {
-                return (EquipHand.i, EquipHand.amt, -1);
+                int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
+
+                return (Equip[equipIndex], slotIndex);
             }
 
             return base.GetItemSlot( slotIndex );
         }
 
-        public override int? CanPickUp( Item item, int slotIndex )
+        public override int? CanFit( ItemStack itemStack, int slotIndex )
         {
-            if( slotIndex == -1 )
+            if( slotIndex < 0 )
             {
-                // We know the slot is not full.
-                if( EquipHand.i == null )
+                int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
+
+                if( Equip[equipIndex].CanStackWith( itemStack ) )
                 {
-                    return item.MaxStack;
+                    return Equip[equipIndex].AmountToAdd( itemStack, false );
                 }
-                if( EquipHand.i.ID == item.ID )
-                {
-                    return EquipHand.i.MaxStack - EquipHand.amt;
-                }
+                return null;
             }
 
-            return base.CanPickUp( item, slotIndex );
+            return base.CanFit( itemStack, slotIndex );
         }
 
-        public override int PickUp( Item item, int amount, int slotIndex )
+        public override int SetItem( ItemStack itemStack, int slotIndex )
         {
-            if( slotIndex == -1 )
+            if( slotIndex < 0 )
             {
-                EquipHand = (item, amount);
+                int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
+
+                Equip[equipIndex].Add( itemStack, false );
+
+                Equip[equipIndex] = itemStack.Copy();
 
                 onPickup?.Invoke( new IInventory.PickupEventInfo()
                 {
-                    Amount = 1,
-                    Item = item,
                     Self = this,
-                    SlotOrigin = -1
+                    Item = itemStack.Item,
+                    Amount = itemStack.Amount,
+                    SlotOrigin = slotIndex
                 } );
 
-                return amount;
+                return itemStack.Amount;
             }
 
-            return base.PickUp( item, amount, slotIndex );
+            return base.SetItem( itemStack, slotIndex );
         }
 
-        public override int Drop( int? amount, int slotIndex )
+        public override int TryRemove( int amount, int slotIndex )
         {
 #warning TODO - I don't like how this is duplicated here, and in the grid inventory (and basically in any other inventory that supports rearrangement).
             // Moving this to a separate helper class would probably be the best idea.
 
-            if( slotIndex == -1 )
+            if( slotIndex < 0 )
             {
-                if( amount == null )
-                {
-                    amount = EquipHand.amt;
-                }
+                int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
 
-                int amountToRemove = Mathf.Min( amount.Value, EquipHand.amt );
+                Item item = Equip[equipIndex].Item;
+                int amountRemoved = Equip[equipIndex].Sub( amount );
+                /*
+                int amountToRemove = Mathf.Min( amount, Equip[equipIndex].Amount );
 
                 if( amountToRemove <= 0 )
                 {
                     return 0;
                 }
 
-                Item item = EquipHand.i;
-                EquipHand.amt -= amountToRemove;
-                if( EquipHand.amt == 0 )
+                Item item = Equip[equipIndex].Item;
+                Equip[equipIndex].Amount -= amountToRemove;
+                if( Equip[equipIndex].Amount == 0 )
                 {
-                    EquipHand = (null, 0);
+                    Equip[equipIndex].MakeEmpty();
                 }
-
+                */
                 onDrop?.Invoke( new IInventory.DropEventInfo()
                 {
-                    Amount = 1,
-                    Item = item,
                     Self = this,
-                    SlotOrigin = -1
+                    Item = item,
+                    Amount = amountRemoved,
+                    SlotOrigin = slotIndex
                 } );
 
-                return amountToRemove;
+                return amountRemoved;
             }
 
-            return base.Drop( amount, slotIndex );
+            return base.TryRemove( amount, slotIndex );
         }
     }
 }

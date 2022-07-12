@@ -43,7 +43,7 @@ namespace RPGGame.Player
             // if weapon, target the closest to the cursor (or player, if cursor fails), but within range of the weapon.
             // if not weapon, target nothing.
 
-            WeaponItem weaponHand = inventory.EquipHand.i as WeaponItem;
+            WeaponItem weaponHand = inventory.EquipHand.Item as WeaponItem;
             if( weaponHand == null )
             {
                 return null;
@@ -86,7 +86,7 @@ namespace RPGGame.Player
 
         private void UseEquipHand()
         {
-            UsableItem usableHand = inventory.EquipHand.i as UsableItem;
+            UsableItem usableHand = inventory.EquipHand.Item as UsableItem;
             if( usableHand == null )
             {
                 return;
