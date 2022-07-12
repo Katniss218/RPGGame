@@ -431,22 +431,13 @@ namespace RPGGame.Items
                 throw new ArgumentNullException( $"Slot index '{slotIndex}' is invalid." );
             }
 
-            if( CanFit(itemStack, slotIndex) == null )
+            if( CanFit( itemStack, slotIndex ) == null )
             {
                 throw new ArgumentNullException( $"Placing an item in the slot '{slotIndex}' would replace another item." );
             }
 
-#warning todo - fix undefined. This should set an item now. If the item can't be set (because it would result in an invalid state of the inventory), throw an exception.
-
-            // if the box is across item boundaries it will cover up parts of the items, possibly the origin, rendering it broken.
-
             int originIndex = GetSlot( slotIndex ).OriginIndex;
             ItemSlot originSlot = GetSlot( originIndex );
-
-            if( !originSlot.CanStackWith( itemStack ) )
-            {
-                throw new InvalidOperationException( $"ItemStack {originSlot} can't stack with {itemStack}." );
-            }
 
             int amountAdded = originSlot.Add( itemStack, false );
 
@@ -508,8 +499,6 @@ namespace RPGGame.Items
         /// <summary>
         /// Drops a specified amount of specified items.
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="amount"></param>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
         public virtual int TryRemove( ItemStack itemStack )
         {
@@ -549,14 +538,13 @@ namespace RPGGame.Items
                 throw new ArgumentException( "Amount can't be less than 1." );
             }
 
-            // if the slot is empty, or blocking, it has undefined behaviour.
-
             ItemSlot clickedSlot = GetSlot( slotIndex );
 
             if( ItemSlot.IsBlockingSlot( clickedSlot ) )
             {
                 throw new InvalidOperationException( "Tried dropping from a blocking slot" );
             }
+
             if( clickedSlot.IsEmpty )
             {
                 throw new InvalidOperationException( "Tried dropping from an empty slot" );
