@@ -13,7 +13,8 @@ namespace RPGGame.UI
         [SerializeField] protected RectTransform slotContainer;
         [SerializeField] protected RectTransform itemContainer;
 
-        Dictionary<int, InventoryItemUI> itemUIs = new Dictionary<int, InventoryItemUI>();
+        protected Dictionary<int, InventorySlotUI> slotUIs = new Dictionary<int, InventorySlotUI>();
+        protected Dictionary<int, InventoryItemUI> itemUIs = new Dictionary<int, InventoryItemUI>();
 
         public const float SLOT_SIZE = 40.0f;
         public const float SLOT_ITEM_SIZE = 50.0f;
@@ -28,18 +29,18 @@ namespace RPGGame.UI
 
         protected override void Start()
         {
-            RedrawSlots();
+            DrawInventory();
 
             base.Start();
         }
 
-        public abstract Vector2 GetSlotPosition( int slotIndex );
+        public abstract void SetSlotUIPositionAndScale( RectTransform transform, int slotIndex );
 
-        public abstract Vector2 GetItemPosition( RectTransform transform, int slotIndex, Item item );
+        public abstract void SetItemUIPosition( RectTransform transform, int slotIndex, Item item );
 
         public abstract Vector2 GetItemSize( int slotIndex, Item item );
 
-        public abstract void RedrawSlots();
+        public abstract void DrawInventory();
 
         protected void SpawnSlot( int index )
         {
@@ -50,46 +51,56 @@ namespace RPGGame.UI
             slotUI.Inventory = this.Inventory;
             slotUI.Slot = index;
 
-            rt.anchoredPosition = GetSlotPosition( index );
-            rt.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
+            SetSlotUIPositionAndScale( rt, index );
+
+            slotUIs.Add( index, slotUI );
         }
 
-        protected void SpawnItem( IInventory.PickupEventInfo e )
+        protected void SpawnItem( Item item, int amount, int slotIndex )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_item" ), itemContainer );
             InventoryItemUI itemUI = go.GetComponent<InventoryItemUI>();
-            itemUI.SetAmount( e.Amount );
+            itemUI.SetAmount( amount );
 
-            Texture2D tex = RenderedIconManager.GetTexture( e.Item.ID );
+            Texture2D tex = RenderedIconManager.GetTexture( item.ID );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
 
             itemUI.SetIcon( sprite );
 
             RectTransform rt = (RectTransform)go.transform;
 
-            rt.anchoredPosition = GetItemPosition( rt, e.SlotOrigin, e.Item );
-            itemUI.SetIconSize( GetItemSize( e.SlotOrigin, e.Item ) );
+            SetItemUIPosition( rt, slotIndex, item );
+            itemUI.SetIconSize( GetItemSize( slotIndex, item ) );
 
-            itemUIs.Add( e.SlotOrigin, itemUI );
+            itemUIs.Add( slotIndex, itemUI );
         }
 
-        protected void UpdateItem( IInventory.PickupEventInfo e )
+        protected void UpdateItem( Item item, int amount, int slotIndex )
         {
-            (ItemStack itemStack, _) = e.Self.GetItemSlot( e.SlotOrigin );
+            InventoryItemUI itemUI = itemUIs[slotIndex];
 
-            InventoryItemUI itemUI = itemUIs[e.SlotOrigin];
-            itemUI.SetAmount( itemStack.Amount );
+            Texture2D tex = RenderedIconManager.GetTexture( item.ID );
+            Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
+
+            itemUI.SetIcon( sprite );
+
+            itemUI.SetAmount( amount );
         }
 
         public virtual void OnPickup( IInventory.PickupEventInfo e )
         {
+            if( slotUIs.Count == 0 )
+            {
+                return;
+            }
             if( itemUIs.ContainsKey( e.SlotOrigin ) )
             {
-                UpdateItem( e );
+                (ItemStack item, int orig) = e.Self.GetItemSlot( e.SlotOrigin );
+                UpdateItem( e.Item, item.Amount, e.SlotOrigin );
             }
             else
             {
-                SpawnItem( e );
+                SpawnItem( e.Item, e.Amount, e.SlotOrigin );
             }
         }
 
@@ -102,7 +113,7 @@ namespace RPGGame.UI
 
         public virtual void OnResize( IInventory.ResizeEventInfo e )
         {
-            RedrawSlots();
+            DrawInventory();
         }
     }
 }

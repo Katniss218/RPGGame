@@ -44,7 +44,7 @@ namespace RPGGame.Items
 
         void Start()
         {
-            SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1), -1 );
+            SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1 ), -1 );
         }
 
         public int MapSlotIndexToEquipIndex( int slotIndex )
@@ -54,6 +54,44 @@ namespace RPGGame.Items
             // -3 => 2
             // etc.
             return -slotIndex - 1;
+        }
+        
+        public int MapEquipIndexToSlotIndex( int equipIndex )
+        {
+            // -1 => 0
+            // -2 => 1
+            // -3 => 2
+            // etc.
+            return -(equipIndex + 1);
+        }
+
+        public override List<int> GetAllValidIndices()
+        {
+            List<int> equip = new List<int>() { -6, -5, -4, -3, -2, -1 };
+            equip.AddRange( base.GetAllValidIndices() );
+
+            return equip;
+        }
+
+        /// <summary>
+        /// Returns the complete list of items in the inventory.
+        /// </summary>
+        public override List<(ItemStack, int orig)> GetItemSlots()
+        {
+            List<(ItemStack, int orig)> items = new List<(ItemStack, int orig)>();
+
+            for( int i = 0; i < Equip.Length; i++ )
+            {
+                if( Equip[i].IsEmpty )
+                {
+                    continue;
+                }
+
+                items.Add( (Equip[i], MapEquipIndexToSlotIndex(i)) );
+            }
+            items.AddRange( base.GetItemSlots() );
+
+            return items;
         }
 
         public override (ItemStack, int orig) GetItemSlot( int slotIndex )
@@ -116,7 +154,7 @@ namespace RPGGame.Items
 
                 Item item = Equip[equipIndex].Item;
                 int amountRemoved = Equip[equipIndex].Sub( amount );
-                
+
                 onDrop?.Invoke( new IInventory.DropEventInfo()
                 {
                     Self = this,

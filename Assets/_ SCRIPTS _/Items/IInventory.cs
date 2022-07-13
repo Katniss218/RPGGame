@@ -38,6 +38,10 @@ namespace RPGGame.Items
 
         void Clear();
 
+        bool IsValidIndex( int slotIndex, Item item );
+
+        List<int> GetAllValidIndices();
+
         (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack );
         (ItemStack, int orig) GetItemSlot( int slotIndex );
         List<(ItemStack, int orig)> GetItemSlots();

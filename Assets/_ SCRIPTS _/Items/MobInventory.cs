@@ -55,6 +55,15 @@ namespace RPGGame.Items
             }
         }
 
+        public bool IsValidIndex( int slotIndex, Item item )
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public List<int> GetAllValidIndices()
+        {
+            throw new System.NotImplementedException();
+        }
         public (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
         {
             throw new System.NotImplementedException();

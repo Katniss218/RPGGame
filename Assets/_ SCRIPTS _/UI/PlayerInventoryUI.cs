@@ -7,8 +7,15 @@ namespace RPGGame.UI
     [DisallowMultipleComponent]
     public class PlayerInventoryUI : InventoryUI<PlayerInventory>
     {
-        [SerializeField] private RectTransform[] slotUIs;
-        [SerializeField] private Transform equipSlotContainer;
+        private Vector2[] equipSlotPositions = new Vector2[]
+        {
+            new Vector2( 20, 240 ),  // mainhand
+            new Vector2( 160, 240 ), // offhand
+            new Vector2( 90, 300 ), // head
+            new Vector2( 90, 240 ), // chest
+            new Vector2( 90, 180 ), // legs
+            new Vector2( 90, 120 )  // feet
+        };
 
         protected override void Awake()
         {
@@ -17,66 +24,37 @@ namespace RPGGame.UI
             base.Awake();
         }
 
-        public static Vector2 SwitchToRectTransformCentered( RectTransform from, RectTransform to )
-        {
-            // null cameras because this assumed canvas with 'screen space - overlay'.
-
-            // I'd need to spawn the object you want to move, and then use this.
-            // It'll get you the position that'll make the center of 'to' directly over the center of 'from'.
-            Vector2 fromPivotDerivedOffset = new Vector2( from.rect.width * 0.5f + from.rect.xMin, from.rect.height * 0.5f + from.rect.yMin ); // (0, -30) // this applies offset to move it to the middle.
-            Vector2 screenP = RectTransformUtility.WorldToScreenPoint( null, from.position ); // (1720.00, 837.00)
-            screenP += fromPivotDerivedOffset; // (1720.00, 807.00)
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle( to, screenP, null, out Vector2 localPoint ); // (50.00, -90.00)
-            Vector2 pivotDerivedOffset = new Vector2( to.rect.width * 0.5f + to.rect.xMin, to.rect.height * 0.5f + to.rect.yMin ); // (0, 0)
-
-            return to.anchoredPosition + localPoint - pivotDerivedOffset; // (0, 0) + (50, 90) + (0, 0)
-        }
-
-        public static Vector2 SwitchToRectTransform( RectTransform from, RectTransform to )
-        {
-            // This one returns the position that'll make the pivot of 'to' be directly over pivot of 'from's.
-
-            Vector2 fromPivotDerivedOffset = new Vector2( from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin ); // xmin = -30 ymin = -60 h/w = 60
-            Vector2 screenP = RectTransformUtility.WorldToScreenPoint( null, from.position );
-            screenP += fromPivotDerivedOffset;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle( to, screenP, null, out Vector2 localPoint );
-            Vector2 pivotDerivedOffset = new Vector2( to.rect.width * to.pivot.x + to.rect.xMin, to.rect.height * to.pivot.y + to.rect.yMin );
-
-            return to.anchoredPosition + localPoint - pivotDerivedOffset;
-        }
-
-        public override Vector2 GetSlotPosition( int slotIndex )
+        public override void SetSlotUIPositionAndScale( RectTransform transform, int slotIndex )
         {
             if( slotIndex < 0 )
             {
-                throw new System.Exception( "EquipSlots are meant to be spawned manually." );
+                int equipIndex = Inventory.MapSlotIndexToEquipIndex( slotIndex );
+                transform.anchoredPosition = equipSlotPositions[equipIndex];
+                transform.sizeDelta = new Vector2( 60, 60 );
+                return;
             }
-#warning TODO - add references to each slot position and do it based on this.
-            
-            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, Inventory.InvSizeX );
 
-            return new Vector2(
+            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, Inventory.SizeX );
+
+            transform.anchoredPosition = new Vector2(
                 x * SLOT_SIZE,
                 y * -SLOT_SIZE );
+            transform.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
         }
 
         const float VERTICAL_OFFSET = -300f;
 
-        public override Vector2 GetItemPosition( RectTransform transform, int slotIndex, Item item )
+        public override void SetItemUIPosition( RectTransform transform, int slotIndex, Item item )
         {
-            // 'transform' is needed to get the pivot and other things.
             if( slotIndex < 0 )
             {
-                int equipIndex = Inventory.MapSlotIndexToEquipIndex( slotIndex );
-
-                return SwitchToRectTransform( slotUIs[equipIndex], transform );
+                transform.MoveOver( (RectTransform)slotUIs[slotIndex].transform );
+                return;
             }
 
-            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, Inventory.InvSizeX );
+            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, Inventory.SizeX );
 
-            return new Vector2(
+            transform.anchoredPosition = new Vector2(
                 x * SLOT_SIZE + ((item.Size.x * SLOT_SIZE) * 0.5f),
                 y * -SLOT_SIZE + ((item.Size.y * -SLOT_SIZE) * 0.5f) + VERTICAL_OFFSET );
         }
@@ -92,21 +70,26 @@ namespace RPGGame.UI
                texWorldSize * SLOT_ITEM_SIZE );
         }
 
-        public override void RedrawSlots()
+        public override void DrawInventory()
         {
-            InventorySlotUI[] comp = equipSlotContainer.GetComponentsInChildren<InventorySlotUI>();
-            foreach( var s in comp )
+            List<int> slotIndices = Inventory.GetAllValidIndices();
+
+            foreach( int index in slotIndices )
             {
-                s.Inventory = this.Inventory;
+                SpawnSlot( index );
             }
 
-            bool[] slotMask = Inventory.GetBlockingSlotMask();
+            List<(ItemStack, int orig)> items = Inventory.GetItemSlots();
 
-            for( int i = 0; i < Inventory.InvSizeX * Inventory.InvSizeY; i++ )
+            foreach( var (item, orig) in items)
             {
-                if( !slotMask[i] )
+                if( itemUIs.ContainsKey( orig ) )
                 {
-                    SpawnSlot( i );
+                    UpdateItem( item.Item, item.Amount, orig );
+                }
+                else
+                {
+                    SpawnItem( item.Item, item.Amount, orig );
                 }
             }
         }

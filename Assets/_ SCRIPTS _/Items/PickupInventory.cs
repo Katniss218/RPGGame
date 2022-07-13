@@ -49,11 +49,11 @@ namespace RPGGame.Items
         /// </summary>
         void MakeEmptyWithNoBlocking()
         {
-            for( int y = 0; y < InvSizeY; y++ )
+            for( int y = 0; y < SizeY; y++ )
             {
-                for( int x = 0; x < InvSizeX; x++ )
+                for( int x = 0; x < SizeX; x++ )
                 {
-                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, InvSizeX ) );
+                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, SizeX ) );
                 }
             }
         }
