@@ -27,11 +27,11 @@ namespace RPGGame.Items
                 Equip[i] = ItemStack.Empty;
             }
 
-            inventorySlots[0, 0] = ItemSlot.BlockingSlot();
-            inventorySlots[5, 0] = ItemSlot.BlockingSlot();
+            inventorySlots[0, 0].MakeBlockingSlot();
+            inventorySlots[5, 0].MakeBlockingSlot();
 
-            inventorySlots[0, 11] = ItemSlot.BlockingSlot();
-            inventorySlots[5, 11] = ItemSlot.BlockingSlot();
+            inventorySlots[0, 11].MakeBlockingSlot();
+            inventorySlots[5, 11].MakeBlockingSlot();
         }
 
 #warning TODO - Add a "reason" for the item being picked up and dropped off, to filter slots based on what's happening (do not auto-pick up to equipment slots, but player can manually put weapons there)

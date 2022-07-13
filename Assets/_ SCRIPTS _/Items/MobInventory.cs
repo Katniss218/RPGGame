@@ -25,7 +25,7 @@ namespace RPGGame.Items
         {
             throw new System.NotImplementedException();
         }
-
+        /*
         public void Clear()
         {
             Item tempitem = EquipHand;
@@ -56,6 +56,7 @@ namespace RPGGame.Items
                 } );
             }
         }
+        */
 
         public bool IsValidIndex( int slotIndex, Item item )
         {
@@ -64,7 +65,16 @@ namespace RPGGame.Items
 
         public List<int> GetAllSlots()
         {
-            throw new System.NotImplementedException();
+            List<int> indices = new List<int>();
+            if( EquipHand != null )
+            {
+                indices.Add( -1 );
+            }
+            for( int i = 0; i < Drops.Length; i++ )
+            {
+                indices.Add( i );
+            }
+            return indices;
         }
         public (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
         {
@@ -73,12 +83,25 @@ namespace RPGGame.Items
 
         public (ItemStack, int orig) GetItemSlot( int slotIndex )
         {
-            throw new System.NotImplementedException();
+            if( slotIndex == -1 )
+            {
+                return (new ItemStack( EquipHand, 1 ), -1);
+            }
+            return (new ItemStack( Drops[slotIndex], 1 ), slotIndex);
         }
 
         public List<(ItemStack, int orig)> GetItemSlots()
         {
-            throw new System.NotImplementedException();
+            List<(ItemStack, int orig)> items = new List<(ItemStack, int orig)>();
+            if( EquipHand != null )
+            {
+                items.Add( (new ItemStack(EquipHand, 1), -1) );
+            }
+            for( int i = 0; i < Drops.Length; i++ )
+            {
+                items.Add( (new ItemStack( Drops[i], 1 ), i) );
+            }
+            return items;
         }
 
         public int? CanFit( ItemStack itemStack, int slotIndex )

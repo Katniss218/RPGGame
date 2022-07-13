@@ -26,16 +26,18 @@ namespace RPGGame.Items
 
             // Other derived classes can provide their own systems.
 
-            public static bool IsBlockingSlot( ItemSlot slot ) => slot == null;
-
-            public static bool PointsTo( ItemSlot slot, ItemSlot originSlot ) => slot.OriginIndex == originSlot.Index;
-
             public static new ItemSlot Empty( int index )
             {
                 return new ItemSlot( null, 0, index, index );
             }
 
-            public static ItemSlot BlockingSlot() => null;
+            public void MakeBlockingSlot()
+            {
+                this.MakeEmpty();
+                this.IsBlockingSlot = true;
+            }
+
+            public bool IsBlockingSlot = false;
 
             /// <summary>
             /// Points at the top-left corner of each item.
@@ -90,90 +92,6 @@ namespace RPGGame.Items
 
         // pos is top-left-based.
 
-        public void SetSize( int sizeX, int sizeY )
-        {
-            inventorySlots = new ItemSlot[sizeX, sizeY];
-
-            for( int y = 0; y < SizeY; y++ )
-            {
-                for( int x = 0; x < SizeX; x++ )
-                {
-                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, SizeX ) );
-                }
-            }
-        }
-
-        /// <summary>
-        /// Checks whether or not the inventory doesn't contain any items.
-        /// </summary>
-        /// <returns>True if no items are in the inventory, otherwise false.</returns>
-        public virtual bool IsEmpty()
-        {
-            foreach( var slot in inventorySlots )
-            {
-                if( ItemSlot.IsBlockingSlot( slot ) )
-                {
-                    continue;
-                }
-
-                if( !slot.IsEmpty )
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Removes all items from the inventory.
-        /// </summary>
-        public virtual void Clear()
-        {
-            foreach( var slot in inventorySlots )
-            {
-                bool playEvent = slot.IsOrigin && !slot.IsEmpty;
-
-                Item item = slot.Item;
-                int amt = slot.Amount;
-                int orig = slot.OriginIndex;
-
-                slot.MakeEmpty();
-
-                if( playEvent )
-                {
-                    onDrop?.Invoke( new IInventory.DropEventInfo()
-                    {
-                        Self = this,
-                        Item = item,
-                        Amount = amt,
-                        SlotOrigin = orig
-                    } );
-                }
-            }
-        }
-
-        public virtual bool IsValidIndex( int slotIndex, Item item )
-        {
-            return IsValidIndex( slotIndex, item.Size.x, item.Size.y );
-        }
-
-        public virtual List<int> GetAllSlots()
-        {
-            List<int> indexArray = new List<int>();
-
-            foreach( var slot in this.inventorySlots )
-            {
-                if( ItemSlot.IsBlockingSlot(slot) )
-                {
-                    continue;
-                }
-                indexArray.Add( slot.Index );
-            }
-
-            return indexArray;
-        }
-
         private bool IsValidIndex( int slotIndex, int sizeX = 0, int sizeY = 0 )
         {
             (int x, int y) = GetSlotCoords( slotIndex, SizeX );
@@ -207,6 +125,44 @@ namespace RPGGame.Items
                 throw new Exception( "Slot position can't be less than 0 or more than or equal to size" );
             }
             return (y * InvSizeX) + x;
+        }
+        
+        //
+        //
+        //
+
+        public void SetSize( int sizeX, int sizeY )
+        {
+            inventorySlots = new ItemSlot[sizeX, sizeY];
+
+            for( int y = 0; y < SizeY; y++ )
+            {
+                for( int x = 0; x < SizeX; x++ )
+                {
+                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, SizeX ) );
+                }
+            }
+        }
+
+        public virtual bool IsValidIndex( int slotIndex, Item item )
+        {
+            return IsValidIndex( slotIndex, item.Size.x, item.Size.y );
+        }
+
+        public virtual List<int> GetAllSlots()
+        {
+            List<int> indexArray = new List<int>();
+
+            foreach( var slot in this.inventorySlots )
+            {
+                if( slot.IsBlockingSlot )
+                {
+                    continue;
+                }
+                indexArray.Add( slot.Index );
+            }
+
+            return indexArray;
         }
 
         /// <summary>
@@ -302,7 +258,7 @@ namespace RPGGame.Items
         public virtual (ItemStack, int orig) GetItemSlot( int slotIndex )
         {
             ItemSlot slot = GetSlot( slotIndex );
-            if( ItemSlot.IsBlockingSlot( slot ) )
+            if( slot.IsBlockingSlot )
             {
                 throw new InvalidOperationException( "Can't get an item from a blocking slot" );
             }
@@ -319,11 +275,7 @@ namespace RPGGame.Items
 
             foreach( var slot in inventorySlots )
             {
-                if( ItemSlot.IsBlockingSlot( slot ) )
-                {
-                    continue;
-                }
-                if( slot.IsEmpty || !slot.IsOrigin )
+                if( slot.IsBlockingSlot || slot.IsEmpty || !slot.IsOrigin )
                 {
                     continue;
                 }
@@ -379,7 +331,7 @@ namespace RPGGame.Items
                     ItemSlot slot = inventorySlots[x, y];
 
                     // Blocking slot or different item.
-                    if( ItemSlot.IsBlockingSlot( slot ) || (!slot.IsEmpty && !slot.Item.CanStackWith( itemStack.Item )) )
+                    if( slot.IsBlockingSlot || (!slot.IsEmpty && !slot.Item.CanStackWith( itemStack.Item )) )
                     {
                         return null;
                     }
@@ -469,12 +421,7 @@ namespace RPGGame.Items
 
             ItemSlot slot = GetSlot( slotIndex );
 
-            if( ItemSlot.IsBlockingSlot( slot ) )
-            {
-                return null;
-            }
-
-            if( slot.IsEmpty )
+            if( slot.IsBlockingSlot || slot.IsEmpty )
             {
                 return null;
             }
@@ -497,7 +444,7 @@ namespace RPGGame.Items
 
             ItemSlot clickedSlot = GetSlot( slotIndex );
 
-            if( ItemSlot.IsBlockingSlot( clickedSlot ) )
+            if( clickedSlot.IsBlockingSlot )
             {
                 throw new InvalidOperationException( "Tried dropping from a blocking slot" );
             }
@@ -551,7 +498,7 @@ namespace RPGGame.Items
                 for( int x = 0; x < SizeX; x++ )
                 {
                     ItemSlot slot = inventorySlots[x, y];
-                    if( ItemSlot.IsBlockingSlot( slot ) )
+                    if( slot.IsBlockingSlot )
                     {
                         sb.Append( "#" );
                         continue;

@@ -42,10 +42,6 @@ namespace RPGGame.Items
         UnityEvent<DropEventInfo> onDrop { get; }
         UnityEvent<ResizeEventInfo> onResize { get; }
 
-        bool IsEmpty();
-
-        void Clear();
-
         bool IsValidIndex( int slotIndex, Item item );
 
         /// <summary>
