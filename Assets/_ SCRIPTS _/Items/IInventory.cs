@@ -53,10 +53,10 @@ namespace RPGGame.Items
         (ItemStack, int orig) GetItemSlot( int slotIndex );
         List<(ItemStack, int orig)> GetItemSlots();
 
-        int? CanFit( ItemStack itemStack, int slotIndex );
+        int? CanSetItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
         int SetItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
 
-        int? CanRemove( int slotIndex );
+        int? CanRemoveItem( int slotIndex, Reason reason = Reason.GENERIC );
         int RemoveItem( int amount, int slotIndex, Reason reason = Reason.GENERIC );
 
         public GameObject gameObject { get; }

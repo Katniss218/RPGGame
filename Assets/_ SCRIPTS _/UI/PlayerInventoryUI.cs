@@ -48,7 +48,7 @@ namespace RPGGame.UI
         {
             if( slotIndex < 0 )
             {
-                transform.MoveOver( (RectTransform)slotUIs[slotIndex].transform );
+                transform.MoveOverCentered( (RectTransform)slotUIs[slotIndex].transform );
                 return;
             }
 

@@ -21,43 +21,6 @@ namespace RPGGame.Items
         [SerializeField] UnityEvent<IInventory.ResizeEventInfo> __onResize;
         public UnityEvent<IInventory.ResizeEventInfo> onResize { get => __onResize; }
 
-        public bool IsEmpty()
-        {
-            throw new System.NotImplementedException();
-        }
-        /*
-        public void Clear()
-        {
-            Item tempitem = EquipHand;
-            EquipHand = null;
-
-            onDrop?.Invoke( new IInventory.DropEventInfo()
-            {
-                Amount = 1,
-                Reason = IInventory.Reason.GENERIC,
-                Item = tempitem,
-                SlotOrigin = 0,
-                Self = this
-            } );
-
-            Item[] dropsTemp = Drops;
-
-            Drops = null;
-
-            foreach( var item in dropsTemp )
-            {
-                onDrop?.Invoke( new IInventory.DropEventInfo()
-                {
-                    Amount = 1,
-                    Reason = IInventory.Reason.GENERIC,
-                    Item = item,
-                    SlotOrigin = 0,
-                    Self = this
-                } );
-            }
-        }
-        */
-
         public bool IsValidIndex( int slotIndex, Item item )
         {
             throw new System.NotImplementedException();
@@ -76,6 +39,7 @@ namespace RPGGame.Items
             }
             return indices;
         }
+
         public (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
         {
             throw new System.NotImplementedException();
@@ -104,7 +68,7 @@ namespace RPGGame.Items
             return items;
         }
 
-        public int? CanFit( ItemStack itemStack, int slotIndex )
+        public int? CanSetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
@@ -114,7 +78,7 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
-        public int? CanRemove( int slotIndex )
+        public int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }

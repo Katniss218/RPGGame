@@ -52,7 +52,7 @@ namespace RPGGame.UI
                     return;
                 }
 
-                int? canFit = Inventory.CanFit( ItemDragAndDrop.cursorItem, orig );
+                int? canFit = Inventory.CanSetItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
                 if( canFit == null )
                 {
                     return;

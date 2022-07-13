@@ -171,13 +171,9 @@ namespace RPGGame.Items
         /// </summary>
         public virtual (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
         {
-            if( itemStack == null )
+            if( itemStack == null || itemStack.IsEmpty )
             {
-                throw new ArgumentNullException( "ItemStack can't be null." );
-            }
-            if( itemStack.IsEmpty )
-            {
-                throw new ArgumentException( "ItemStack can't be empty." );
+                throw new ArgumentNullException( "ItemStack can't be null or empty." );
             }
 
             // Returns a string of (position, amount) tuples, into which we can then sequentially put the items we want, along with how many items can fit there.
@@ -195,20 +191,17 @@ namespace RPGGame.Items
 
             List<(int index, int amt)> orderedSlots = new List<(int index, int amt)>();
 
-            int invSizeX = SizeX;
-            int invSizeY = SizeY;
-
             int sizeX = itemStack.Item.Size.x;
             int sizeY = itemStack.Item.Size.y;
 
-            int[,] amounts = new int[invSizeX, invSizeY];
+            int[,] amounts = new int[SizeX, SizeY];
 
-            int lastRowPlusOne = invSizeY - sizeY + 1;
-            int lastColumnPlusOne = invSizeX - sizeX + 1;
+            int lastRowPlusOne = SizeY - sizeY + 1;
+            int lastColumnPlusOne = SizeX - sizeX + 1;
 
-            for( int y = 0; y < invSizeY; y++ )
+            for( int y = 0; y < SizeY; y++ )
             {
-                for( int x = 0; x < invSizeX; x++ )
+                for( int x = 0; x < SizeX; x++ )
                 {
                     amounts[x, y] = -1;
                 }
@@ -225,7 +218,7 @@ namespace RPGGame.Items
                         continue;
                     }
 
-                    int? spaceLeft = CanFit( itemStack, GetSlotIndex( x, y, SizeX ) );
+                    int? spaceLeft = CanSetItem( itemStack, GetSlotIndex( x, y, SizeX ) );
 
                     // If the item can't fit, mark as 0 and move on.
                     if( spaceLeft == null )
@@ -237,7 +230,7 @@ namespace RPGGame.Items
                     int amountToPut = Mathf.Min( amountLeft, spaceLeft.Value );
                     amountLeft -= amountToPut;
 
-                    PickUp( ref amounts, amountToPut, x, y, x + sizeX, y + sizeY );
+                    GetNeededSlots_PickUp( ref amounts, amountToPut, x, y, x + sizeX, y + sizeY );
                     orderedSlots.Add( (GetSlotIndex( x, y, SizeX ), amountToPut) );
 
                     if( amountLeft < 0 )
@@ -253,6 +246,24 @@ namespace RPGGame.Items
             }
 
             return (orderedSlots, amountLeft);
+        }
+
+        private void GetNeededSlots_PickUp( ref int[,] amounts, int amt, int minX, int minY, int maxX, int maxY )
+        {
+            // fill the origin with amt, fill the rest with 0s.
+            for( int y = minY; y < maxY; y++ )
+            {
+                for( int x = minX; x < maxX; x++ )
+                {
+                    if( x == minX && y == minY )
+                    {
+                        amounts[x, y] = amt;
+                        continue;
+                    }
+
+                    amounts[x, y] = 0;
+                }
+            }
         }
 
         public virtual (ItemStack, int orig) GetItemSlot( int slotIndex )
@@ -286,29 +297,11 @@ namespace RPGGame.Items
             return items;
         }
 
-        private void PickUp( ref int[,] amounts, int amt, int minX, int minY, int maxX, int maxY )
-        {
-            // fill the origin with amt, fill the rest with 0s.
-            for( int y = minY; y < maxY; y++ )
-            {
-                for( int x = minX; x < maxX; x++ )
-                {
-                    if( x == minX && y == minY )
-                    {
-                        amounts[x, y] = amt;
-                        continue;
-                    }
-
-                    amounts[x, y] = 0;
-                }
-            }
-        }
-
         //
         //      PICK UP (ADD)
         //
 
-        public virtual int? CanFit( ItemStack itemStack, int slotIndex )
+        public virtual int? CanSetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -368,7 +361,7 @@ namespace RPGGame.Items
                 throw new ArgumentNullException( $"Slot index '{slotIndex}' is invalid." );
             }
 
-            if( CanFit( itemStack, slotIndex ) == null )
+            if( CanSetItem( itemStack, slotIndex ) == null )
             {
                 throw new ArgumentNullException( $"Placing an item in the slot '{slotIndex}' would replace another item." );
             }
@@ -410,7 +403,7 @@ namespace RPGGame.Items
         /// </summary>
         /// <param name="pos">(doesn't need to be origin)</param>
         /// <returns></returns>
-        public virtual int? CanRemove( int slotIndex )
+        public virtual int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             // false if you click outside the area, or on a blocking slot.
 

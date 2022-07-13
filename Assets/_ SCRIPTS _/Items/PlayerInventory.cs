@@ -44,7 +44,7 @@ namespace RPGGame.Items
 
         void Start()
         {
-            SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1 ), -1 );
+            SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
         }
 
         public int MapSlotIndexToEquipIndex( int slotIndex )
@@ -58,10 +58,6 @@ namespace RPGGame.Items
 
         public int MapEquipIndexToSlotIndex( int equipIndex )
         {
-            // -1 => 0
-            // -2 => 1
-            // -3 => 2
-            // etc.
             return -(equipIndex + 1);
         }
 
@@ -106,10 +102,16 @@ namespace RPGGame.Items
             return base.GetItemSlot( slotIndex );
         }
 
-        public override int? CanFit( ItemStack itemStack, int slotIndex )
+        public override int? CanSetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( slotIndex < 0 )
             {
+                // Accessing the equipment slot is only possible by dragging an item there.
+
+                if( reason != IInventory.Reason.INVENTORY_REARRANGEMENT )
+                {
+                    return null;
+                }
                 int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
 
                 if( Equip[equipIndex].CanStackWith( itemStack ) )
@@ -119,7 +121,7 @@ namespace RPGGame.Items
                 return null;
             }
 
-            return base.CanFit( itemStack, slotIndex );
+            return base.CanSetItem( itemStack, slotIndex );
         }
 
         public override int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
@@ -145,6 +147,29 @@ namespace RPGGame.Items
             }
 
             return base.SetItem( itemStack, slotIndex, reason );
+        }
+
+        public override int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        {
+            if( slotIndex < 0 )
+            {
+                // Accessing the equipment slot is only possible by dragging an item there.
+                if( reason != IInventory.Reason.INVENTORY_REARRANGEMENT )
+                {
+                    return null;
+                }
+
+                int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
+
+                if( Equip[equipIndex].IsEmpty )
+                {
+                    return null;
+                }
+
+                return Equip[equipIndex].Amount;
+            }
+
+            return base.CanRemoveItem( slotIndex, reason );
         }
 
         public override int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
