@@ -34,6 +34,7 @@ namespace RPGGame.Items
             onDrop?.Invoke( new IInventory.DropEventInfo()
             {
                 Amount = 1,
+                Reason = IInventory.Reason.GENERIC,
                 Item = tempitem,
                 SlotOrigin = 0,
                 Self = this
@@ -48,6 +49,7 @@ namespace RPGGame.Items
                 onDrop?.Invoke( new IInventory.DropEventInfo()
                 {
                     Amount = 1,
+                    Reason = IInventory.Reason.GENERIC,
                     Item = item,
                     SlotOrigin = 0,
                     Self = this
@@ -84,12 +86,12 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
-        public int TryAdd( ItemStack itemStack )
+        public int TryAdd( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
 
-        public int SetItem( ItemStack itemStack, int slotIndex )
+        public int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
@@ -99,12 +101,12 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
-        public int TryRemove( ItemStack itemStack )
+        public int TryRemove( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
 
-        public int TryRemove( int amount, int slotIndex )
+        public int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }

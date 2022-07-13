@@ -125,20 +125,6 @@ namespace RPGGame.Items
             return true;
         }
 
-        public bool[] GetBlockingSlotMask()
-        {
-            bool[] mask = new bool[SizeX * SizeY];
-            for( int y = 0; y < SizeY; y++ )
-            {
-                for( int x = 0; x < SizeX; x++ )
-                {
-                    int index = GetSlotIndex( x, y, SizeX );
-                    mask[index] = ItemSlot.IsBlockingSlot( inventorySlots[x, y] );
-                }
-            }
-            return mask;
-        }
-
         /// <summary>
         /// Removes all items from the inventory.
         /// </summary>
@@ -417,7 +403,7 @@ namespace RPGGame.Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int TryAdd( ItemStack itemStack )
+        public virtual int TryAdd( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -428,7 +414,7 @@ namespace RPGGame.Items
 
             foreach( var slotInfo in seq.Item1 )
             {
-                SetItem( itemStack, slotInfo.index );
+                SetItem( itemStack, slotInfo.index, reason );
             }
 
             return seq.leftover;
@@ -441,7 +427,7 @@ namespace RPGGame.Items
         /// <param name="amount"></param>
         /// <param name="pos">The slot to pick the item up to (doesn't need to be origin)</param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int SetItem( ItemStack itemStack, int slotIndex )
+        public virtual int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -477,6 +463,7 @@ namespace RPGGame.Items
             onPickup?.Invoke( new IInventory.PickupEventInfo()
             {
                 Self = this,
+                Reason = reason,
                 Item = itemStack.Item,
                 Amount = amountAdded,
                 SlotOrigin = originIndex
@@ -522,7 +509,7 @@ namespace RPGGame.Items
         /// Drops a specified amount of specified items.
         /// </summary>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int TryRemove( ItemStack itemStack )
+        public virtual int TryRemove( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -534,7 +521,7 @@ namespace RPGGame.Items
 
             foreach( var (existingItemStack, orig) in items )
             {
-                int amountDropped = TryRemove( amountLeft, orig );
+                int amountDropped = RemoveItem( amountLeft, orig, reason );
 
                 amountLeft -= amountDropped;
 
@@ -553,7 +540,7 @@ namespace RPGGame.Items
         /// <param name="amount">How many items to drop. Null for the entire stack.</param>
         /// <param name="pos">The slot you want to drop from (doesn't need to be origin).</param>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int TryRemove( int amount, int slotIndex )
+        public virtual int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( amount <= 0 )
             {
@@ -593,6 +580,7 @@ namespace RPGGame.Items
             onDrop?.Invoke( new IInventory.DropEventInfo()
             {
                 Self = this,
+                Reason = reason,
                 Item = item,
                 Amount = amountRemoved,
                 SlotOrigin = origin

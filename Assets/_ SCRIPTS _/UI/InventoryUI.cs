@@ -27,11 +27,9 @@ namespace RPGGame.UI
             base.Awake();
         }
 
-        protected override void Start()
+        void OnEnable()
         {
-            DrawInventory();
-
-            base.Start();
+            RedrawInventory();
         }
 
         public abstract void SetSlotUIPositionAndScale( RectTransform transform, int slotIndex );
@@ -40,7 +38,7 @@ namespace RPGGame.UI
 
         public abstract Vector2 GetItemSize( int slotIndex, Item item );
 
-        public abstract void DrawInventory();
+        public abstract void RedrawInventory();
 
         protected void SpawnSlot( int index )
         {
@@ -95,7 +93,7 @@ namespace RPGGame.UI
             }
             if( itemUIs.ContainsKey( e.SlotOrigin ) )
             {
-                (ItemStack item, int orig) = e.Self.GetItemSlot( e.SlotOrigin );
+                (ItemStack item, _) = e.Self.GetItemSlot( e.SlotOrigin );
                 UpdateItem( e.Item, item.Amount, e.SlotOrigin );
             }
             else
@@ -113,7 +111,7 @@ namespace RPGGame.UI
 
         public virtual void OnResize( IInventory.ResizeEventInfo e )
         {
-            DrawInventory();
+            RedrawInventory();
         }
     }
 }

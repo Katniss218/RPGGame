@@ -70,8 +70,19 @@ namespace RPGGame.UI
                texWorldSize * SLOT_ITEM_SIZE );
         }
 
-        public override void DrawInventory()
+        public override void RedrawInventory()
         {
+            foreach( var slot in slotUIs.Values )
+            {
+                Destroy( slot.gameObject );
+            }
+            foreach( var item in itemUIs.Values )
+            {
+                Destroy( item.gameObject );
+            }
+            slotUIs.Clear();
+            itemUIs.Clear();
+
             List<int> slotIndices = Inventory.GetAllValidIndices();
 
             foreach( int index in slotIndices )

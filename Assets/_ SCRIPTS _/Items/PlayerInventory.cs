@@ -55,7 +55,7 @@ namespace RPGGame.Items
             // etc.
             return -slotIndex - 1;
         }
-        
+
         public int MapEquipIndexToSlotIndex( int equipIndex )
         {
             // -1 => 0
@@ -87,7 +87,7 @@ namespace RPGGame.Items
                     continue;
                 }
 
-                items.Add( (Equip[i], MapEquipIndexToSlotIndex(i)) );
+                items.Add( (Equip[i], MapEquipIndexToSlotIndex( i )) );
             }
             items.AddRange( base.GetItemSlots() );
 
@@ -122,7 +122,7 @@ namespace RPGGame.Items
             return base.CanFit( itemStack, slotIndex );
         }
 
-        public override int SetItem( ItemStack itemStack, int slotIndex )
+        public override int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( slotIndex < 0 )
             {
@@ -135,6 +135,7 @@ namespace RPGGame.Items
                 onPickup?.Invoke( new IInventory.PickupEventInfo()
                 {
                     Self = this,
+                    Reason = reason,
                     Item = itemStack.Item,
                     Amount = itemStack.Amount,
                     SlotOrigin = slotIndex
@@ -143,10 +144,10 @@ namespace RPGGame.Items
                 return itemStack.Amount;
             }
 
-            return base.SetItem( itemStack, slotIndex );
+            return base.SetItem( itemStack, slotIndex, reason );
         }
 
-        public override int TryRemove( int amount, int slotIndex )
+        public override int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( slotIndex < 0 )
             {
@@ -158,6 +159,7 @@ namespace RPGGame.Items
                 onDrop?.Invoke( new IInventory.DropEventInfo()
                 {
                     Self = this,
+                    Reason = reason,
                     Item = item,
                     Amount = amountRemoved,
                     SlotOrigin = slotIndex
@@ -166,7 +168,7 @@ namespace RPGGame.Items
                 return amountRemoved;
             }
 
-            return base.TryRemove( amount, slotIndex );
+            return base.RemoveItem( amount, slotIndex, reason );
         }
     }
 }

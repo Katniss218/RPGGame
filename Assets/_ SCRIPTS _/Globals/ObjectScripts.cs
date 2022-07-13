@@ -52,6 +52,11 @@ namespace RPGGame.Globals
 
         public void OnDropCreatePickup( IInventory.DropEventInfo e )
         {
+            if( e.Reason == IInventory.Reason.INVENTORY_REARRANGEMENT )
+            {
+                return;
+            }
+
             const float HEIGHT_OFFSET = 0.25f;
             const float JITTER_RANGE = 0.05f;
 

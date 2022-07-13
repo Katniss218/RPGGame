@@ -10,6 +10,7 @@ namespace RPGGame.Items
         public class PickupEventInfo
         {
             public IInventory Self;
+            public Reason Reason;
 
             public Item Item;
             public int Amount;
@@ -19,6 +20,7 @@ namespace RPGGame.Items
         public class DropEventInfo
         {
             public IInventory Self;
+            public Reason Reason;
 
             public Item Item;
             public int Amount;
@@ -28,6 +30,12 @@ namespace RPGGame.Items
         public class ResizeEventInfo
         {
             public IInventory Self;
+        }
+
+        public enum Reason
+        {
+            GENERIC,
+            INVENTORY_REARRANGEMENT
         }
 
         UnityEvent<PickupEventInfo> onPickup { get; }
@@ -47,12 +55,12 @@ namespace RPGGame.Items
         List<(ItemStack, int orig)> GetItemSlots();
 
         int? CanFit( ItemStack itemStack, int slotIndex );
-        int TryAdd( ItemStack itemStack );
-        int SetItem( ItemStack itemStack, int slotIndex );
+        int TryAdd( ItemStack itemStack, Reason reason = Reason.GENERIC );
+        int SetItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
 
         int? CanRemove( int slotIndex );
-        int TryRemove( ItemStack itemStack );
-        int TryRemove( int amount, int slotIndex );
+        int TryRemove( ItemStack itemStack, Reason reason = Reason.GENERIC );
+        int RemoveItem( int amount, int slotIndex, Reason reason = Reason.GENERIC );
 
         public GameObject gameObject { get; }
         public Transform transform { get; }

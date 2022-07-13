@@ -43,8 +43,7 @@ namespace RPGGame.UI
                 ItemDragAndDrop.Instance.SetIconSize( new Vector2( texWorldSize * PlayerInventoryUI.SLOT_ITEM_SIZE, texWorldSize * PlayerInventoryUI.SLOT_ITEM_SIZE ) );
 
                 ItemDragAndDrop.cursorItem = itemStack.Copy();
-#warning TODO - This might lead to lost items if something drops from your inventory. The event callback creating pickups on player inv was removed because it was creating pickups when I dropped the items here.
-                Inventory.TryRemove( itemStack.Amount, orig );
+                Inventory.RemoveItem( itemStack.Amount, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
             }
             else // drop from hand
             {
@@ -67,7 +66,7 @@ namespace RPGGame.UI
                 ItemDragAndDrop.Instance.SetIcon( null );
                 ItemDragAndDrop.Instance.SetAmount( null );
 
-                Inventory.SetItem( ItemDragAndDrop.cursorItem, orig );
+                Inventory.SetItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
                 ItemDragAndDrop.cursorItem.MakeEmpty();
             }
         }
