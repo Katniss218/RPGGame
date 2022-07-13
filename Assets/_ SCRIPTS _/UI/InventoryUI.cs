@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RPGGame.UI
 {
-    public abstract class InventoryUI<T> : UIWindow where T : IInventory
+    public abstract class InventoryUI : UIWindow
     {
         [SerializeField] protected RectTransform slotContainer;
         [SerializeField] protected RectTransform itemContainer;
@@ -14,7 +14,7 @@ namespace RPGGame.UI
         protected Dictionary<int, InventorySlotUI> slotUIs = new Dictionary<int, InventorySlotUI>();
         protected Dictionary<int, InventoryItemUI> itemUIs = new Dictionary<int, InventoryItemUI>();
 
-        public T Inventory;
+        public IInventory Inventory;
 
         public const float SLOT_SIZE = 40.0f;
         public const float SLOT_ITEM_SIZE = 50.0f;
@@ -38,7 +38,40 @@ namespace RPGGame.UI
 
         public abstract void SetItemSize( InventoryItemUI itemUI, int slotIndex, Item item );
 
-        public abstract void RedrawInventory();
+        public void RedrawInventory()
+        {
+            foreach( var slot in slotUIs.Values )
+            {
+                Destroy( slot.gameObject );
+            }
+            foreach( var item in itemUIs.Values )
+            {
+                Destroy( item.gameObject );
+            }
+            slotUIs.Clear();
+            itemUIs.Clear();
+
+            List<int> slotIndices = Inventory.GetAllSlots();
+
+            foreach( int index in slotIndices )
+            {
+                SpawnSlot( index );
+            }
+
+            List<(ItemStack, int orig)> items = Inventory.GetItemSlots();
+
+            foreach( var (item, orig) in items )
+            {
+                if( itemUIs.ContainsKey( orig ) )
+                {
+                    UpdateItem( item.Item, item.Amount, orig );
+                }
+                else
+                {
+                    SpawnItem( item.Item, item.Amount, orig );
+                }
+            }
+        }
 
         /// <summary>
         /// Creates an inventory slot UI for a given slot and adds it to the list of existing slot UIs.

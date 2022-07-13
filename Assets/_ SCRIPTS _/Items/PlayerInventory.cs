@@ -47,7 +47,7 @@ namespace RPGGame.Items
             SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
         }
 
-        public int MapSlotIndexToEquipIndex( int slotIndex )
+        public static int MapSlotIndexToEquipIndex( int slotIndex )
         {
             // -1 => 0
             // -2 => 1
@@ -56,7 +56,7 @@ namespace RPGGame.Items
             return -slotIndex - 1;
         }
 
-        public int MapEquipIndexToSlotIndex( int equipIndex )
+        public static int MapEquipIndexToSlotIndex( int equipIndex )
         {
             return -(equipIndex + 1);
         }
