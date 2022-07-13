@@ -8,13 +8,13 @@ namespace RPGGame.UI
 {
     public abstract class InventoryUI<T> : UIWindow where T : IInventory
     {
-        public T Inventory;
-
         [SerializeField] protected RectTransform slotContainer;
         [SerializeField] protected RectTransform itemContainer;
 
         protected Dictionary<int, InventorySlotUI> slotUIs = new Dictionary<int, InventorySlotUI>();
         protected Dictionary<int, InventoryItemUI> itemUIs = new Dictionary<int, InventoryItemUI>();
+
+        public T Inventory;
 
         public const float SLOT_SIZE = 40.0f;
         public const float SLOT_ITEM_SIZE = 50.0f;
@@ -40,6 +40,9 @@ namespace RPGGame.UI
 
         public abstract void RedrawInventory();
 
+        /// <summary>
+        /// Creates an inventory slot UI for a given slot and adds it to the list of existing slot UIs.
+        /// </summary>
         protected void SpawnSlot( int index )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_slot" ), slotContainer );
@@ -54,6 +57,9 @@ namespace RPGGame.UI
             slotUIs.Add( index, slotUI );
         }
 
+        /// <summary>
+        /// Creates an inventory item UI for a given item and adds it to the list of existing item UIs.
+        /// </summary>
         protected void SpawnItem( Item item, int amount, int slotIndex )
         {
             GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_item" ), itemContainer );
@@ -73,6 +79,9 @@ namespace RPGGame.UI
             itemUIs.Add( slotIndex, itemUI );
         }
 
+        /// <summary>
+        /// Updates an existing inventory item UI.
+        /// </summary>
         protected void UpdateItem( Item item, int amount, int slotIndex )
         {
             InventoryItemUI itemUI = itemUIs[slotIndex];
