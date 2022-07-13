@@ -24,8 +24,10 @@ namespace RPGGame.UI
             base.Awake();
         }
 
-        public override void SetSlotUIPositionAndScale( RectTransform transform, int slotIndex )
+        public override void SetSlotUIPositionAndScale( InventorySlotUI slotUI, int slotIndex )
         {
+            RectTransform transform = (RectTransform)slotUI.transform;
+
             if( slotIndex < 0 )
             {
                 int equipIndex = Inventory.MapSlotIndexToEquipIndex( slotIndex );
@@ -44,8 +46,10 @@ namespace RPGGame.UI
 
         const float VERTICAL_OFFSET = -300f;
 
-        public override void SetItemUIPosition( RectTransform transform, int slotIndex, Item item )
+        public override void SetItemUIPosition( InventoryItemUI itemUI, int slotIndex, Item item )
         {
+            RectTransform transform = (RectTransform)itemUI.transform;
+
             if( slotIndex < 0 )
             {
                 transform.MoveOverCentered( (RectTransform)slotUIs[slotIndex].transform );
@@ -59,15 +63,17 @@ namespace RPGGame.UI
                 y * -SLOT_SIZE + ((item.Size.y * -SLOT_SIZE) * 0.5f) + VERTICAL_OFFSET );
         }
 
-        public override Vector2 GetItemSize( int slotIndex, Item item )
+        public override void SetItemSize(InventoryItemUI itemUI, int slotIndex, Item item )
         {
             // some mapping with other slots here.
 
             float texWorldSize = RenderedIconManager.GetTextureWorldSize( item.ID );
 
-            return new Vector2(
+            Vector2 newSize = new Vector2(
                texWorldSize * SLOT_ITEM_SIZE,
                texWorldSize * SLOT_ITEM_SIZE );
+
+            itemUI.SetIconSize( newSize );
         }
 
         public override void RedrawInventory()

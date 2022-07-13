@@ -32,11 +32,11 @@ namespace RPGGame.UI
             RedrawInventory();
         }
 
-        public abstract void SetSlotUIPositionAndScale( RectTransform transform, int slotIndex );
+        public abstract void SetSlotUIPositionAndScale( InventorySlotUI slotUI, int slotIndex );
 
-        public abstract void SetItemUIPosition( RectTransform transform, int slotIndex, Item item );
+        public abstract void SetItemUIPosition( InventoryItemUI itemUI, int slotIndex, Item item );
 
-        public abstract Vector2 GetItemSize( int slotIndex, Item item );
+        public abstract void SetItemSize( InventoryItemUI itemUI, int slotIndex, Item item );
 
         public abstract void RedrawInventory();
 
@@ -49,7 +49,7 @@ namespace RPGGame.UI
             slotUI.Inventory = this.Inventory;
             slotUI.Slot = index;
 
-            SetSlotUIPositionAndScale( rt, index );
+            SetSlotUIPositionAndScale( slotUI, index );
 
             slotUIs.Add( index, slotUI );
         }
@@ -67,8 +67,8 @@ namespace RPGGame.UI
 
             RectTransform rt = (RectTransform)go.transform;
 
-            SetItemUIPosition( rt, slotIndex, item );
-            itemUI.SetIconSize( GetItemSize( slotIndex, item ) );
+            SetItemUIPosition( itemUI, slotIndex, item );
+            SetItemSize( itemUI, slotIndex, item );
 
             itemUIs.Add( slotIndex, itemUI );
         }
