@@ -62,7 +62,7 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
-        public List<int> GetAllValidIndices()
+        public List<int> GetAllSlots()
         {
             throw new System.NotImplementedException();
         }
@@ -86,22 +86,12 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
-        public int TryAdd( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
-        {
-            throw new System.NotImplementedException();
-        }
-
         public int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
 
         public int? CanRemove( int slotIndex )
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int TryRemove( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }

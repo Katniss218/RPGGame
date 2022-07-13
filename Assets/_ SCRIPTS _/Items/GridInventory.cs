@@ -158,7 +158,7 @@ namespace RPGGame.Items
             return IsValidIndex( slotIndex, item.Size.x, item.Size.y );
         }
 
-        public virtual List<int> GetAllValidIndices()
+        public virtual List<int> GetAllSlots()
         {
             List<int> indexArray = new List<int>();
 
@@ -398,29 +398,6 @@ namespace RPGGame.Items
         }
 
         /// <summary>
-        /// Picks up a specified amount of specified items.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="amount"></param>
-        /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int TryAdd( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
-        {
-            if( itemStack == null || itemStack.IsEmpty )
-            {
-                throw new ArgumentNullException( "ItemStack can't be null or empty." );
-            }
-
-            (List<(int index, int amt)>, int leftover) seq = GetNeededSlots( itemStack );
-
-            foreach( var slotInfo in seq.Item1 )
-            {
-                SetItem( itemStack, slotInfo.index, reason );
-            }
-
-            return seq.leftover;
-        }
-
-        /// <summary>
         /// Picks up an item directly into a slot.
         /// </summary>
         /// <param name="item"></param>
@@ -503,35 +480,6 @@ namespace RPGGame.Items
             }
 
             return slot.Amount;
-        }
-
-        /// <summary>
-        /// Drops a specified amount of specified items.
-        /// </summary>
-        /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int TryRemove( ItemStack itemStack, IInventory.Reason reason = IInventory.Reason.GENERIC )
-        {
-            if( itemStack == null || itemStack.IsEmpty )
-            {
-                throw new ArgumentNullException( "ItemStack can't be null or empty." );
-            }
-
-            int amountLeft = itemStack.Amount;
-            List<(ItemStack, int orig)> items = GetItemSlots();
-
-            foreach( var (existingItemStack, orig) in items )
-            {
-                int amountDropped = RemoveItem( amountLeft, orig, reason );
-
-                amountLeft -= amountDropped;
-
-                if( amountLeft == 0 )
-                {
-                    return 0;
-                }
-            }
-
-            return amountLeft;
         }
 
         /// <summary>

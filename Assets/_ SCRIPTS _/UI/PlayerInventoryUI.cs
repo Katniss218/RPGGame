@@ -83,7 +83,7 @@ namespace RPGGame.UI
             slotUIs.Clear();
             itemUIs.Clear();
 
-            List<int> slotIndices = Inventory.GetAllValidIndices();
+            List<int> slotIndices = Inventory.GetAllSlots();
 
             foreach( int index in slotIndices )
             {

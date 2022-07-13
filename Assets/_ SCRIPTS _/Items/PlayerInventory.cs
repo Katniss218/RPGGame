@@ -65,10 +65,10 @@ namespace RPGGame.Items
             return -(equipIndex + 1);
         }
 
-        public override List<int> GetAllValidIndices()
+        public override List<int> GetAllSlots()
         {
             List<int> equip = new List<int>() { -6, -5, -4, -3, -2, -1 };
-            equip.AddRange( base.GetAllValidIndices() );
+            equip.AddRange( base.GetAllSlots() );
 
             return equip;
         }
