@@ -1,13 +1,15 @@
 using RPGGame.Items;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RPGGame.UI
 {
     [DisallowMultipleComponent]
-    public class PlayerInventoryUI : InventoryUI<PlayerInventory>
+    public class PlayerInventoryUI : GridInventoryUI
     {
-        private Vector2[] equipSlotPositions = new Vector2[]
+        private static Vector2[] equipSlotPositions = new Vector2[]
         {
             new Vector2( 20, 240 ),  // mainhand
             new Vector2( 160, 240 ), // offhand
@@ -19,9 +21,33 @@ namespace RPGGame.UI
 
         protected override void Awake()
         {
-            Ensure.NotNull( Inventory );
-
             base.Awake();
+        }
+
+        public static PlayerInventoryUI CreateUIWindow( PlayerInventory inventory )
+        {
+            (RectTransform rt, PlayerInventoryUI invUI) = UIWindow.Create<PlayerInventoryUI>( "Player Inventory", Main.GameHudCanvas );
+
+            rt.ApplyTransformUI( Vector2.one, Vector2.one, Vector2.zero, new Vector2( 260.0f, 800.0f ) );
+
+            RectTransform slotContainer = GameObjectUtils.CreateUI( "Slot Container", rt );
+            slotContainer.ApplyTransformUI( new Vector2( 0.5f, 0.0f ), 10, 10, 310, 10 );
+
+            RectTransform itemContainer = GameObjectUtils.CreateUI( "Item Container", rt );
+            itemContainer.ApplyTransformUI( new Vector2( 0.5f, 1.0f ), 10f, 10f, 10f, 10f );
+
+            invUI.slotContainer = slotContainer;
+            invUI.itemContainer = itemContainer;
+
+            invUI.Inventory = inventory;
+
+            inventory.onPickup.AddListener( invUI.OnPickup );
+            inventory.onDrop.AddListener( invUI.OnDrop );
+            inventory.onResize.AddListener( invUI.OnResize );
+
+            invUI.Redraw();
+
+            return invUI;
         }
 
         public override void SetSlotUIPositionAndScale( InventorySlotUI slotUI, int slotIndex )
@@ -30,21 +56,14 @@ namespace RPGGame.UI
 
             if( slotIndex < 0 )
             {
-                int equipIndex = Inventory.MapSlotIndexToEquipIndex( slotIndex );
+                int equipIndex = PlayerInventory.MapSlotIndexToEquipIndex( slotIndex );
                 transform.anchoredPosition = equipSlotPositions[equipIndex];
                 transform.sizeDelta = new Vector2( 60, 60 );
                 return;
             }
 
-            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, Inventory.SizeX );
-
-            transform.anchoredPosition = new Vector2(
-                x * SLOT_SIZE,
-                y * -SLOT_SIZE );
-            transform.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
+            base.SetSlotUIPositionAndScale( slotUI, slotIndex );
         }
-
-        const float VERTICAL_OFFSET = -300f;
 
         public override void SetItemUIPosition( InventoryItemUI itemUI, int slotIndex, Item item )
         {
@@ -56,59 +75,14 @@ namespace RPGGame.UI
                 return;
             }
 
-            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, Inventory.SizeX );
-
-            transform.anchoredPosition = new Vector2(
-                x * SLOT_SIZE + ((item.Size.x * SLOT_SIZE) * 0.5f),
-                y * -SLOT_SIZE + ((item.Size.y * -SLOT_SIZE) * 0.5f) + VERTICAL_OFFSET );
+            base.SetItemUIPosition( itemUI, slotIndex, item );
         }
 
-        public override void SetItemSize(InventoryItemUI itemUI, int slotIndex, Item item )
+        public override void SetItemSize( InventoryItemUI itemUI, int slotIndex, Item item )
         {
             // some mapping with other slots here.
 
-            float texWorldSize = RenderedIconManager.GetTextureWorldSize( item.ID );
-
-            Vector2 newSize = new Vector2(
-               texWorldSize * SLOT_ITEM_SIZE,
-               texWorldSize * SLOT_ITEM_SIZE );
-
-            itemUI.SetIconSize( newSize );
-        }
-
-        public override void RedrawInventory()
-        {
-            foreach( var slot in slotUIs.Values )
-            {
-                Destroy( slot.gameObject );
-            }
-            foreach( var item in itemUIs.Values )
-            {
-                Destroy( item.gameObject );
-            }
-            slotUIs.Clear();
-            itemUIs.Clear();
-
-            List<int> slotIndices = Inventory.GetAllSlots();
-
-            foreach( int index in slotIndices )
-            {
-                SpawnSlot( index );
-            }
-
-            List<(ItemStack, int orig)> items = Inventory.GetItemSlots();
-
-            foreach( var (item, orig) in items)
-            {
-                if( itemUIs.ContainsKey( orig ) )
-                {
-                    UpdateItem( item.Item, item.Amount, orig );
-                }
-                else
-                {
-                    SpawnItem( item.Item, item.Amount, orig );
-                }
-            }
+            base.SetItemSize( itemUI, slotIndex, item );
         }
     }
 }

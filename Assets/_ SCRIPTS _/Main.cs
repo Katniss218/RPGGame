@@ -1,5 +1,6 @@
 using RPGGame.Items;
 using RPGGame.Player;
+using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,9 @@ namespace RPGGame
     [DisallowMultipleComponent]
     public sealed class Main : MonoBehaviour
     {
+        public const string MOB_UI_CANVAS_NAME = "MobHudCanvas";
+        public const string GAME_UI_CANVAS_NAME = "GameHudCanvas";
+
         private static Main __instance = null;
         public static Main Instance
         {
@@ -64,23 +68,6 @@ namespace RPGGame
                 return __player;
             }
         }
-        
-        [SerializeField] private GameObject ___mobHud;
-
-        private static GameObject __mobHud = null;
-        public static GameObject MobHud
-        {
-            get
-            {
-                if( __mobHud == null )
-                {
-                    __mobHud = Instance.___mobHud;
-                }
-                return __mobHud;
-            }
-        }
-        
-        [SerializeField] private Canvas ___mobHudCanvas;
 
         private static Canvas __mobHudCanvas = null;
         public static Canvas MobHudCanvas
@@ -89,9 +76,22 @@ namespace RPGGame
             {
                 if( __mobHudCanvas == null )
                 {
-                    __mobHudCanvas = Instance.___mobHudCanvas;
+                    __mobHudCanvas = GameObject.Find( MOB_UI_CANVAS_NAME ).GetComponent<Canvas>();
                 }
                 return __mobHudCanvas;
+            }
+        }
+        
+        private static Canvas __gameHudCanvas = null;
+        public static Canvas GameHudCanvas
+        {
+            get
+            {
+                if( __gameHudCanvas == null )
+                {
+                    __gameHudCanvas = GameObject.Find( GAME_UI_CANVAS_NAME ).GetComponent<Canvas>();
+                }
+                return __gameHudCanvas;
             }
         }
 
@@ -126,6 +126,8 @@ namespace RPGGame
                 }
 
                 pmc.CameraPivot = CameraController.transform;
+
+                PlayerInventoryUI.CreateUIWindow( Player.GetComponent<PlayerInventory>() );
             };
         }
     }

@@ -1,4 +1,5 @@
 using RPGGame.Items;
+using RPGGame.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -79,6 +80,18 @@ namespace RPGGame.Globals
                 Vector3 dir = (e.Self.transform.forward + new Vector3( 0.0f, 0.4f, 0.0f )).normalized;
                 rigidbody.velocity = dir * 60f;
             }
+        }
+
+        /// <summary>
+        /// Meant to run when you click on the "Open inventory" button.
+        /// </summary>
+        public void OnClick_Inventory( PlayerInventory inv )
+        {
+            if( UIWindow.ExistsAny<PlayerInventoryUI>() )
+            {
+                return;
+            }
+            PlayerInventoryUI.CreateUIWindow( inv );
         }
     }
 }

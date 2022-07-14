@@ -34,20 +34,12 @@ namespace RPGGame.Items
             inventorySlots[5, 11].MakeBlockingSlot();
         }
 
-#warning TODO - Add a "reason" for the item being picked up and dropped off, to filter slots based on what's happening (do not auto-pick up to equipment slots, but player can manually put weapons there)
-        // reasons:
-        // - GENERIC
-        // - INVENTORY_REARRANGEMENT
-        // this should be up to the slot to implement.
-
-        // dropping off: on generic, should throw the item on the ground, rearrangement shouldn't, because we're "throwing" it to the cursor slot thingy instead, so it's not lost.
-
         void Start()
         {
             SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
         }
 
-        public int MapSlotIndexToEquipIndex( int slotIndex )
+        public static int MapSlotIndexToEquipIndex( int slotIndex )
         {
             // -1 => 0
             // -2 => 1
@@ -56,7 +48,7 @@ namespace RPGGame.Items
             return -slotIndex - 1;
         }
 
-        public int MapEquipIndexToSlotIndex( int equipIndex )
+        public static int MapEquipIndexToSlotIndex( int equipIndex )
         {
             return -(equipIndex + 1);
         }

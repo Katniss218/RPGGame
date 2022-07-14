@@ -18,11 +18,13 @@ namespace RPGGame
         const string MESHES_PATH = "Meshes";
         const string MATERIALS_PATH = "Materials";
         const string SOUNDS_PATH = "Sounds";
+        const string SPRITES_PATH = "Sprites";
 
         private static Dictionary<string, GameObject> allPrefabs = new Dictionary<string, GameObject>();
         private static Dictionary<string, Mesh> allMeshes = new Dictionary<string, Mesh>();
         private static Dictionary<string, Material> allMaterials = new Dictionary<string, Material>();
         private static Dictionary<string, AudioClip> allAudioClips = new Dictionary<string, AudioClip>();
+        private static Dictionary<string, Sprite> allSprites = new Dictionary<string, Sprite>();
 
         //
         //      ITEMS
@@ -205,6 +207,31 @@ namespace RPGGame
             }
             allAudioClips.Add( path, audioClip );
             return audioClip;
+        }
+
+        //
+        //      SPRITES
+        //
+
+        public static Sprite GetSprite( string path )
+        {
+            if( allSprites.TryGetValue( path, out Sprite sprite ) )
+            {
+                return sprite;
+            }
+
+            if( !path.StartsWith( SPRITES_PATH ) )
+            {
+                throw new Exception( "Tried to look up a sprite in a wrong folder." );
+            }
+
+            sprite = Resources.Load<Sprite>( path );
+            if( sprite == null )
+            {
+                throw new InvalidOperationException( $"Couldn't get the sprite clip with a path '{path}'. Sprite doesn't exist." );
+            }
+            allSprites.Add( path, sprite );
+            return sprite;
         }
     }
 }
