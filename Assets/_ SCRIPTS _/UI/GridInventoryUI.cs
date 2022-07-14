@@ -7,6 +7,37 @@ namespace RPGGame.UI
 {
     public class GridInventoryUI : InventoryUI
     {
+
+        public static GridInventoryUI CreateUIWindow( GridInventory inventory )
+        {
+            (RectTransform rt, GridInventoryUI invUI) = UIWindow.Create<GridInventoryUI>( "Grid Inventory", Main.GameHudCanvas );
+
+            float windowSizeX = inventory.SizeX * SLOT_SIZE + 10f + 10f;
+            float windowSizeY = inventory.SizeY * SLOT_SIZE + 10f + 40f;
+
+            rt.ApplyTransformUI( Vector2.one, Vector2.one, Vector2.zero, new Vector2( windowSizeX, windowSizeY ) );
+
+            RectTransform slotContainer = GameObjectUtils.CreateUI( "Slot Container", rt );
+            slotContainer.ApplyTransformUI( new Vector2( 0.5f, 0.0f ), 10, 10, 10, 10 );
+
+            RectTransform itemContainer = GameObjectUtils.CreateUI( "Item Container", rt );
+            itemContainer.ApplyTransformUI( new Vector2( 0.5f, 1.0f ), 10f, 10f, 10f, 10f );
+
+            invUI.slotContainer = slotContainer;
+            invUI.itemContainer = itemContainer;
+
+            invUI.Inventory = inventory;
+
+            inventory.onPickup.AddListener( invUI.OnPickup );
+            inventory.onDrop.AddListener( invUI.OnDrop );
+            inventory.onResize.AddListener( invUI.OnResize );
+
+            invUI.Redraw();
+
+            return invUI;
+        }
+
+
         public override void SetSlotUIPositionAndScale( InventorySlotUI slotUI, int slotIndex )
         {
             GridInventory inv = (GridInventory)this.Inventory;
@@ -22,7 +53,7 @@ namespace RPGGame.UI
 
 #warning TODO - I don't like this vertical offset thing.
         const float VERTICAL_OFFSET = -300f;
-
+         
         public override void SetItemUIPosition( InventoryItemUI itemUI, int slotIndex, Item item )
         {
             GridInventory inv = (GridInventory)this.Inventory;

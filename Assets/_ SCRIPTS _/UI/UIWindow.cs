@@ -16,13 +16,14 @@ namespace RPGGame.UI
         private static List<UIWindow> uiWindows = new List<UIWindow>();
 
         /// <summary>
-        /// Checks if a UI window of the specified type exists.
+        /// Checks if a UI window of the specified type (exact match) exists.
         /// </summary>
         public static bool ExistsAny<T>() where T : UIWindow
         {
             foreach( var window in uiWindows )
             {
-                if( window is T )
+                // Type must match exactly, no matter the inheritance.
+                if( window.GetType() == typeof( T ) )
                 {
                     return true;
                 }

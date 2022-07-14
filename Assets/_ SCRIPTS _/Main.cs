@@ -69,22 +69,6 @@ namespace RPGGame
             }
         }
 
-#warning TODO - turn this into a prefab.
-        [SerializeField] private GameObject ___mobHud;
-
-        private static GameObject __mobHud = null;
-        public static GameObject MobHud
-        {
-            get
-            {
-                if( __mobHud == null )
-                {
-                    __mobHud = Instance.___mobHud;
-                }
-                return __mobHud;
-            }
-        }
-        
         private static Canvas __mobHudCanvas = null;
         public static Canvas MobHudCanvas
         {
