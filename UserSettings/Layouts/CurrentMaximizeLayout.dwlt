@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 21370
+  controlID: 30342
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 21326
+  controlID: 30294
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -173,7 +173,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 21282
+  controlID: 30285
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -233,7 +233,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: e6d1fbff1ee0fbff7ee8fbff90f0fbff2ef1fbff26f2fbff90f3fbff4647fcffa2aefdff78b1fdff0e38ffff8445ffffea4dffff3e5dffffb278ffff3e87ffff6695ffffc6a8ffff3ed9ffff32fbffffe257000004580000745800009c5800001a6100003c610000d46100003664000058640000f0640000ce6a0000eebd000008be000024be000098be000040c40000bac600004ac70000c4c90000
+      m_ExpandedIDs: 4200fdffec01fdff8a3efdff6040fdff2262feffb871feffe68bfeff428dfeffe48dfeff869afefff8b9feffc6c4feff28c5feff90c7feff7cdcfeffd6ddfeff78f9feff1efafeffccfbfeff0808ffff020effff3432ffff4032ffff3a38ffffd445ffffce4bffffc49affffbea0ffff5ea1ffff0ca7ffffcaccffff2cceffffa6ceffffb4cfffffd0dcffff3ce5ffff44f9ffff42faffff34fbffff1e520000a6570000c05700006a5b0000fa5b0000345d00008065000028670000b8670000746a0000046b0000f06b0000406c0000207200007072000096770000ec77000030840000ca8400002c8700001c8a0000b68a000020b00000d4b0000076b700001eb80000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -543,9 +543,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1094.191, y: 473.2312, z: 0.9602983}
+    m_Target: {x: 431.4297, y: 49.893234, z: 0}
     speed: 2
-    m_Value: {x: 1094.191, y: 473.2312, z: 0.9602983}
+    m_Value: {x: 431.4297, y: 49.893234, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -595,9 +595,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 132.57187
+    m_Target: 17.113241
     speed: 2
-    m_Value: 132.57187
+    m_Value: 17.113241
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -754,22 +754,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Resources/Prefabs/UI
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Resources/Prefabs/UI
   m_LastFoldersGridSize: -1
   m_LastProjectPath: E:\GIT\RPGGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 146}
-    m_SelectedIDs: 9c4c0000
-    m_LastClickedID: 19612
-    m_ExpandedIDs: 00000000944c0000964c0000984c00009a4c00009c4c00009e4c000000ca9a3b
+    scrollPos: {x: 0, y: 0}
+    m_SelectedIDs: 584d0000
+    m_LastClickedID: 19800
+    m_ExpandedIDs: 00000000984c00009a4c00009c4c00009e4c0000a04c0000a24c000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -797,7 +797,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000944c0000964c0000984c00009a4c00009c4c00009e4c000000ca9a3b
+    m_ExpandedIDs: 00000000984c00009a4c00009c4c00009e4c0000a04c0000a24c000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -822,9 +822,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: d4570000
-    m_LastClickedInstanceID: 22484
-    m_HadKeyboardFocusLastEvent: 1
+    m_SelectedInstanceIDs: 
+    m_LastClickedInstanceID: 0
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c623000000000000c64c0000846b0000ba6e00000e6f000084920000aab700001e570000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -943,7 +943,7 @@ MonoBehaviour:
     m_CachedPref: 160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: 22484
+  m_LastInspectedObjectInstanceID: -1
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0

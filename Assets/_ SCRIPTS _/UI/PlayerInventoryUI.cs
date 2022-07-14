@@ -2,13 +2,14 @@ using RPGGame.Items;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RPGGame.UI
 {
     [DisallowMultipleComponent]
     public class PlayerInventoryUI : GridInventoryUI
     {
-        private Vector2[] equipSlotPositions = new Vector2[]
+        private static Vector2[] equipSlotPositions = new Vector2[]
         {
             new Vector2( 20, 240 ),  // mainhand
             new Vector2( 160, 240 ), // offhand
@@ -20,17 +21,33 @@ namespace RPGGame.UI
 
         protected override void Awake()
         {
-#warning TODO - remove when it's spawned by hand.
-            Inventory = FindObjectOfType<PlayerInventory>();
-
-            Ensure.NotNull( Inventory );
-
             base.Awake();
         }
 
-        public static RectTransform CreateUIWindow( PlayerInventory inventory )
+        public static PlayerInventoryUI CreateUIWindow( PlayerInventory inventory )
         {
-            throw new NotImplementedException();
+            (RectTransform rt, PlayerInventoryUI invUI) = UIWindow.Create<PlayerInventoryUI>( "Player Inventory", Main.GameHudCanvas );
+
+            rt.ApplyTransformUI( Vector2.one, Vector2.one, Vector2.zero, new Vector2( 260.0f, 800.0f ) );
+
+            RectTransform slotContainer = GameObjectUtils.CreateUI( "Slot Container", rt );
+            slotContainer.ApplyTransformUI( new Vector2( 0.5f, 0.0f ), 10, 10, 310, 10 );
+
+            RectTransform itemContainer = GameObjectUtils.CreateUI( "Item Container", rt );
+            itemContainer.ApplyTransformUI( new Vector2( 0.5f, 1.0f ), 10f, 10f, 10f, 10f );
+
+            invUI.slotContainer = slotContainer;
+            invUI.itemContainer = itemContainer;
+
+            invUI.Inventory = inventory;
+
+            inventory.onPickup.AddListener( invUI.OnPickup );
+            inventory.onDrop.AddListener( invUI.OnDrop );
+            inventory.onResize.AddListener( invUI.OnResize );
+
+            invUI.Redraw();
+
+            return invUI;
         }
 
         public override void SetSlotUIPositionAndScale( InventorySlotUI slotUI, int slotIndex )
@@ -61,7 +78,7 @@ namespace RPGGame.UI
             base.SetItemUIPosition( itemUI, slotIndex, item );
         }
 
-        public override void SetItemSize(InventoryItemUI itemUI, int slotIndex, Item item )
+        public override void SetItemSize( InventoryItemUI itemUI, int slotIndex, Item item )
         {
             // some mapping with other slots here.
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,19 +10,44 @@ namespace RPGGame.UI
     {
         [SerializeField] private Button closeButton;
 
-        [SerializeField] private bool startHidden = true;
+        [SerializeField] private bool startHidden = false;
+        [SerializeField] private bool destroyOnClose = false;
+
+        private static List<UIWindow> uiWindows = new List<UIWindow>();
+
+        /// <summary>
+        /// Checks if a UI window of the specified type exists.
+        /// </summary>
+        public static bool ExistsAny<T>() where T : UIWindow
+        {
+            foreach( var window in uiWindows )
+            {
+                if( window is T )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         protected virtual void Awake()
         {
-            closeButton.onClick.AddListener( Hide );
+
         }
 
         protected virtual void Start()
         {
+            closeButton.onClick.AddListener( Hide );
             if( startHidden )
             {
                 Hide();
             }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            uiWindows.Remove( this );
         }
 
         public void Show()
@@ -31,12 +57,45 @@ namespace RPGGame.UI
 
         public void Hide()
         {
-            this.gameObject.SetActive( false );
+            if( destroyOnClose )
+            {
+                Destroy( this.gameObject );
+            }
+            else
+            {
+                this.gameObject.SetActive( false );
+            }
+        }
+
+        public void Destroy()
+        {
+            Destroy( this.gameObject );
         }
 
         public void Toggle()
         {
             this.gameObject.SetActive( !this.gameObject.activeSelf );
+        }
+
+        public static (RectTransform rt, T ui) Create<T>( string objectName, Canvas parent ) where T : UIWindow
+        {
+            RectTransform rt = GameObjectUtils.CreateUI( objectName, parent.transform );
+
+            rt.gameObject.AddComponent<CanvasRenderer>();
+            Image image = rt.gameObject.AddComponent<Image>();
+            image.type = Image.Type.Sliced;
+            image.sprite = AssetManager.GetSprite( "Sprites/ui_window" );
+
+            GameObject closeButton = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/x_button" ), rt );
+
+            T uiWindow = rt.gameObject.AddComponent<T>();
+            uiWindow.closeButton = closeButton.GetComponent<Button>();
+            uiWindow.startHidden = false;
+            uiWindow.destroyOnClose = true;
+
+            uiWindows.Add( uiWindow );
+
+            return (rt, uiWindow);
         }
     }
 }

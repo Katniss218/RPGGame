@@ -8,8 +8,8 @@ namespace RPGGame.UI
 {
     public abstract class InventoryUI : UIWindow
     {
-        [SerializeField] protected RectTransform slotContainer;
-        [SerializeField] protected RectTransform itemContainer;
+        public RectTransform slotContainer;
+        public RectTransform itemContainer;
 
         protected Dictionary<int, InventorySlotUI> slotUIs = new Dictionary<int, InventorySlotUI>();
         protected Dictionary<int, InventoryItemUI> itemUIs = new Dictionary<int, InventoryItemUI>();
@@ -21,24 +21,21 @@ namespace RPGGame.UI
 
         protected override void Awake()
         {
-            Ensure.NotNull( slotContainer );
-            Ensure.NotNull( itemContainer );
-
             base.Awake();
         }
-
+        /*
         void OnEnable()
         {
-            RedrawInventory();
+            Redraw();
         }
-
+        */
         public abstract void SetSlotUIPositionAndScale( InventorySlotUI slotUI, int slotIndex );
 
         public abstract void SetItemUIPosition( InventoryItemUI itemUI, int slotIndex, Item item );
 
         public abstract void SetItemSize( InventoryItemUI itemUI, int slotIndex, Item item );
 
-        public void RedrawInventory()
+        public void Redraw()
         {
             foreach( var slot in slotUIs.Values )
             {
@@ -153,7 +150,7 @@ namespace RPGGame.UI
 
         public virtual void OnResize( IInventory.ResizeEventInfo e )
         {
-            RedrawInventory();
+            Redraw();
         }
     }
 }
