@@ -15,13 +15,13 @@ namespace RPGGame.UI
             float windowSizeX = inventory.SizeX * SLOT_SIZE + 10f + 10f;
             float windowSizeY = inventory.SizeY * SLOT_SIZE + 10f + 40f;
 
-            rt.ApplyTransformUI( Vector2.one, Vector2.one, Vector2.zero, new Vector2( windowSizeX, windowSizeY ) );
+            rt.ApplyTransformUI( Vector2.up, Vector2.up, Vector2.zero, new Vector2( windowSizeX, windowSizeY ) );
 
             RectTransform slotContainer = GameObjectUtils.CreateUI( "Slot Container", rt );
-            slotContainer.ApplyTransformUI( new Vector2( 0.5f, 0.0f ), 10, 10, 10, 10 );
+            slotContainer.ApplyTransformUI( new Vector2( 0.5f, 0.0f ), 10, 10, 40, 10 );
 
             RectTransform itemContainer = GameObjectUtils.CreateUI( "Item Container", rt );
-            itemContainer.ApplyTransformUI( new Vector2( 0.5f, 1.0f ), 10f, 10f, 10f, 10f );
+            itemContainer.ApplyTransformUI( new Vector2( 0.5f, 0.5f ), 0f, 0f, 0f, 0f );
 
             invUI.slotContainer = slotContainer;
             invUI.itemContainer = itemContainer;
@@ -51,19 +51,12 @@ namespace RPGGame.UI
             transform.sizeDelta = new Vector2( SLOT_SIZE, SLOT_SIZE );
         }
 
-#warning TODO - I don't like this vertical offset thing.
-        const float VERTICAL_OFFSET = -300f;
-         
         public override void SetItemUIPosition( InventoryItemUI itemUI, int slotIndex, Item item )
         {
-            GridInventory inv = (GridInventory)this.Inventory;
             RectTransform transform = (RectTransform)itemUI.transform;
 
-            (int x, int y) = GridInventory.GetSlotCoords( slotIndex, inv.SizeX );
-
-            transform.anchoredPosition = new Vector2(
-                x * SLOT_SIZE + ((item.Size.x * SLOT_SIZE) * 0.5f),
-                y * -SLOT_SIZE + ((item.Size.y * -SLOT_SIZE) * 0.5f) + VERTICAL_OFFSET );
+            transform.MoveOverCentered( (RectTransform)slotUIs[slotIndex].transform );
+            transform.anchoredPosition += new Vector2( (item.Size.x - 1) * SLOT_SIZE * 0.5f, (item.Size.y - 1) * -SLOT_SIZE * 0.5f );
         }
 
         public override void SetItemSize( InventoryItemUI itemUI, int slotIndex, Item item )

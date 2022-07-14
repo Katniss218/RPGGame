@@ -1,3 +1,4 @@
+using RPGGame.Interactions;
 using RPGGame.Items;
 using RPGGame.UI;
 using System;
@@ -92,6 +93,15 @@ namespace RPGGame.Globals
                 return;
             }
             PlayerInventoryUI.CreateUIWindow( inv );
+        }
+
+        /// <summary>
+        /// Meant to run when you click on the "Open inventory" button.
+        /// </summary>
+        public void OnInteract_Chest( Interactible.OnInteractEventInfo e )
+        {
+            UIWindow ui = GridInventoryUI.CreateUIWindow( e.Self.GetComponent<GridInventory>() );
+            ui.rectTransform.anchoredPosition += new Vector2( 1000f, 0f );
         }
     }
 }

@@ -28,13 +28,16 @@ namespace RPGGame.UI
         {
             (RectTransform rt, PlayerInventoryUI invUI) = UIWindow.Create<PlayerInventoryUI>( "Player Inventory", Main.GameHudCanvas );
 
-            rt.ApplyTransformUI( Vector2.one, Vector2.one, Vector2.zero, new Vector2( 260.0f, 800.0f ) );
+            float windowSizeX = Mathf.Max((inventory.SizeX * SLOT_SIZE + 10f + 10f), 200f);
+            float windowSizeY = (inventory.SizeY * SLOT_SIZE + 10f + 10f) + 300f;
+
+            rt.ApplyTransformUI( Vector2.one, Vector2.one, Vector2.zero, new Vector2( windowSizeX, windowSizeY ) );
 
             RectTransform slotContainer = GameObjectUtils.CreateUI( "Slot Container", rt );
             slotContainer.ApplyTransformUI( new Vector2( 0.5f, 0.0f ), 10, 10, 310, 10 );
 
             RectTransform itemContainer = GameObjectUtils.CreateUI( "Item Container", rt );
-            itemContainer.ApplyTransformUI( new Vector2( 0.5f, 1.0f ), 10f, 10f, 10f, 10f );
+            itemContainer.ApplyTransformUI( new Vector2( 0.5f, 0.5f ), 0f, 0f, 0f, 0f );
 
             invUI.slotContainer = slotContainer;
             invUI.itemContainer = itemContainer;

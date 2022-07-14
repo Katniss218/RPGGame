@@ -15,6 +15,19 @@ namespace RPGGame.UI
 
         private static List<UIWindow> uiWindows = new List<UIWindow>();
 
+        private RectTransform __rectTransform;
+        public RectTransform rectTransform
+        {
+            get
+            {
+                if( __rectTransform == null )
+                {
+                    __rectTransform = (RectTransform)this.transform;
+                }
+                return __rectTransform;
+            }
+        }
+
         /// <summary>
         /// Checks if a UI window of the specified type (exact match) exists.
         /// </summary>
