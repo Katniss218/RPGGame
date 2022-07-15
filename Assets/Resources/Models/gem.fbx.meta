@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1a960754d6953e04b8f004554ea993f4
+guid: 1744fad7961041c4e8a3b12c61490da5
 ModelImporter:
   serializedVersion: 22103
   internalIDToNameTable: []
@@ -7,13 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: rock
-    second: {fileID: 2100000, guid: 54d814991d3f17f4bbb13fd3e2d68969, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: rock_column_1x1_CubeMat
-    second: {fileID: 2100000, guid: 54d814991d3f17f4bbb13fd3e2d68969, type: 2}
+      name: emerald
+    second: {fileID: 2100000, guid: 34cf0aafdc0a96f458574fa063c9e01b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

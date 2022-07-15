@@ -37,7 +37,7 @@ namespace RPGGame
                     texResolution = 128;
                 }
 
-                ScreenMesh( item.ID, texResolution, item.mesh, item.materials, modelRot, Quaternion.Euler( 10, -30, 0 ) );
+                ScreenMesh( item.ID, texResolution, item.model, modelRot, Quaternion.Euler( 10, -30, 0 ) );
             }
         }
 
@@ -63,16 +63,18 @@ namespace RPGGame
         /// Screenstors a model, adds the result to the database, and returns the resulting texture.
         /// </summary>
         /// <param name="name">Unique name to save the result under.</param>
-        public static Texture2D ScreenMesh( string name, int resolutionXY, Mesh mesh, Material[] materials, Quaternion modelRot, Quaternion lightRot )
+        public static Texture2D ScreenMesh( string name, int resolutionXY, GameObject prefab, Quaternion modelRot, Quaternion lightRot )
         {
             RenderTexture renderTex = new RenderTexture( resolutionXY, resolutionXY, 8, RenderTextureFormat.ARGB32 );
             renderTex.Create();
 
-            float max = Mathf.Max( mesh.bounds.extents.x, mesh.bounds.extents.y, mesh.bounds.extents.z );
+            Bounds bounds = prefab.GetBounds();
+            float max = Mathf.Max( bounds.extents.x, bounds.extents.y, bounds.extents.z );
 
             (GameObject camGo, Camera cam) = CreateCamera( Vector3.zero, Quaternion.identity, max, renderTex );
             GameObject lightGo = CreateLight( Vector3.zero, lightRot );
-            GameObject modelGo = CreateModel( Vector2.zero, modelRot, mesh, materials );
+            GameObject modelGo = Instantiate( prefab, Vector3.zero, modelRot );
+            modelGo.layer = ICON_RENDER_LAYER;
 
             cam.Render();
 

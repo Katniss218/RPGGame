@@ -50,5 +50,38 @@ namespace RPGGame
             rt.anchoredPosition = new Vector2( Mathf.Lerp( left, -right, pivot.x ), Mathf.Lerp( bottom, -top, pivot.y ) );
             rt.sizeDelta = new Vector2( -(left + right), -(top + bottom) );
         }
+
+        public static Bounds GetBounds( this GameObject gameObject )
+        {
+            Bounds bounds = GetRenderBounds( gameObject );
+            if( bounds.extents.x == 0 )
+            {
+                bounds = new Bounds( gameObject.transform.position, Vector3.zero );
+                foreach( Transform child in gameObject.transform )
+                {
+                    MeshRenderer childRender = child.GetComponent<MeshRenderer>();
+                    if( childRender )
+                    {
+                        bounds.Encapsulate( childRender.bounds );
+                    }
+                    else
+                    {
+                        bounds.Encapsulate( GetBounds( child.gameObject ) );
+                    }
+                }
+            }
+            return bounds;
+        }
+
+        static Bounds GetRenderBounds( GameObject gameObject )
+        {
+            MeshRenderer render = gameObject.GetComponent<MeshRenderer>();
+            if( render != null )
+            {
+                return render.bounds;
+            }
+
+            return new Bounds( Vector3.zero, Vector3.zero ); ;
+        }
     }
 }

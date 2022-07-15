@@ -1,11 +1,26 @@
 fileFormatVersion: 2
-guid: 4154707687bf4774bb82e8350e7aac70
+guid: cceecd7305da5b9458eb0fa3c802e9ea
 ModelImporter:
   serializedVersion: 22103
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: steel
+    second: {fileID: 2100000, guid: aef8cfd06c6a2f249b1c0ef9efa05ce6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: steel_polished
+    second: {fileID: 2100000, guid: 64254739f4149f043895baceb9fd6c6d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wood
+    second: {fileID: 2100000, guid: 2e7146a9656681944aeb9b4f0fa4f5b4, type: 2}
   materials:
-    materialImportMode: 0
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
     materialLocation: 1

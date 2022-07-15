@@ -15,11 +15,7 @@ MonoBehaviour:
   ID: item.axe
   DisplayName: Axe
   Description: A heavy Axe, can chop off a head.
-  mesh: {fileID: -2596438793736663829, guid: 4154707687bf4774bb82e8350e7aac70, type: 3}
-  materials:
-  - {fileID: 2100000, guid: 2e7146a9656681944aeb9b4f0fa4f5b4, type: 2}
-  - {fileID: 2100000, guid: aef8cfd06c6a2f249b1c0ef9efa05ce6, type: 2}
-  - {fileID: 2100000, guid: 64254739f4149f043895baceb9fd6c6d, type: 2}
+  model: {fileID: 919132149155446097, guid: c72110e0f82fc5c48b3b558ee303d308, type: 3}
   UseCustomCamera: 0
   CustomCameraRot: {x: 0, y: 0, z: 0}
   MaxStack: 1

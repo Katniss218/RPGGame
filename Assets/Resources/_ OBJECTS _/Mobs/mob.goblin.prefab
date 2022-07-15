@@ -178,6 +178,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 085aefe51b3e99747933daa2af8bdd87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EquipHand: {fileID: 11400000, guid: a07fe23057fa9b3478bd1ca01420ed2a, type: 2}
+  Drops: []
   __onPickup:
     m_PersistentCalls:
       m_Calls: []
@@ -199,8 +201,6 @@ MonoBehaviour:
   __onResize:
     m_PersistentCalls:
       m_Calls: []
-  EquipHand: {fileID: 11400000, guid: a07fe23057fa9b3478bd1ca01420ed2a, type: 2}
-  Drops: []
 --- !u!114 &1224557253238160805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +253,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2644617602263563771}
-  m_Mesh: {fileID: -6826938428796177276, guid: b7ee1d65811b9b643801e1850dcd7ac3, type: 3}
+  m_Mesh: {fileID: -3725263538245500097, guid: 32a4e055f3b81bd4b981a7d86339f9f7, type: 3}
 --- !u!23 &5708819739776784691
 MeshRenderer:
   m_ObjectHideFlags: 0

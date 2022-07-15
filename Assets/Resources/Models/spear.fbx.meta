@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1a960754d6953e04b8f004554ea993f4
+guid: 20143226b6525944085d5f7b60db523b
 ModelImporter:
   serializedVersion: 22103
   internalIDToNameTable: []
@@ -7,13 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: rock
-    second: {fileID: 2100000, guid: 54d814991d3f17f4bbb13fd3e2d68969, type: 2}
+      name: steel
+    second: {fileID: 2100000, guid: aef8cfd06c6a2f249b1c0ef9efa05ce6, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: rock_column_1x1_CubeMat
-    second: {fileID: 2100000, guid: 54d814991d3f17f4bbb13fd3e2d68969, type: 2}
+      name: steel_polished
+    second: {fileID: 2100000, guid: 64254739f4149f043895baceb9fd6c6d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wood
+    second: {fileID: 2100000, guid: 2e7146a9656681944aeb9b4f0fa4f5b4, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

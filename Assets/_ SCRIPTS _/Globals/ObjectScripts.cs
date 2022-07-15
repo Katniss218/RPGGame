@@ -66,11 +66,12 @@ namespace RPGGame.Globals
 
             GameObject go = Instantiate( _pickupPrefab, e.Self.transform.position + offset, Quaternion.identity );
 
-            MeshFilter meshFilter = go.GetComponentInChildren<MeshFilter>();
-            meshFilter.mesh = e.Item.mesh;
+            GameObject itemVisual = Instantiate( e.Item.model, go.transform );
+            //MeshFilter meshFilter = go.GetComponentInChildren<MeshFilter>();
+            //meshFilter.mesh = e.Item.mesh;
 
-            MeshRenderer meshRenderer = go.GetComponentInChildren<MeshRenderer>();
-            meshRenderer.materials = e.Item.materials;
+            //MeshRenderer meshRenderer = go.GetComponentInChildren<MeshRenderer>();
+           // meshRenderer.materials = e.Item.materials;
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetCapacityAndPickUp( new ItemStack( e.Item, e.Amount ) );

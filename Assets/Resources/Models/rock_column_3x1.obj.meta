@@ -3,9 +3,19 @@ guid: 551d47599ee66854d8ea0033a2a79bf8
 ModelImporter:
   serializedVersion: 22103
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rock
+    second: {fileID: 2100000, guid: 54d814991d3f17f4bbb13fd3e2d68969, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rock_column_3x1_Cube.001Mat
+    second: {fileID: 2100000, guid: 54d814991d3f17f4bbb13fd3e2d68969, type: 2}
   materials:
-    materialImportMode: 0
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
     materialLocation: 1

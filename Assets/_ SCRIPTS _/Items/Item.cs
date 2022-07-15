@@ -16,8 +16,7 @@ namespace RPGGame.Items
         public string DisplayName;
         public string Description;
 
-        public Mesh mesh;
-        public Material[] materials;
+        public GameObject model;
 
         public bool UseCustomCamera;
         public Vector3 CustomCameraRot;

@@ -15,10 +15,7 @@ MonoBehaviour:
   ID: item.gold_coin
   DisplayName: Gold Coin
   Description: 
-  mesh: {fileID: -5645534514643410848, guid: 2233df3b4e3e0df44b2394e0707eec42, type: 3}
-  materials:
-  - {fileID: 2100000, guid: 6e4f29d7a140a8742a9e5db9676f53dd, type: 2}
-  - {fileID: 2100000, guid: d9013af4bcc2a0c43a8947625cc02b50, type: 2}
+  model: {fileID: 919132149155446097, guid: d6fe4d5a21ab97a45afcea361d144391, type: 3}
   UseCustomCamera: 1
   CustomCameraRot: {x: 22.5, y: 90, z: -78.75}
   MaxStack: 2147483647

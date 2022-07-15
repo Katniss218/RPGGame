@@ -36,7 +36,7 @@ namespace RPGGame.Items
 
         void Start()
         {
-            SetItem( new ItemStack( AssetManager.GetItem( "item.axe" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            SetItem( new ItemStack( AssetManager.GetItem( "item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
         }
 
         public static int MapSlotIndexToEquipIndex( int slotIndex )
