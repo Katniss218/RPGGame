@@ -78,7 +78,7 @@ namespace RPGGame.Items
             }
         }
 
-        [SerializeField] protected ItemSlot[,] inventorySlots = new ItemSlot[2, 2]; // each slot points to an object containing the reference to the and amount.
+        [SerializeField] protected ItemSlot[,] inventorySlots =  null; // each slot points to an object containing the reference to the and amount.
 
         [SerializeField] UnityEvent<IInventory.PickupEventInfo> __onPickup;
         public UnityEvent<IInventory.PickupEventInfo> onPickup { get => __onPickup; }
@@ -196,13 +196,13 @@ namespace RPGGame.Items
 
             List<(int index, int amt)> orderedSlots = new List<(int index, int amt)>();
 
-            int sizeX = itemStack.Item.Size.x;
-            int sizeY = itemStack.Item.Size.y;
+            int itemSizeX = itemStack.Item.Size.x;
+            int itemSizeY = itemStack.Item.Size.y;
 
             int[,] amounts = new int[SizeX, SizeY];
 
-            int lastRowPlusOne = SizeY - sizeY + 1;
-            int lastColumnPlusOne = SizeX - sizeX + 1;
+            int lastRowPlusOne = SizeY - itemSizeY + 1;
+            int lastColumnPlusOne = SizeX - itemSizeX + 1;
 
             for( int y = 0; y < SizeY; y++ )
             {
@@ -211,6 +211,8 @@ namespace RPGGame.Items
                     amounts[x, y] = -1;
                 }
             }
+
+#warning TODO - this should take the existing partially full slots into account first.
 
             // inventory starts top-left already. So it aligns with the order of appending items.
             for( int y = 0; y < lastRowPlusOne; y++ )
@@ -235,7 +237,7 @@ namespace RPGGame.Items
                     int amountToPut = Mathf.Min( amountLeft, spaceLeft.Value );
                     amountLeft -= amountToPut;
 
-                    GetNeededSlots_PickUp( ref amounts, amountToPut, x, y, x + sizeX, y + sizeY );
+                    GetNeededSlots_PickUp( ref amounts, amountToPut, x, y, x + itemSizeX, y + itemSizeY );
                     orderedSlots.Add( (GetSlotIndex( x, y, SizeX ), amountToPut) );
 
                     if( amountLeft < 0 )
