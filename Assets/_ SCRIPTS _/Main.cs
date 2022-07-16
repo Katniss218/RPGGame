@@ -13,6 +13,7 @@ namespace RPGGame
     {
         public const string MOB_UI_CANVAS_NAME = "MobHudCanvas";
         public const string GAME_UI_CANVAS_NAME = "GameHudCanvas";
+        public const string UI_WINDOW_CANVAS_NAME = "UIWindowCanvas";
 
         private static Main __instance = null;
         public static Main Instance
@@ -92,6 +93,19 @@ namespace RPGGame
                     __gameHudCanvas = GameObject.Find( GAME_UI_CANVAS_NAME ).GetComponent<Canvas>();
                 }
                 return __gameHudCanvas;
+            }
+        }
+        
+        private static Canvas __uiWindowCanvas = null;
+        public static Canvas UIWindowCanvas
+        {
+            get
+            {
+                if( __uiWindowCanvas == null )
+                {
+                    __uiWindowCanvas = GameObject.Find( UI_WINDOW_CANVAS_NAME ).GetComponent<Canvas>();
+                }
+                return __uiWindowCanvas;
             }
         }
 

@@ -82,7 +82,8 @@ namespace RPGGame.UI
         /// Hides the UI window.
         /// </summary>
         /// <remarks>
-        /// DO NOT call 'Destroy( obj )' on the window. Set destroyOnClose = true and Hide() it instead.
+        /// DO NOT call 'Destroy( obj )' on the window. Set <see cref="DestroyOnClose"/> = true and <see cref="Hide"/> it instead.
+        /// If you don't, it'll lead to memory leaks and events not being fired.
         /// </remarks>
         public void Hide()
         {
@@ -103,7 +104,12 @@ namespace RPGGame.UI
             this.gameObject.SetActive( !this.gameObject.activeSelf );
         }
 
-        public static (RectTransform rt, T ui) Create<T>( string objectName, Canvas parent ) where T : UIWindow
+        /// <summary>
+        /// Creates a new UI Window of the specified type.
+        /// </summary>
+        /// <param name="objectName">The gameObject name for the new UI window.</param>
+        /// <param name="parent">The canvas onto which the UI window will be placed.</param>
+        public static (RectTransform rt, T window) Create<T>( string objectName, Canvas parent ) where T : UIWindow
         {
             RectTransform rt = GameObjectUtils.CreateUI( objectName, parent.transform );
 

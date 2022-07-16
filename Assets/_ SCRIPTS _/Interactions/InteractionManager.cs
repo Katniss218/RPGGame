@@ -31,8 +31,11 @@ namespace RPGGame.Interactions
                         return;
                     }
 
+                    if( !inter.IsInteracting( null ) )
+                    {
 #warning TODO - this is quite ugly, as it assumes something is attached to this oninteract and will stop the interaction later.
-                    inter.StartInteracting( null );
+                        inter.StartInteracting( null );
+                    }
                 }
             }
         }
