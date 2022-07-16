@@ -74,7 +74,7 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
-        public int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }

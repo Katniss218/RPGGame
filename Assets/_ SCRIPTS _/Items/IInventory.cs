@@ -54,7 +54,7 @@ namespace RPGGame.Items
         List<(ItemStack, int orig)> GetItemSlots();
 
         int? CanSetItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
-        int SetItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
+        int AddItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
 
         int? CanRemoveItem( int slotIndex, Reason reason = Reason.GENERIC );
         int RemoveItem( int amount, int slotIndex, Reason reason = Reason.GENERIC );

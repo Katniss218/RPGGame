@@ -37,7 +37,7 @@ namespace RPGGame.Items
 
         void Start()
         {
-            SetItem( new ItemStack( AssetManager.GetItem( "item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            AddItem( new ItemStack( AssetManager.GetItem( "item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
         }
 
         public static int MapSlotIndexToEquipIndex( int slotIndex )
@@ -117,7 +117,7 @@ namespace RPGGame.Items
             return base.CanSetItem( itemStack, slotIndex );
         }
 
-        public override int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public override int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( slotIndex < 0 )
             {
@@ -139,7 +139,7 @@ namespace RPGGame.Items
                 return itemStack.Amount;
             }
 
-            return base.SetItem( itemStack, slotIndex, reason );
+            return base.AddItem( itemStack, slotIndex, reason );
         }
 
         public override int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )

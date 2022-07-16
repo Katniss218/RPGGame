@@ -42,7 +42,7 @@ namespace RPGGame.Items
                 Self = this
             } );
 
-            SetItem( itemStack, 0 );
+            AddItem( itemStack, 0 );
         }
 
         /// <summary>

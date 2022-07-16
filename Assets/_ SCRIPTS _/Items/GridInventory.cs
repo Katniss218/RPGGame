@@ -354,7 +354,7 @@ namespace RPGGame.Items
         /// <param name="amount"></param>
         /// <param name="pos">The slot to pick the item up to (doesn't need to be origin)</param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int SetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public virtual int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {

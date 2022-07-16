@@ -67,7 +67,7 @@ namespace RPGGame.Items
 
             foreach( var slotInfo in seq.Item1 )
             {
-                inv.SetItem( itemStack, slotInfo.index, reason );
+                inv.AddItem( itemStack, slotInfo.index, reason );
             }
 
             return seq.leftover;

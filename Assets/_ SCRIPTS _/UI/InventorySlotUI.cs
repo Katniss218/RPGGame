@@ -26,12 +26,25 @@ namespace RPGGame.UI
         {
             (ItemStack itemStack, int orig) = Inventory.GetItemSlot( Slot );
 
-            if( !itemStack.IsEmpty ) // pick up to hand
+            if( !itemStack.IsEmpty )
             {
-                if( !ItemDragAndDrop.cursorItem.IsEmpty ) // hand is not empty
+                if( !ItemDragAndDrop.cursorItem.IsEmpty ) // both non-empty
                 {
+                    // add to the stack.
+                    if (itemStack.CanStackWith( ItemDragAndDrop.cursorItem ))
+                    {
+                        int amountAdded = Inventory.AddItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
+                        ItemDragAndDrop.cursorItem.Sub( amountAdded );
+                        if( ItemDragAndDrop.cursorItem.IsEmpty )
+                        {
+                            ItemDragAndDrop.Instance.SetIcon( null );
+                            ItemDragAndDrop.Instance.SetAmount( null );
+                        }
+                    }
                     return;
                 }
+
+                // pick up to hand
 
                 Texture2D tex = RenderedIconManager.GetTexture( itemStack.Item.ID );
 
@@ -45,20 +58,17 @@ namespace RPGGame.UI
                 ItemDragAndDrop.cursorItem = itemStack.Copy();
                 Inventory.RemoveItem( itemStack.Amount, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
             }
-            else // drop from hand
+            else 
             {
-                if( ItemDragAndDrop.cursorItem.IsEmpty ) // hand is empty
+                if( ItemDragAndDrop.cursorItem.IsEmpty ) // both empty
                 {
                     return;
                 }
+                
+                // drop from hand
 
                 int? canFit = Inventory.CanSetItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
-                if( canFit == null )
-                {
-                    return;
-                }
-                // TODO - can fit partially.
-                if( canFit < itemStack.Amount )
+                if( canFit == null || canFit < itemStack.Amount )
                 {
                     return;
                 }
@@ -66,7 +76,7 @@ namespace RPGGame.UI
                 ItemDragAndDrop.Instance.SetIcon( null );
                 ItemDragAndDrop.Instance.SetAmount( null );
 
-                Inventory.SetItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
+                Inventory.AddItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
                 ItemDragAndDrop.cursorItem.MakeEmpty();
             }
         }
