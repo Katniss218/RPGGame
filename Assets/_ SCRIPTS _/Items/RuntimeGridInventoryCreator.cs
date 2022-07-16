@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPGGame
+namespace RPGGame.Items
 {
     [RequireComponent(typeof(GridInventory))]
     public class RuntimeGridInventoryCreator : MonoBehaviour

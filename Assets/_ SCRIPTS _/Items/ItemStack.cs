@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace RPGGame.Items
 {
+    [Serializable]
     public class ItemStack
     {
         /// <summary>
