@@ -11,5 +11,10 @@ namespace RPGGame.Audio {
         {
             AudioManager.PlaySound( clip, this.transform );
         }
+
+        public void Play( AudioClip clip )
+        {
+            AudioManager.PlaySound( clip, this.transform );
+        }
     }
 }
