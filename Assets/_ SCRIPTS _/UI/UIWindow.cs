@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace RPGGame.UI
@@ -117,6 +118,9 @@ namespace RPGGame.UI
             Image image = rt.gameObject.AddComponent<Image>();
             image.type = Image.Type.Sliced;
             image.sprite = AssetManager.GetSprite( "Sprites/ui_window" );
+
+            GameObject dragStrip = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/drag_strip" ), rt );
+            dragStrip.GetComponent<DraggableUI>().Window = rt;
 
             GameObject closeButton = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/x_button" ), rt );
 
