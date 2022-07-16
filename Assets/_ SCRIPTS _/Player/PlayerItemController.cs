@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using RPGGame.Audio;
 using RPGGame.Items;
 using System.Collections;
@@ -35,6 +36,20 @@ namespace RPGGame.Player
                 {
                     UseEquipHand();
                 }
+            }
+
+#warning test. Remove this later.
+            if( Input.GetKeyDown( KeyCode.R ) )
+            {
+                HealthHandler health = this.GetComponent<HealthHandler>();
+
+                Serialization.SerializationManager.serializedTemp = Serialization.SerializationManager.SerializeObject( health );
+
+            }
+#warning test. Remove this later.
+            if( Input.GetKeyDown( KeyCode.T ) )
+            {
+                Serialization.SerializationManager.PopulateObject( this.GetComponent<HealthHandler>(), Serialization.SerializationManager.serializedTemp );
             }
         }
 
@@ -80,8 +95,6 @@ namespace RPGGame.Player
                     closestEnemy = (collider.transform, distance);
                 }
             }
-
-
 
             return closestEnemy.t;
         }

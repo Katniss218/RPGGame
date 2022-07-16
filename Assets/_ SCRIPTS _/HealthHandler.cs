@@ -1,3 +1,4 @@
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,9 +24,11 @@ namespace RPGGame
         }
 
         [SerializeField] private float _health;
+        [Persist("Health")]
         public float Health { get => _health; private set => _health = value; }
 
         [SerializeField] private float _maxHealth;
+        [Persist("MaxHealth")]
         public float MaxHealth { get => _maxHealth; private set => _maxHealth = value; }
 
         public UnityEvent<HealthChangeEventInfo> onMaxHealthChange;
