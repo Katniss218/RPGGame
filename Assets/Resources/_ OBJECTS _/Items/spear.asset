@@ -20,6 +20,8 @@ MonoBehaviour:
   CustomCameraRot: {x: 0, y: 0, z: 0}
   MaxStack: 1
   Size: {x: 1, y: 3}
+  PickupSound: {fileID: 8300000, guid: 9265ebf01398586418d6837c24ae007a, type: 3}
+  DropSound: {fileID: 8300000, guid: b7015eee35a3a144bac2b6cc812b3b67, type: 3}
   onUse:
     m_PersistentCalls:
       m_Calls:

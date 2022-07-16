@@ -20,3 +20,5 @@ MonoBehaviour:
   CustomCameraRot: {x: 22.5, y: 90, z: -78.75}
   MaxStack: 2147483647
   Size: {x: 1, y: 1}
+  PickupSound: {fileID: 8300000, guid: 5c2202ce27d3cbf43b35dc4bb35f49c9, type: 3}
+  DropSound: {fileID: 8300000, guid: f16bd0e9dd18193419b30e5e153b9e37, type: 3}

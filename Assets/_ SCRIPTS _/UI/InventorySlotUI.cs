@@ -1,3 +1,4 @@
+using RPGGame.Audio;
 using RPGGame.Items;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,60 +25,83 @@ namespace RPGGame.UI
 
         private void OnClick()
         {
-            (ItemStack itemStack, int orig) = Inventory.GetItemSlot( Slot );
+            (ItemStack slotItem, int slotIndex) = Inventory.GetItemSlot( Slot );
 
-            if( !itemStack.IsEmpty )
+            if( !slotItem.IsEmpty )
             {
                 if( !ItemDragAndDrop.cursorItem.IsEmpty ) // both non-empty
                 {
-                    // add to the stack.
-                    if (itemStack.CanStackWith( ItemDragAndDrop.cursorItem ))
+                    if( slotItem.CanStackWith( ItemDragAndDrop.cursorItem ) )
                     {
-                        int amountAdded = Inventory.AddItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
-                        ItemDragAndDrop.cursorItem.Sub( amountAdded );
-                        if( ItemDragAndDrop.cursorItem.IsEmpty )
-                        {
-                            ItemDragAndDrop.Instance.SetIcon( null );
-                            ItemDragAndDrop.Instance.SetAmount( null );
-                        }
+                        // add to the stack.
+                        FullHandToFullSlot( slotItem, slotIndex );
                     }
                     return;
                 }
 
+                // slot non-empty, cursor empty.
+
                 // pick up to hand
-
-                Texture2D tex = RenderedIconManager.GetTexture( itemStack.Item.ID );
-
-                Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
-                ItemDragAndDrop.Instance.SetIcon( sprite );
-                ItemDragAndDrop.Instance.SetAmount( itemStack.Amount );
-
-                float texWorldSize = RenderedIconManager.GetTextureWorldSize( itemStack.Item.ID );
-                ItemDragAndDrop.Instance.SetIconSize( new Vector2( texWorldSize * PlayerInventoryUI.SLOT_ITEM_SIZE, texWorldSize * PlayerInventoryUI.SLOT_ITEM_SIZE ) );
-
-                ItemDragAndDrop.cursorItem = itemStack.Copy();
-                Inventory.RemoveItem( itemStack.Amount, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
+                FullSlotToEmptyHand( slotItem, slotIndex );
             }
-            else 
+            else
             {
                 if( ItemDragAndDrop.cursorItem.IsEmpty ) // both empty
                 {
                     return;
                 }
-                
-                // drop from hand
 
-                int? canFit = Inventory.CanSetItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
-                if( canFit == null || canFit < itemStack.Amount )
+                // slot empty, cursor non-empty.
+
+                int? canFit = Inventory.CanSetItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+                if( canFit == null || canFit < slotItem.Amount )
                 {
                     return;
                 }
                 // can fit entire stack.
-                ItemDragAndDrop.Instance.SetIcon( null );
-                ItemDragAndDrop.Instance.SetAmount( null );
+                FullHandToEmptySlot( slotItem, slotIndex );
+            }
+        }
 
-                Inventory.AddItem( ItemDragAndDrop.cursorItem, orig, IInventory.Reason.INVENTORY_REARRANGEMENT );
-                ItemDragAndDrop.cursorItem.MakeEmpty();
+        private void FullHandToEmptySlot( ItemStack slotItem, int slotIndex )
+        {
+            ItemDragAndDrop.Instance.SetIcon( null );
+            ItemDragAndDrop.Instance.SetAmount( null );
+
+            Inventory.AddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            ItemDragAndDrop.cursorItem.MakeEmpty();
+            AudioManager.PlaySound( slotItem.Item.DropSound );
+        }
+
+        private void FullSlotToEmptyHand( ItemStack slotItem, int slotIndex )
+        {
+            Texture2D tex = RenderedIconManager.GetTexture( slotItem.Item.ID );
+
+            Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
+            ItemDragAndDrop.Instance.SetIcon( sprite );
+            ItemDragAndDrop.Instance.SetAmount( slotItem.Amount );
+
+            float texWorldSize = RenderedIconManager.GetTextureWorldSize( slotItem.Item.ID );
+            ItemDragAndDrop.Instance.SetIconSize( new Vector2( texWorldSize * InventoryUI.SLOT_ITEM_SIZE, texWorldSize * InventoryUI.SLOT_ITEM_SIZE ) );
+
+            ItemDragAndDrop.cursorItem = slotItem.Copy();
+            AudioManager.PlaySound( slotItem.Item.PickupSound );
+            Inventory.RemoveItem( slotItem.Amount, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+        }
+
+        private void FullHandToFullSlot( ItemStack slotItem, int slotIndex )
+        {
+            AudioClip sound = slotItem.Item.DropSound;
+            int amountAdded = Inventory.AddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            if( amountAdded > 0 )
+            {
+                ItemDragAndDrop.cursorItem.Sub( amountAdded );
+                AudioManager.PlaySound( sound );
+                if( ItemDragAndDrop.cursorItem.IsEmpty )
+                {
+                    ItemDragAndDrop.Instance.SetIcon( null );
+                    ItemDragAndDrop.Instance.SetAmount( null );
+                }
             }
         }
     }

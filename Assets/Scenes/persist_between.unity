@@ -718,6 +718,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClipContainer: {fileID: 999581233}
+  audioListener: {fileID: 790860616}
 --- !u!114 &1883606022
 MonoBehaviour:
   m_ObjectHideFlags: 0

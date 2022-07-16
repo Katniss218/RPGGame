@@ -7,7 +7,7 @@ using UnityEngine;
 namespace RPGGame.Abilities
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(GridInventory))]
+    [RequireComponent(typeof(PlayerInventory))]
     public class ItemPickup : MonoBehaviour
     {
         public float PickupRange = 1.25f;
@@ -19,11 +19,11 @@ namespace RPGGame.Abilities
         float lastPickupTimestamp;
         float timeSinceLastPickup => Time.time - lastPickupTimestamp;
 
-        GridInventory inventory;
+        PlayerInventory inventory;
 
         private void Awake()
         {
-            inventory = GetComponent<GridInventory>();
+            inventory = GetComponent<PlayerInventory>();
         }
 
         void Update()
@@ -72,9 +72,9 @@ namespace RPGGame.Abilities
 
                     if( amtPickedUp > 0 )
                     {
+                        AudioManager.PlaySound( itemStack.Item.PickupSound );
                         pickupInv.TryRemove( new ItemStack( itemStack.Item, amtPickedUp ) );
-                        AudioManager.PlaySound( AssetManager.GetAudioClip( "Sounds/pickup" ), this.transform.position, 0.4f );
-
+                        
                         // Only count if we actually picked something up because \/
                         // Do not skip any inventories or itemstacks due to some items might only fall into some slots (mostly small items when your inventory is almost full).
                         itemStacksLeftTopickUp--;

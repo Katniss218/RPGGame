@@ -22,8 +22,22 @@ namespace RPGGame.Audio
             }
         }
 
+        private static Transform __audioListener;
+        private static Transform AudioListener
+        {
+            get
+            {
+                if( __audioListener == null )
+                {
+                    __audioListener = Object.FindObjectOfType<AudioManager>().audioListener;
+                }
+                return __audioListener;
+            }
+        }
+
 
         [SerializeField] private Transform audioClipContainer;
+        [SerializeField] private Transform audioListener;
 
 
         private static void SetClipAndPlay( AudioSource source, TimerHandler timerHandler, AudioClip clip, float volume, float pitch, Vector3 position, Transform target )
@@ -113,6 +127,15 @@ namespace RPGGame.Audio
         /// </summary>
         public static void PlaySound( AudioClip clip, Transform target, float volume = 1.0f, float pitch = 1.0f )
         {
+            PlaySound( clip, target.position, target, volume, pitch );
+        }
+
+        /// <summary>
+        /// Plays a new sound to follow an object. Can specify the sound, volume and pitch.
+        /// </summary>
+        public static void PlaySound( AudioClip clip, float volume = 1.0f, float pitch = 1.0f )
+        {
+            Transform target = AudioListener;
             PlaySound( clip, target.position, target, volume, pitch );
         }
 

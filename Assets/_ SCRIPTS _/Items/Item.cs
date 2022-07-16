@@ -24,6 +24,9 @@ namespace RPGGame.Items
         public int MaxStack = 1;
         public Vector2Int Size;
 
+        public AudioClip PickupSound;
+        public AudioClip DropSound;
+
         /// <summary>
         /// Use this to compare if the items can be stacked together.
         /// </summary>
