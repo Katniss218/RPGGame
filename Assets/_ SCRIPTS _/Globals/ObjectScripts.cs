@@ -79,7 +79,7 @@ namespace RPGGame.Globals
             if( applyForce )
             {
                 Rigidbody rigidbody = go.GetComponent<Rigidbody>();
-                
+
                 Vector3 dir = ((rotation * Vector3.forward) + new Vector3( 0.0f, 0.4f, 0.0f )).normalized;
                 rigidbody.velocity = dir * 60f;
             }
@@ -94,7 +94,7 @@ namespace RPGGame.Globals
             {
                 return;
             }
-            PlayerInventoryUI.CreateUIWindow( inv );
+            PlayerInventoryUI.CreateUIWindow( inv, inv.transform );
         }
 
         /// <summary>
@@ -102,13 +102,16 @@ namespace RPGGame.Globals
         /// </summary>
         public void OnStartInteracting_Chest( Interactible.OnInteractEventInfo e )
         {
-            UIWindow ui = GridInventoryUI.CreateUIWindow( e.Self.GetComponent<GridInventory>() );
+            UIWindow ui = GridInventoryUI.CreateUIWindow( e.Self.GetComponent<GridInventory>(), e.Self.transform );
             ui.rectTransform.anchoredPosition += new Vector2( 1000f, 0f );
 
             GenericAnimator anim = e.Self.GetComponentInChildren<GenericAnimator>();
             anim.PlayAnimation( 0.0f, 1.0f );
 
-            ui.onClose.AddListener( () => e.Self.StopInteracting( e.Interactor ) );
+            ui.onClosed.AddListener( () =>
+            {
+                e.Self.StopInteracting( e.Interactor );
+            } );
         }
 
         /// <summary>
@@ -120,6 +123,12 @@ namespace RPGGame.Globals
             anim.PauseAnimation();
 
             anim.PlayAnimation( Mathf.Clamp01( anim.PausedNormalizedTime ), -anim.PausedPreviousSpeed );
+            List<UIWindow> windows = UIWindow.GetFor( e.Self.transform, true );
+            foreach( var window in windows )
+            {
+#warning TODO - what if the window pop up is NOT a result of an interaction? Right now it closes all.
+                window.Hide();
+            }
         }
     }
 }

@@ -6,9 +6,15 @@ using UnityEngine;
 
 namespace RPGGame
 {
+    /// <summary>
+    /// A class for handling dragging and dropping items between inventories.
+    /// </summary>
     [DisallowMultipleComponent]
     public class ItemDragAndDrop : MonoBehaviour
     {
+        /// <summary>
+        /// The item currently held by the cursor. Do not set it to null - use MakeEmpty().
+        /// </summary>
         public static ItemStack cursorItem = ItemStack.Empty;
 
         static InventoryItemUI __instance = null;
@@ -16,7 +22,10 @@ namespace RPGGame
         {
             get
             {
-                if( __instance == null ) __instance = FindObjectOfType<ItemDragAndDrop>().GetComponent<InventoryItemUI>();
+                if( __instance == null )
+                {
+                    __instance = FindObjectOfType<ItemDragAndDrop>().GetComponent<InventoryItemUI>();
+                }
                 return __instance;
             }
         }

@@ -22,7 +22,7 @@ namespace RPGGame
             {
                 if( __instance == null )
                 {
-                    __instance = Object.FindObjectOfType<Main>();
+                    __instance = FindObjectOfType<Main>();
                 }
                 return __instance;
             }
@@ -35,7 +35,7 @@ namespace RPGGame
             {
                 if( __cameraController == null )
                 {
-                    __cameraController = Object.FindObjectOfType<CameraController>();
+                    __cameraController = FindObjectOfType<CameraController>();
                 }
                 return __cameraController;
             }
@@ -64,7 +64,7 @@ namespace RPGGame
             {
                 if( __player == null )
                 {
-                    __player = Object.FindObjectOfType<PlayerMovementController>()?.transform;
+                    __player = FindObjectOfType<PlayerMovementController>()?.transform;
                 }
                 return __player;
             }
@@ -82,7 +82,7 @@ namespace RPGGame
                 return __mobHudCanvas;
             }
         }
-        
+
         private static Canvas __gameHudCanvas = null;
         public static Canvas GameHudCanvas
         {
@@ -95,7 +95,7 @@ namespace RPGGame
                 return __gameHudCanvas;
             }
         }
-        
+
         private static Canvas __uiWindowCanvas = null;
         public static Canvas UIWindowCanvas
         {
@@ -116,7 +116,7 @@ namespace RPGGame
             {
                 if( __playerRespawnPoint == null )
                 {
-                    __playerRespawnPoint = Transform.FindObjectOfType<PlayerRespawnPoint>();
+                    __playerRespawnPoint = FindObjectOfType<PlayerRespawnPoint>();
                 }
                 return __playerRespawnPoint;
             }
@@ -124,25 +124,7 @@ namespace RPGGame
 
         private void Start()
         {
-            const string GAME_SCENE_NAME = "game";
-
-            AsyncOperation sceneLoadOper = SceneManager.LoadSceneAsync( GAME_SCENE_NAME, LoadSceneMode.Additive );
-
-            sceneLoadOper.completed += ( AsyncOperation oper ) =>
-            {
-                SceneManager.SetActiveScene( SceneManager.GetSceneByName( GAME_SCENE_NAME ) );
-                CameraController.FollowTarget = Player;
-
-                PlayerMovementController pmc = Player.GetComponent<PlayerMovementController>();
-                if( pmc == null )
-                {
-                    return;
-                }
-
-                pmc.CameraPivot = CameraController.transform;
-
-                PlayerInventoryUI.CreateUIWindow( Player.GetComponent<PlayerInventory>() );
-            };
+            SceneSwitcher.AppendScene( SceneSwitcher.MENU_SCENE_NAME, null );
         }
     }
 }

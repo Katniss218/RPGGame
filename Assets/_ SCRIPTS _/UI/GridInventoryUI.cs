@@ -8,9 +8,9 @@ namespace RPGGame.UI
     public class GridInventoryUI : InventoryUI
     {
 
-        public static GridInventoryUI CreateUIWindow( GridInventory inventory )
+        public static GridInventoryUI CreateUIWindow( GridInventory inventory, Transform owner )
         {
-            (RectTransform rt, GridInventoryUI invUI) = UIWindow.Create<GridInventoryUI>( "Grid Inventory", Main.UIWindowCanvas );
+            (RectTransform rt, GridInventoryUI invUI) = UIWindow.Create<GridInventoryUI>( "Grid Inventory", owner, Main.UIWindowCanvas );
 
             float windowSizeX = inventory.SizeX * SLOT_SIZE + 10f + 10f;
             float windowSizeY = inventory.SizeY * SLOT_SIZE + 10f + 40f;

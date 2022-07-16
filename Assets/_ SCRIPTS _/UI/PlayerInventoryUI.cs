@@ -24,9 +24,9 @@ namespace RPGGame.UI
             base.Awake();
         }
 
-        public static PlayerInventoryUI CreateUIWindow( PlayerInventory inventory )
+        public static PlayerInventoryUI CreateUIWindow( PlayerInventory inventory, Transform owner )
         {
-            (RectTransform rt, PlayerInventoryUI invUI) = UIWindow.Create<PlayerInventoryUI>( "Player Inventory", Main.UIWindowCanvas );
+            (RectTransform rt, PlayerInventoryUI invUI) = UIWindow.Create<PlayerInventoryUI>( "Player Inventory", owner, Main.UIWindowCanvas );
 
             float windowSizeX = Mathf.Max((inventory.SizeX * SLOT_SIZE + 10f + 10f), 200f);
             float windowSizeY = (inventory.SizeY * SLOT_SIZE + 10f + 10f) + 300f;

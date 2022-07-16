@@ -14,7 +14,13 @@ namespace RPGGame.UI
 
         public bool StartHidden = false;
         public bool DestroyOnClose = false;
+        public Transform Owner;
 
+        public bool IsHidden { get => this.gameObject.activeSelf; }
+
+        /// <summary>
+        /// Hidden windows still exist in this list. Only destroyed (hard-closed) windows don't.
+        /// </summary>
         private static List<UIWindow> uiWindows = new List<UIWindow>();
 
         private RectTransform __rectTransform;
@@ -30,8 +36,18 @@ namespace RPGGame.UI
             }
         }
 
+        /// <summary>
+        /// Fired when the window is shown (including on creation).
+        /// </summary>
         public UnityEvent onShow = new UnityEvent();
-        public UnityEvent onClose = new UnityEvent();
+        /// <summary>
+        /// Fired when the window is hidden (including on creation).
+        /// </summary>
+        public UnityEvent onHide = new UnityEvent();
+        /// <summary>
+        /// Fired when the PLAYER presses the 'x' button.
+        /// </summary>
+        public UnityEvent onClosed = new UnityEvent();
 
         /// <summary>
         /// Checks if a UI window of the specified type (exact match) exists.
@@ -40,6 +56,11 @@ namespace RPGGame.UI
         {
             foreach( var window in uiWindows )
             {
+                if( window == null )
+                {
+                    throw new Exception( "Window was null." );
+                }
+
                 // Type must match exactly, no matter the inheritance.
                 if( window.GetType() == typeof( T ) )
                 {
@@ -48,6 +69,30 @@ namespace RPGGame.UI
             }
 
             return false;
+        }
+
+        public static List<UIWindow> GetFor( Transform owner, bool includeHidden )
+        {
+            List<UIWindow> windowsWithOwner = new List<UIWindow>();
+            foreach( var window in uiWindows )
+            {
+                if( window == null )
+                {
+                    throw new Exception( "Window was null." );
+                }
+
+                if( window.Owner == owner )
+                {
+                    if( !includeHidden && window.IsHidden )
+                    {
+                        continue;
+                    }
+
+                    windowsWithOwner.Add( window );
+                }
+            }
+
+            return windowsWithOwner;
         }
 
         protected virtual void Awake()
@@ -70,6 +115,11 @@ namespace RPGGame.UI
             }
         }
 
+        protected virtual void OnDestroy()
+        {
+            uiWindows.Remove( this );
+        }
+
         /// <summary>
         /// Displays the UI window.
         /// </summary>
@@ -78,13 +128,13 @@ namespace RPGGame.UI
             onShow?.Invoke();
             this.gameObject.SetActive( true );
         }
-        
+
         /// <summary>
         /// Hides the UI window.
         /// </summary>
         /// <remarks>
-        /// DO NOT call 'Destroy( obj )' on the window. Set <see cref="DestroyOnClose"/> = true and <see cref="Hide"/> it instead.
-        /// If you don't, it'll lead to memory leaks and events not being fired.
+        /// DO NOT call 'Destroy( obj )' on the window to close it. Set <see cref="DestroyOnClose"/> = true and use <see cref="Hide"/> to close it.
+        /// If you don't, it'll lead to memory leaks and the onHide event not being fired.
         /// </remarks>
         public void Hide()
         {
@@ -96,8 +146,7 @@ namespace RPGGame.UI
             {
                 this.gameObject.SetActive( false );
             }
-            onClose?.Invoke();
-            uiWindows.Remove( this );
+            onHide?.Invoke();
         }
 
         public void Toggle()
@@ -109,8 +158,9 @@ namespace RPGGame.UI
         /// Creates a new UI Window of the specified type.
         /// </summary>
         /// <param name="objectName">The gameObject name for the new UI window.</param>
+        /// <param name="owner">The object this window 'belongs' to. Can be null.</param>
         /// <param name="parent">The canvas onto which the UI window will be placed.</param>
-        public static (RectTransform rt, T window) Create<T>( string objectName, Canvas parent ) where T : UIWindow
+        public static (RectTransform rt, T window) Create<T>( string objectName, Transform owner, Canvas parent ) where T : UIWindow
         {
             RectTransform rt = GameObjectUtils.CreateUI( objectName, parent.transform );
 
@@ -123,12 +173,20 @@ namespace RPGGame.UI
             dragStrip.GetComponent<DraggableUI>().Window = rt;
             dragStrip.GetComponent<FocusableUI>().Window = rt;
 
-            GameObject closeButton = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/x_button" ), rt );
+            GameObject closeButtonGO = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/x_button" ), rt );
+
+            Button closeButton = closeButtonGO.GetComponent<Button>();
 
             T uiWindow = rt.gameObject.AddComponent<T>();
-            uiWindow.closeButton = closeButton.GetComponent<Button>();
+            uiWindow.closeButton = closeButton;
             uiWindow.StartHidden = false;
             uiWindow.DestroyOnClose = true;
+            uiWindow.Owner = owner;
+
+            closeButton.onClick.AddListener( () =>
+            {
+                uiWindow.onClosed?.Invoke();
+            } );
 
             uiWindows.Add( uiWindow );
 

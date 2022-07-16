@@ -19,8 +19,10 @@ namespace RPGGame
         private void HandleMovement()
         {
             if( FollowTarget == null )
-            {
-                Debug.Log( "Camera Controller - FollowTarget was null." ); // this happens when the scene is loaded and the method is called before the field can be set.
+            { 
+                // this happens when the scene is loaded and the method is called before the field can be set.
+                // it also happens when we're just waiting e.g. in the main menu.
+
                 return;
             }
 

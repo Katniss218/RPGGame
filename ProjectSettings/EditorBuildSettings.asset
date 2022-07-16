@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/persist_between.unity
     guid: 65ad66e7b43e4304291c33211be20058
   - enabled: 1
+    path: Assets/Scenes/main_menu.unity
+    guid: d5e287e1ad95aa7499d640882a8279e3
+  - enabled: 1
     path: Assets/Scenes/game.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
