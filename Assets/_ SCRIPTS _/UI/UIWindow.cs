@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace RPGGame.UI
@@ -27,6 +28,9 @@ namespace RPGGame.UI
                 return __rectTransform;
             }
         }
+
+        public UnityEvent onShow = new UnityEvent();
+        public UnityEvent onClose = new UnityEvent();
 
         /// <summary>
         /// Checks if a UI window of the specified type (exact match) exists.
@@ -61,11 +65,17 @@ namespace RPGGame.UI
 
         protected virtual void OnDestroy()
         {
+            // Call it here for safety when e.g. switching scenes.
+            if( destroyOnClose )
+            {
+                onClose?.Invoke();
+            }
             uiWindows.Remove( this );
         }
 
         public void Show()
         {
+            onShow?.Invoke();
             this.gameObject.SetActive( true );
         }
 
@@ -77,13 +87,9 @@ namespace RPGGame.UI
             }
             else
             {
+                onClose?.Invoke();
                 this.gameObject.SetActive( false );
             }
-        }
-
-        public void Destroy()
-        {
-            Destroy( this.gameObject );
         }
 
         public void Toggle()

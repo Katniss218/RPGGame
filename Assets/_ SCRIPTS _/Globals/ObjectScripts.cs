@@ -1,3 +1,4 @@
+using RPGGame.Animation;
 using RPGGame.Interactions;
 using RPGGame.Items;
 using RPGGame.UI;
@@ -37,7 +38,7 @@ namespace RPGGame.Globals
 
             e.Self.SetHealth( e.Self.MaxHealth * 0.5f );
         }
-        
+
         public void OnDropDestroyIfNone( IInventory.DropEventInfo e )
         {
             IInventory inv = e.Self;
@@ -67,11 +68,6 @@ namespace RPGGame.Globals
             GameObject go = Instantiate( _pickupPrefab, e.Self.transform.position + offset, Quaternion.identity );
 
             GameObject itemVisual = Instantiate( e.Item.model, go.transform );
-            //MeshFilter meshFilter = go.GetComponentInChildren<MeshFilter>();
-            //meshFilter.mesh = e.Item.mesh;
-
-            //MeshRenderer meshRenderer = go.GetComponentInChildren<MeshRenderer>();
-           // meshRenderer.materials = e.Item.materials;
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetCapacityAndPickUp( new ItemStack( e.Item, e.Amount ) );
@@ -99,10 +95,26 @@ namespace RPGGame.Globals
         /// <summary>
         /// Meant to run when you click on the "Open inventory" button.
         /// </summary>
-        public void OnInteract_Chest( Interactible.OnInteractEventInfo e )
+        public void OnStartInteracting_Chest( Interactible.OnInteractEventInfo e )
         {
             UIWindow ui = GridInventoryUI.CreateUIWindow( e.Self.GetComponent<GridInventory>() );
             ui.rectTransform.anchoredPosition += new Vector2( 1000f, 0f );
+
+            GenericAnimator anim = e.Self.GetComponentInChildren<GenericAnimator>();
+            anim.PlayAnimation( 0.0f, 1.0f );
+
+            ui.onClose.AddListener( () => e.Self.StopInteracting( e.Interactor ) );
+        }
+
+        /// <summary>
+        /// Meant to run when you click on the "Open inventory" button.
+        /// </summary>
+        public void OnStopInteracting_Chest( Interactible.OnInteractEventInfo e )
+        {
+            GenericAnimator anim = e.Self.GetComponentInChildren<GenericAnimator>();
+            anim.PauseAnimation();
+
+            anim.PlayAnimation( Mathf.Clamp01( anim.PausedNormalizedTime ), -anim.PausedPreviousSpeed );
         }
     }
 }

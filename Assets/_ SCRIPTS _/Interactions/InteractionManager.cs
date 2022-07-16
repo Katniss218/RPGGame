@@ -9,6 +9,11 @@ namespace RPGGame.Interactions
     {
         void Update()
         {
+            HandlePlayerInteractions();
+        }
+
+        void HandlePlayerInteractions()
+        {
             if( Input.GetMouseButtonDown( 1 ) )
             {
                 if( EventSystem.current.IsPointerOverGameObject() )
@@ -26,7 +31,8 @@ namespace RPGGame.Interactions
                         return;
                     }
 
-                    inter.Interact( null );
+#warning TODO - this is quite ugly, as it assumes something is attached to this oninteract and will stop the interaction later.
+                    inter.StartInteracting( null );
                 }
             }
         }
