@@ -142,6 +142,11 @@ namespace RPGGame.Items
                     inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, SizeX ) );
                 }
             }
+
+            onResize?.Invoke( new IInventory.ResizeEventInfo()
+            {
+                Self = this
+            } );
         }
 
         public virtual bool IsValidIndex( int slotIndex, Item item )

@@ -7,6 +7,7 @@ namespace RPGGame.Items
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
+    [DisallowMultipleComponent]
     public sealed class PlayerInventory : GridInventory
     {
         private ItemStack[] Equip = new ItemStack[6];

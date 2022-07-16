@@ -185,6 +185,7 @@ GameObject:
   - component: {fileID: 1224557253238160801}
   - component: {fileID: 8251887124832850033}
   - component: {fileID: 1224557253238160805}
+  - component: {fileID: 5994369417245587863}
   m_Layer: 0
   m_Name: mob.goblin_warrior
   m_TagString: Untagged
@@ -322,10 +323,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 11400000, guid: 9dee400a192360e438ef794cd5e85f74, type: 2}
-        m_TargetAssemblyTypeName: RPGGame.Globals.ObjectScripts, Assembly-CSharp
-        m_MethodName: OnDeathDropInventory
-        m_Mode: 0
+      - m_Target: {fileID: 5994369417245587863}
+        m_TargetAssemblyTypeName: RPGGame.Items.LootTables.LootTableController, Assembly-CSharp
+        m_MethodName: DropItems
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -347,22 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EquipHand: {fileID: 11400000, guid: afdcaedc02974d44a8bc0f5e60079954, type: 2}
-  Drops:
-  - {fileID: 11400000, guid: 0d50d1847e4f1c84290c1ce20e67f177, type: 2}
-  - {fileID: 11400000, guid: 635d002d28b62ad479409ee9b8e47de1, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
-  - {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
+  Drops: []
   __onPickup:
     m_PersistentCalls:
       m_Calls: []
@@ -396,6 +382,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02ad571a3ba6464583ae5768d6354b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5994369417245587863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224557253238160794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af2b80ac8bc72214c9452cab2bfa993c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LootTable: {fileID: 11400000, guid: bb96470a4cde43a43b1ecc1267a568fd, type: 2}
 --- !u!1001 &7340396752409310540
 PrefabInstance:
   m_ObjectHideFlags: 0

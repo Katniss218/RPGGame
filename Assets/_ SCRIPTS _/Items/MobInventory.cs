@@ -8,6 +8,7 @@ namespace RPGGame.Items
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
+    [DisallowMultipleComponent]
     public class MobInventory : MonoBehaviour, IInventory
     {
         public Item EquipHand;

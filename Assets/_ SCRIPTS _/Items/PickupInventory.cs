@@ -12,6 +12,7 @@ namespace RPGGame.Items
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
+    [DisallowMultipleComponent]
     public class PickupInventory : GridInventory
     {
         public float createdTime;

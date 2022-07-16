@@ -17,8 +17,6 @@ namespace RPGGame.Globals
     [CreateAssetMenu( fileName = "_object_script_", menuName = "Objects/_SCRIPTS", order = 0 )]
     public class ObjectScripts : ScriptableObject
     {
-        [SerializeField] private GameObject _pickupPrefab;
-
         public void OnDeathDestroy( HealthHandler.DeathEventInfo e )
         {
             Destroy( e.Self.gameObject );
@@ -60,22 +58,29 @@ namespace RPGGame.Globals
                 return;
             }
 
+            CreatePickup( e.Item, e.Amount, e.Self.transform.position, e.Self.transform.rotation, e.Self is PlayerInventory );
+        }
+
+        public static void CreatePickup( Item item, int amount, Vector3 position, Quaternion rotation, bool applyForce )
+        {
+
             const float HEIGHT_OFFSET = 0.25f;
             const float JITTER_RANGE = 0.05f;
 
             Vector3 offset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
 
-            GameObject go = Instantiate( _pickupPrefab, e.Self.transform.position + offset, Quaternion.identity );
+            GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/pickup" ), position + offset, Quaternion.identity );
 
-            GameObject itemVisual = Instantiate( e.Item.model, go.transform );
+            GameObject itemVisual = Instantiate( item.model, go.transform );
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
-            inventory.SetCapacityAndPickUp( new ItemStack( e.Item, e.Amount ) );
+            inventory.SetCapacityAndPickUp( new ItemStack( item, amount ) );
 
-            if( e.Self is PlayerInventory )
+            if( applyForce )
             {
                 Rigidbody rigidbody = go.GetComponent<Rigidbody>();
-                Vector3 dir = (e.Self.transform.forward + new Vector3( 0.0f, 0.4f, 0.0f )).normalized;
+                
+                Vector3 dir = ((rotation * Vector3.forward) + new Vector3( 0.0f, 0.4f, 0.0f )).normalized;
                 rigidbody.velocity = dir * 60f;
             }
         }

@@ -16,8 +16,6 @@ namespace RPGGame.Items
             GridInventory inv = this.GetComponent<GridInventory>();
 
             inv.SetSize( sizeX, sizeY );
-
-            inv.TryAdd( new ItemStack( AssetManager.GetItem( "item.axe" ), 5 ) );
         }
     }
 }

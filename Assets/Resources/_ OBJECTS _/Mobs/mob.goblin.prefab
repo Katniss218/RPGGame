@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 1224557253238160801}
   - component: {fileID: 8251887124832850033}
   - component: {fileID: 1224557253238160805}
+  - component: {fileID: 3612429614593591316}
   m_Layer: 0
   m_Name: mob.goblin
   m_TagString: Untagged
@@ -154,10 +155,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 11400000, guid: 9dee400a192360e438ef794cd5e85f74, type: 2}
-        m_TargetAssemblyTypeName: RPGGame.Globals.ObjectScripts, Assembly-CSharp
-        m_MethodName: OnDeathDropInventory
-        m_Mode: 0
+      - m_Target: {fileID: 3612429614593591316}
+        m_TargetAssemblyTypeName: RPGGame.Items.LootTables.LootTableController, Assembly-CSharp
+        m_MethodName: DropItems
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -185,19 +186,7 @@ MonoBehaviour:
       m_Calls: []
   __onDrop:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 9dee400a192360e438ef794cd5e85f74, type: 2}
-        m_TargetAssemblyTypeName: RPGGame.Globals.ObjectScripts, Assembly-CSharp
-        m_MethodName: OnDropCreatePickup
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   __onResize:
     m_PersistentCalls:
       m_Calls: []
@@ -213,6 +202,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02ad571a3ba6464583ae5768d6354b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3612429614593591316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224557253238160794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af2b80ac8bc72214c9452cab2bfa993c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LootTable: {fileID: 11400000, guid: a6659fd56b4da1b41bd409b433cea8b2, type: 2}
 --- !u!1 &2644617602263563771
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3727752295a30314a8fe48c65c5d21c0, type: 3}
-  m_Name: _loot_table_
+  m_Name: chest
   m_EditorClassIdentifier: 
-  items:
-  - Item: {fileID: 0}
-    MinAmount: 0
-    MaxAmount: 0
-    DropChance: 0
+  Items:
+  - Item: {fileID: 11400000, guid: 0d50d1847e4f1c84290c1ce20e67f177, type: 2}
+    MinAmount: 1
+    MaxAmount: 3
+    DropChance: 1
+  - Item: {fileID: 11400000, guid: 30ffc1117d460374b8aa173ddff8a67e, type: 2}
+    MinAmount: 50
+    MaxAmount: 100
+    DropChance: 1
