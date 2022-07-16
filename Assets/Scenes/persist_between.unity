@@ -392,7 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceb374dc96196164aa629441a8592887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AnimationClip: {fileID: -7110610367916874563, guid: 6891f5e77edb72244aa9561144741c4f, type: 3}
+  animationClip: {fileID: -7110610367916874563, guid: 6891f5e77edb72244aa9561144741c4f, type: 3}
 --- !u!1 &790860613
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,7 +588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sizeX: 5
-  sizeY: 5
+  sizeY: 8
 --- !u!114 &1146826876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884,7 +884,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sizeX: 5
-  sizeY: 5
+  sizeY: 4
 --- !u!114 &1947291147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1058,7 +1058,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceb374dc96196164aa629441a8592887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AnimationClip: {fileID: -7110610367916874563, guid: 6891f5e77edb72244aa9561144741c4f, type: 3}
+  animationClip: {fileID: -7110610367916874563, guid: 6891f5e77edb72244aa9561144741c4f, type: 3}
 --- !u!95 &2000127723
 Animator:
   serializedVersion: 4

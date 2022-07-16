@@ -11,8 +11,8 @@ namespace RPGGame.UI
     {
         [SerializeField] private Button closeButton;
 
-        [SerializeField] private bool startHidden = false;
-        [SerializeField] private bool destroyOnClose = false;
+        public bool StartHidden = false;
+        public bool DestroyOnClose = false;
 
         private static List<UIWindow> uiWindows = new List<UIWindow>();
 
@@ -57,39 +57,45 @@ namespace RPGGame.UI
         protected virtual void Start()
         {
             closeButton.onClick.AddListener( Hide );
-            if( startHidden )
+
+            // Call the methods regardless of the initial state, to always fire the events consistently.
+            if( StartHidden )
             {
                 Hide();
             }
-        }
-
-        protected virtual void OnDestroy()
-        {
-            // Call it here for safety when e.g. switching scenes.
-            if( destroyOnClose )
+            else
             {
-                onClose?.Invoke();
+                Show();
             }
-            uiWindows.Remove( this );
         }
 
+        /// <summary>
+        /// Displays the UI window.
+        /// </summary>
         public void Show()
         {
             onShow?.Invoke();
             this.gameObject.SetActive( true );
         }
-
+        
+        /// <summary>
+        /// Hides the UI window.
+        /// </summary>
+        /// <remarks>
+        /// DO NOT call 'Destroy( obj )' on the window. Set destroyOnClose = true and Hide() it instead.
+        /// </remarks>
         public void Hide()
         {
-            if( destroyOnClose )
+            if( DestroyOnClose )
             {
                 Destroy( this.gameObject );
             }
             else
             {
-                onClose?.Invoke();
                 this.gameObject.SetActive( false );
             }
+            onClose?.Invoke();
+            uiWindows.Remove( this );
         }
 
         public void Toggle()
@@ -110,8 +116,8 @@ namespace RPGGame.UI
 
             T uiWindow = rt.gameObject.AddComponent<T>();
             uiWindow.closeButton = closeButton.GetComponent<Button>();
-            uiWindow.startHidden = false;
-            uiWindow.destroyOnClose = true;
+            uiWindow.StartHidden = false;
+            uiWindow.DestroyOnClose = true;
 
             uiWindows.Add( uiWindow );
 
