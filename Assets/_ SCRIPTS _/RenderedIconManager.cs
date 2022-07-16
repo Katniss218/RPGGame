@@ -9,7 +9,7 @@ namespace RPGGame
 {
     public class RenderedIconManager : MonoBehaviour
     {
-        public const int RESOLUTION_SIZE_MULTIPLIER = 64;
+        public const int RESOLUTION_SIZE_MULTIPLIER = 32;
 
         private static Dictionary<string, (Texture2D tex, float worldSize)> textures = new Dictionary<string, (Texture2D tex, float worldSize)>();
 
@@ -29,14 +29,14 @@ namespace RPGGame
                 {
                     modelRot = Quaternion.Euler( item.CustomCameraRot );
                 }
-
+                
                 int texResolution = RESOLUTION_SIZE_MULTIPLIER * Mathf.Max( item.Size.x, item.Size.y );
 
-                if( texResolution < 128 )
+                if( texResolution < 32 )
                 {
-                    texResolution = 128;
+                    texResolution = 32;
                 }
-
+                
                 ScreenMesh( item.ID, texResolution, item.model, modelRot, Quaternion.Euler( 10, -30, 0 ) );
             }
         }
@@ -127,30 +127,11 @@ namespace RPGGame
             return gameObj;
         }
 
-        private static GameObject CreateModel( Vector3 position, Quaternion rotation, Mesh mesh, Material[] materials )
-        {
-            GameObject gameObj = new GameObject( "model" );
-            gameObj.layer = ICON_RENDER_LAYER;
-
-            Transform transform = gameObj.transform;
-            transform.position = position;
-            transform.rotation = rotation;
-
-            MeshFilter meshFilter = gameObj.AddComponent<MeshFilter>();
-            meshFilter.mesh = mesh;
-
-            MeshRenderer meshRenderer = gameObj.AddComponent<MeshRenderer>();
-            //meshRenderer.material = materials[0];
-            meshRenderer.materials = materials;
-
-            return gameObj;
-        }
-
         private static Texture2D RenderTextureToTexture2D( RenderTexture renderTexture )
         {
             RenderTexture previousActive = RenderTexture.active;
 
-            Texture2D texture2D = new Texture2D( 128, 128 );
+            Texture2D texture2D = new Texture2D( renderTexture.width, renderTexture.height );
             RenderTexture.active = renderTexture;
 
             texture2D.ReadPixels( new Rect( 0, 0, renderTexture.width, renderTexture.height ), 0, 0 );

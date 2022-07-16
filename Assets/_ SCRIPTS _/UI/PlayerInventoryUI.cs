@@ -11,12 +11,12 @@ namespace RPGGame.UI
     {
         private static Vector2[] equipSlotPositions = new Vector2[]
         {
-            new Vector2( 20, 240 ),  // mainhand
-            new Vector2( 160, 240 ), // offhand
-            new Vector2( 90, 300 ), // head
-            new Vector2( 90, 240 ), // chest
-            new Vector2( 90, 180 ), // legs
-            new Vector2( 90, 120 )  // feet
+            new Vector2( 20, 210 ),  // mainhand
+            new Vector2( 160, 210 ), // offhand
+            new Vector2( 90, 270 ), // head
+            new Vector2( 90, 210 ), // chest
+            new Vector2( 90, 150 ), // legs
+            new Vector2( 90, 90 )  // feet
         };
 
         protected override void Awake()
