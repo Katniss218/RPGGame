@@ -177,6 +177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1224557253238160798}
+  - component: {fileID: 1761654131783918949}
   - component: {fileID: 1224557253238160799}
   - component: {fileID: 1224557253238160796}
   - component: {fileID: 1224557253238160800}
@@ -209,6 +210,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1761654131783918949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224557253238160794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89deecdf962f85048a8c384ac4a91ccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializedGuid: 
 --- !u!136 &1224557253238160799
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -395,6 +409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LootTable: {fileID: 11400000, guid: bb96470a4cde43a43b1ecc1267a568fd, type: 2}
+  DropOnGround: 1
 --- !u!1001 &7340396752409310540
 PrefabInstance:
   m_ObjectHideFlags: 0

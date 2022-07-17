@@ -23,7 +23,7 @@ namespace RPGGame.Serialization
                 try
                 {
                     JObject data = GetDataGameObject( persistent );
-                    dataJson.Add( persistent.guid, data );
+                    dataJson.Add( persistent.GetGuid().ToString("D"), data );
                 }
                 catch( Exception ex )
                 {
@@ -38,8 +38,9 @@ namespace RPGGame.Serialization
         {
             Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>();
 
-            foreach( var (guid, _objData) in data )
+            foreach( var (_guid, _objData) in data )
             {
+                Guid guid = Guid.ParseExact( _guid, "D" );
                 JObject objData = (JObject)_objData;
 
                 try
@@ -54,7 +55,7 @@ namespace RPGGame.Serialization
                     }
                     else
                     {
-                        persistent = persist.First( p => p.guid == guid );
+                        persistent = persist.First( p => p.GetGuid() == guid );
                     }
 
                     SetDataGameObject( persistent, objData );
