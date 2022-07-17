@@ -1,15 +1,20 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace PersistentObject
+namespace RPGGame.ObjectCreation
 {
     [ExecuteInEditMode]
     public class Persistent : MonoBehaviour
     {
         [NonSerialized] public string PrefabPath = null;
 
-        public bool SerializeReference = true;
+#warning TODO - eventually, every persistent object should be spawned from a prefab on load.
+        /// <summary>
+        /// True if the object was spawned and was not part of the scene.
+        /// </summary>
+        public bool IsSpawned { get; private set; }
 
         public string guid;
 
@@ -20,10 +25,6 @@ namespace PersistentObject
         /// </summary>
         private void Awake()
         {
-            if( SerializeReference )
-            {
-                return;
-            }
             if( Application.platform != RuntimePlatform.WindowsEditor )
             {
                 guid = Guid.NewGuid().ToString();
@@ -37,10 +38,6 @@ namespace PersistentObject
         /// </summary>
         private void Update()
         {
-            if( SerializeReference )
-            {
-                return;
-            }
             if( string.IsNullOrEmpty( guid ) )
             {
                 guid = Guid.NewGuid().ToString();
@@ -48,5 +45,22 @@ namespace PersistentObject
             }
         }
 #endif
+
+        public static GameObject InstantiatePersistent( string prefabPath, string name, string guid, Vector3 position, Quaternion rotation )
+        {
+            GameObject obj = Instantiate( AssetManager.GetPrefab( prefabPath ), position, rotation );
+            obj.name = name;
+
+            Persistent persistent = obj.GetComponent<Persistent>();
+            if( persistent == null )
+            {
+                persistent = obj.AddComponent<Persistent>();
+            }
+            persistent.guid = string.IsNullOrEmpty( guid ) ? Guid.NewGuid().ToString() : guid;
+            persistent.PrefabPath = prefabPath;
+            persistent.IsSpawned = true;
+
+            return obj;
+        }
     }
 }

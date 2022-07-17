@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PersistentObject;
 using RPGGame.Items;
+using RPGGame.ObjectCreation;
 using RPGGame.Player;
 using RPGGame.Serialization;
 using RPGGame.UI;
@@ -133,8 +133,7 @@ namespace RPGGame
             SceneSwitcher.AppendScene( SceneSwitcher.MENU_SCENE_NAME, null );
         }
 
-        static string REFERENCES_FILE = AppDomain.CurrentDomain.BaseDirectory + "/" + "ref.json";
-        static string DATA_FILE = AppDomain.CurrentDomain.BaseDirectory + "/" + "data.json";
+        static string SAVE_FILE = AppDomain.CurrentDomain.BaseDirectory + "/" + "save.json";
 
         private void Update()
         {
@@ -144,53 +143,28 @@ namespace RPGGame
                 System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                 sw.Start();
 
-                (JObject references, JObject data) = SerializationManager.GetDataForPersistentObjects();
+                JObject data = SerializationManager.SavePersistentObjects();
 
-                string referencesText = JsonConvert.SerializeObject( references, Formatting.Indented );
-                string dataText = JsonConvert.SerializeObject( data, Formatting.Indented );
+                string savedText = JsonConvert.SerializeObject( data, Formatting.Indented );
 
-                System.IO.File.WriteAllText( REFERENCES_FILE, referencesText );
-                System.IO.File.WriteAllText( DATA_FILE, dataText );
+                System.IO.File.WriteAllText( SAVE_FILE, savedText );
 
                 sw.Stop();
                 Debug.LogWarning( "ser: " + sw.ElapsedTicks / 10000f + " ms" );
             }
 
-            if( Input.GetKeyDown( KeyCode.T ) )
+            if( Input.GetMouseButtonDown( 2 ) )
             {
                 System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                 sw.Start();
 
-                string referencesText = System.IO.File.ReadAllText( REFERENCES_FILE );
-                string dataText = System.IO.File.ReadAllText( DATA_FILE );
+                string savedText = System.IO.File.ReadAllText( SAVE_FILE );
 
-                JObject references = JsonConvert.DeserializeObject<JObject>( referencesText );
-                foreach( var (guid, reference) in references )
-                {
-                    SpawnPersistentObject( (string)reference["PrefabPath"], (string)reference["Name"], guid, default, default );
-                }
-
-                SerializationManager.SetDataForPersistentObjects( JsonConvert.DeserializeObject<JObject>( dataText ) );
+                SerializationManager.LoadPersistentObjects( JsonConvert.DeserializeObject<JObject>( savedText ) );
 
                 sw.Stop();
                 Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
             }
-        }
-
-        public static GameObject SpawnPersistentObject( string prefabPath, string name, string guid, Vector3 position, Quaternion rotation )
-        {
-            GameObject obj = Instantiate( AssetManager.GetPrefab( prefabPath ), position, rotation );
-            obj.name = name;
-
-            Persistent persistent = obj.GetComponent<Persistent>();
-            if( persistent == null )
-            {
-                persistent = obj.AddComponent<Persistent>();
-            }
-            persistent.guid = string.IsNullOrEmpty( guid ) ? Guid.NewGuid().ToString() : guid;
-            persistent.PrefabPath = prefabPath;
-
-            return obj;
         }
 
         public static void CreatePickup( Item item, int amount, Vector3 position, Quaternion rotation, bool applyForce )
@@ -200,8 +174,9 @@ namespace RPGGame
 
             Vector3 offset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
 
-            GameObject go = SpawnPersistentObject( "Prefabs/pickup", "pickup", null, position + offset, Quaternion.identity );
+            GameObject go = Persistent.InstantiatePersistent( "Prefabs/pickup", "pickup", null, position + offset, Quaternion.identity );
 
+#warning TODO - Move this to begin the code for modifying the visuals based on what's equipped.
             GameObject itemVisual = Instantiate( item.model, go.transform );
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();

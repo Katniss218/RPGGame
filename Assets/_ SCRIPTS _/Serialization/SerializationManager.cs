@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PersistentObject;
+using RPGGame.ObjectCreation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,41 +13,16 @@ namespace RPGGame.Serialization
 {
     public static class SerializationManager
     {
-        //
-
-#warning TODO possible ways to make the levels actually load correctly and have it be clean.
-
-        // In the editor, add a button to save the scene as a level.
-        // This saves every object and their IDs
-
-        // when loading, the game can pull the ID data from a file, and combine it with the persisted data, like Siege Settlements does.
-
-        /// <summary>
-        /// Gets the data for all persistent objects in the scene.
-        /// </summary>
-        public static (JObject references, JObject data) GetDataForPersistentObjects()
+        public static JObject SavePersistentObjects()
         {
-            // returns a "list" of gameobjects keyed with their guid.
-
             Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>(); //find all the persistent objects in the level
 
-            JObject referenceJson = new JObject();
             JObject dataJson = new JObject();
             foreach( var persistent in persist )
             {
                 try
                 {
-                    if( !string.IsNullOrEmpty( persistent.PrefabPath ) )
-                    {
-                        JObject reference = new JObject()
-                    {
-                        { "PrefabPath", persistent.PrefabPath },
-                        { "Name", persistent.gameObject.name }
-                    };
-                        referenceJson.Add( persistent.guid, reference );
-                    }
-
-                    JObject data = GetDataGameObject( persistent.gameObject );
+                    JObject data = GetDataGameObject( persistent );
                     dataJson.Add( persistent.guid, data );
                 }
                 catch( Exception ex )
@@ -56,30 +31,33 @@ namespace RPGGame.Serialization
                 }
             }
 
-            return (referenceJson, dataJson);
+            return dataJson;
         }
 
-        /// <summary>
-        /// Sets the data for all persistent objects in the scene.
-        /// </summary>
-        public static void SetDataForPersistentObjects( JObject data )
+        public static void LoadPersistentObjects( JObject data )
         {
-            Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>(); //find all the persistent objects in the level
+            Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>();
 
-            foreach( var persistent in persist )
+            foreach( var (guid, _objData) in data )
             {
+                JObject objData = (JObject)_objData;
+
                 try
                 {
-                    GameObject go = persistent.gameObject;
-                    JObject objData = (JObject)data[persistent.guid];
 
-                    if( objData == null )
+                    Persistent persistent;
+                    string prefabPath = (string)objData["PrefabPath"];
+                    // if the prefab path is not null, spawn it.
+                    if( prefabPath != null )
                     {
-                        Debug.LogError( $"The data for object '{persistent.guid}' ('{go.name}') was missing." );
-                        continue;
+                        persistent = Persistent.InstantiatePersistent( prefabPath, default, guid, default, default ).GetComponent<Persistent>();
+                    }
+                    else
+                    {
+                        persistent = persist.First( p => p.guid == guid );
                     }
 
-                    SetDataGameObject( go, objData );
+                    SetDataGameObject( persistent, objData );
                 }
                 catch( Exception ex )
                 {
@@ -93,14 +71,18 @@ namespace RPGGame.Serialization
         /// <summary>
         /// Returns the JSON containing the saved data of this particular object.
         /// </summary>
-        public static JObject GetDataGameObject( GameObject obj )
+        public static JObject GetDataGameObject( Persistent _obj )
         {
+            GameObject obj = _obj.gameObject;
+
             JObject transformData = obj.transform.GetData();
 
             JToken componentData = GetComponentData( obj );
 
             JObject full = new JObject()
             {
+                { "PrefabPath", _obj.PrefabPath },
+                { "Name", obj.name },
                 { "Transform", transformData },
                 { "Components", componentData },
             };
@@ -112,8 +94,12 @@ namespace RPGGame.Serialization
         /// Applies the saved data to this object.
         /// </summary>
         /// <param name="data">The data. It's supposed to have come from the same object, saved earlier.</param>
-        public static void SetDataGameObject( GameObject obj, JObject data )
+        public static void SetDataGameObject( Persistent _obj, JObject data )
         {
+            GameObject obj = _obj.gameObject;
+
+            obj.name = (string)data["Name"];
+
             JObject transformData = (JObject)data["Transform"];
 
             JToken componentData = data["Components"];

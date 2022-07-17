@@ -1,3 +1,4 @@
+using RPGGame.ObjectCreation;
 using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace RPGGame.Mobs
 
         void Start()
         {
-            Main.SpawnPersistentObject( PrefabPath, "mob", null, this.transform.position, this.transform.rotation );
+            Persistent.InstantiatePersistent( PrefabPath, "mob", null, this.transform.position, this.transform.rotation );
         }
 
         void OnDrawGizmos()
