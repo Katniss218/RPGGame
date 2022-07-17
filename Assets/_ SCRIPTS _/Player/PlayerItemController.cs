@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RPGGame.Audio;
 using RPGGame.Items;
+using RPGGame.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,15 +43,25 @@ namespace RPGGame.Player
 #warning test. Remove this later.
             if( Input.GetKeyDown( KeyCode.R ) )
             {
-                HealthHandler health = this.GetComponent<HealthHandler>();
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
 
-                Serialization.SerializationManager.serializedTemp = Serialization.SerializationManager.SerializeObject( health );
+                SerializationManager.serializedTemp = JsonConvert.SerializeObject( SerializationManager.GetDataAll( this.gameObject ) );
+
+                sw.Stop();
+                Debug.LogWarning( "ser: " + sw.ElapsedTicks / 10000f + " ms" );
 
             }
 #warning test. Remove this later.
             if( Input.GetKeyDown( KeyCode.T ) )
             {
-                Serialization.SerializationManager.PopulateObject( this.GetComponent<HealthHandler>(), Serialization.SerializationManager.serializedTemp );
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+
+                SerializationManager.SetDataAll( this.gameObject, JsonConvert.DeserializeObject<JObject>( SerializationManager.serializedTemp ) );
+
+                sw.Stop();
+                Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
             }
         }
 

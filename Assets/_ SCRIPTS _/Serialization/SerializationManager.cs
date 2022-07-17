@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,94 +11,84 @@ namespace RPGGame.Serialization
 {
     public static class SerializationManager
     {
-        // some sort of dictionary of memberinfos, etc, for a given type? (so we don't have to read them every time).
-
         public static string serializedTemp = "";
 
-        // Implementing this dictionary improves time performance when serializing approximately 100-fold (A HUNDRED!).
-        // Deserializing seems to be around 3x more costly than serializing (tested on just 2 properties).
-        private static Dictionary<Type, TypeSerializationInfo> typeDict = new Dictionary<Type, TypeSerializationInfo>();
-
-        private static TypeSerializationInfo PopulateTypeDict(Type type )
+        /// <summary>
+        /// Returns the JSON containing the saved data of this particular object.
+        /// </summary>
+        public static JObject GetDataAll( GameObject obj )
         {
-            PropertyInfo[] properties = type.GetProperties();
+            JObject transformData = obj.transform.GetData();
 
-            List<TypeSerializationInfo.PropertyData> persistedProperties = new List<TypeSerializationInfo.PropertyData>();
-            foreach( var prop in properties )
+            JToken componentData = GetComponentData( obj );
+
+            JObject full = new JObject()
             {
-                object[] attrs = prop.GetCustomAttributes( typeof( PersistAttribute ), true );
+                { "Transform", transformData },
+                { "Components", componentData },
+            };
 
-                if( attrs.Length > 0 )
+            return full;
+        }
+
+        /// <summary>
+        /// Applies the saved data to this object.
+        /// </summary>
+        /// <param name="data">The data. It's supposed to have come from the same object, saved earlier.</param>
+        public static void SetDataAll( GameObject obj, JObject data )
+        {
+            JObject transformData = (JObject)data["Transform"];
+
+            JToken componentData = data["Components"];
+
+            obj.transform.SetData( transformData );
+            SetComponentData( obj, componentData );
+        }
+
+        public static JToken GetComponentData( GameObject obj )
+        {
+            ISerializedBy[] serializedComponents = obj.GetComponents<ISerializedBy>();
+
+            var componentsGroupedByType = serializedComponents.GroupBy( c => c.GetType() );
+
+            JObject allComps = new JObject();
+
+            // Save the components grouped by their type, and for each type, preserve their ordering (order within the type will matter, but each type can be rearranged).
+            foreach( var group in componentsGroupedByType )
+            {
+                JArray compData = new JArray();
+
+                foreach( var sc in group )
                 {
-                    persistedProperties.Add( new TypeSerializationInfo.PropertyData((PersistAttribute)attrs[0], prop) );
+                    JObject data = sc.GetData();
+                    compData.Add( data );
+                }
+
+                allComps.Add( group.Key.FullName, compData );
+            }
+
+            return allComps;
+        }
+
+        public static void SetComponentData( GameObject obj, JToken data )
+        {
+            ISerializedBy[] serializedComponents = obj.GetComponents<ISerializedBy>();
+
+            var componentsGroupedByType = serializedComponents.GroupBy( c => c.GetType() );
+
+            foreach( var group in componentsGroupedByType )
+            {
+                string componentType = group.Key.FullName;
+                JArray compData = (JArray)data[componentType];
+
+                int i = 0;
+                foreach( var sc in group )
+                {
+                    JObject d = (JObject)data[i];
+                    sc.SetData( d );
+                    i++;
                 }
             }
-
-            TypeSerializationInfo info = new TypeSerializationInfo() { PersistedProperties = persistedProperties };
-
-            typeDict.Add( type, info );
-            return info;
-        }
-
-        public static string SerializeObject( object obj )
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            // writes serializable data to a string.
-            // Returns that string.
-
-            Type type = obj.GetType();
-
-            TypeSerializationInfo info;
-            if( !typeDict.TryGetValue( type, out info ) )
-            {
-                info = PopulateTypeDict( type );
-            }
-
-            List<string> props = new List<string>();
-            foreach( var propData in info.PersistedProperties )
-            {
-                object value = propData.PropInfo.GetValue( obj );
-                //props.Add( $"({prop.PropertyType.FullName}) {prop.Name} = {value.ToString()}" );
-                props.Add( $"{propData.Attr.Name}={value.ToString()}" );
-            }
-
-            string s = string.Join( '\n', props );
-
-            sw.Stop();
-            UnityEngine.Debug.LogWarning( "ser: " + sw.ElapsedTicks );
-
-            return s;
-        }
-
-        public static void PopulateObject( object obj, string data )
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            Type type = obj.GetType();
-
-            TypeSerializationInfo info;
-            if( !typeDict.TryGetValue( type, out info ) )
-            {
-                info = PopulateTypeDict( type );
-            }
-
-            string[] props = data.Split( '\n' );
-
-            foreach( var propData in info.PersistedProperties )
-            {
-                // if the type is a serializable, call deserialize on it.
-                // if the type is primitive, read the string.
-
-                string val = props.Where( s => s.StartsWith( $"{propData.Attr.Name}=" ) ).First().Split('=').Last();
-
-                float val2 = float.Parse( val );
-                propData.PropInfo.SetValue( obj, val2 );
-            }
-
-            sw.Stop();
-            UnityEngine.Debug.LogWarning( "deser: " + sw.ElapsedTicks );
         }
     }
 }
