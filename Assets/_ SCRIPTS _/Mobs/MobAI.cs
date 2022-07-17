@@ -1,4 +1,5 @@
 using RPGGame.Player;
+using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,9 +25,29 @@ namespace RPGGame.Mobs
             enemyMovement = this.GetComponent<MobTargetTracking>();
         }
 
+        void Start()
+        {
+            SpawnMobHUD();
+        }
+
         void Update()
         {
             HandleUpdateTarget();
+        }
+
+        private void SpawnMobHUD()
+        {
+            HealthHandler healthHandler = this.GetComponent<HealthHandler>();
+
+            GameObject hud = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/MobHud" ), Main.MobHudCanvas.transform );
+            FollowObjectUI follower = hud.GetComponent<FollowObjectUI>();
+            follower.TrackedObject = this.transform;
+            follower.WorldOffset = new Vector3( 0, 2, 0 ); // in the future, change depending on the size of the monster.
+
+            HealthbarUI healthbar = hud.GetComponent<HealthbarUI>();
+            healthHandler.onHealthChange.AddListener( healthbar.OnHealthOrMaxHealthChange );
+            healthHandler.onMaxHealthChange.AddListener( healthbar.OnHealthOrMaxHealthChange );
+            healthHandler.onDeath.AddListener( healthbar.OnDeath );
         }
 
         private void HandleUpdateTarget()

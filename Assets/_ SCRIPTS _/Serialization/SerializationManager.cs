@@ -15,24 +15,48 @@ namespace RPGGame.Serialization
     {
         //
 
+#warning TODO possible ways to make the levels actually load correctly and have it be clean.
+
+        // In the editor, add a button to save the scene as a level.
+        // This saves every object and their IDs
+
+        // when loading, the game can pull the ID data from a file, and combine it with the persisted data, like Siege Settlements does.
+
         /// <summary>
         /// Gets the data for all persistent objects in the scene.
         /// </summary>
-        public static JObject GetDataForPersistentObjects()
+        public static (JObject references, JObject data) GetDataForPersistentObjects()
         {
             // returns a "list" of gameobjects keyed with their guid.
 
             Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>(); //find all the persistent objects in the level
 
-            JObject json = new JObject();
+            JObject referenceJson = new JObject();
+            JObject dataJson = new JObject();
             foreach( var persistent in persist )
             {
-                JObject gameObjectData = GetDataGameObject( persistent.gameObject );
+                try
+                {
+                    if( !string.IsNullOrEmpty( persistent.PrefabPath ) )
+                    {
+                        JObject reference = new JObject()
+                    {
+                        { "PrefabPath", persistent.PrefabPath },
+                        { "Name", persistent.gameObject.name }
+                    };
+                        referenceJson.Add( persistent.guid, reference );
+                    }
 
-                json.Add( persistent.guid, gameObjectData );
+                    JObject data = GetDataGameObject( persistent.gameObject );
+                    dataJson.Add( persistent.guid, data );
+                }
+                catch( Exception ex )
+                {
+                    Debug.LogException( ex );
+                }
             }
 
-            return json;
+            return (referenceJson, dataJson);
         }
 
         /// <summary>
@@ -44,16 +68,23 @@ namespace RPGGame.Serialization
 
             foreach( var persistent in persist )
             {
-                GameObject go = persistent.gameObject;
-                JObject objData = (JObject)data[persistent.guid];
-
-                if( objData == null )
+                try
                 {
-                    Debug.LogError( $"The data for object '{persistent.guid}' ('{go.name}') was missing." );
-                    continue;
-                }
+                    GameObject go = persistent.gameObject;
+                    JObject objData = (JObject)data[persistent.guid];
 
-                SetDataGameObject( go, objData );
+                    if( objData == null )
+                    {
+                        Debug.LogError( $"The data for object '{persistent.guid}' ('{go.name}') was missing." );
+                        continue;
+                    }
+
+                    SetDataGameObject( go, objData );
+                }
+                catch( Exception ex )
+                {
+                    Debug.LogException( ex );
+                }
             }
         }
 
@@ -109,8 +140,15 @@ namespace RPGGame.Serialization
 
                 foreach( var sc in group )
                 {
-                    JObject data = sc.GetData();
-                    compData.Add( data );
+                    try
+                    {
+                        JObject data = sc.GetData();
+                        compData.Add( data );
+                    }
+                    catch( Exception ex )
+                    {
+                        Debug.LogException( ex );
+                    }
                 }
 
                 allComps.Add( group.Key.FullName, compData );
@@ -136,8 +174,15 @@ namespace RPGGame.Serialization
                 int i = 0;
                 foreach( var sc in group )
                 {
-                    JObject d = (JObject)compData[i];
-                    sc.SetData( d );
+                    try
+                    {
+                        JObject d = (JObject)compData[i];
+                        sc.SetData( d );
+                    }
+                    catch( Exception ex )
+                    {
+                        Debug.LogException( ex );
+                    }
                     i++;
                 }
             }

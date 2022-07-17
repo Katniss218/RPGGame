@@ -32,7 +32,7 @@ namespace RPGGame.Items.LootTables
             {
                 foreach( var item in items )
                 {
-                    ObjectScripts.CreatePickup( item.Item, item.Amount, this.transform.position, this.transform.rotation, false );
+                    Main.CreatePickup( item.Item, item.Amount, this.transform.position, this.transform.rotation, false );
                 }
             }
             else

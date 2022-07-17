@@ -7,6 +7,10 @@ namespace PersistentObject
     [ExecuteInEditMode]
     public class Persistent : MonoBehaviour
     {
+        [NonSerialized] public string PrefabPath = null;
+
+        public bool SerializeReference = true;
+
         public string guid;
 
 #if UNITY_EDITOR
@@ -16,6 +20,10 @@ namespace PersistentObject
         /// </summary>
         private void Awake()
         {
+            if( SerializeReference )
+            {
+                return;
+            }
             if( Application.platform != RuntimePlatform.WindowsEditor )
             {
                 guid = Guid.NewGuid().ToString();
@@ -29,6 +37,10 @@ namespace PersistentObject
         /// </summary>
         private void Update()
         {
+            if( SerializeReference )
+            {
+                return;
+            }
             if( string.IsNullOrEmpty( guid ) )
             {
                 guid = Guid.NewGuid().ToString();
