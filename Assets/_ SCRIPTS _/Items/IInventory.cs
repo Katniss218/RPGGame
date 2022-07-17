@@ -1,3 +1,4 @@
+using RPGGame.Serialization;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine.Events;
 
 namespace RPGGame.Items
 {
-    public interface IInventory
+    public interface IInventory : ISerializedByData
     {
         public class PickupEventInfo
         {

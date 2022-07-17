@@ -1,9 +1,4 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using RPGGame.Audio;
 using RPGGame.Items;
-using RPGGame.Serialization;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -38,30 +33,6 @@ namespace RPGGame.Player
                 {
                     UseEquipHand();
                 }
-            }
-
-#warning test. Remove this later.
-            if( Input.GetKeyDown( KeyCode.R ) )
-            {
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
-
-                SerializationManager.serializedTemp = JsonConvert.SerializeObject( SerializationManager.GetDataAll( this.gameObject ) );
-
-                sw.Stop();
-                Debug.LogWarning( "ser: " + sw.ElapsedTicks / 10000f + " ms" );
-
-            }
-#warning test. Remove this later.
-            if( Input.GetKeyDown( KeyCode.T ) )
-            {
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
-
-                SerializationManager.SetDataAll( this.gameObject, JsonConvert.DeserializeObject<JObject>( SerializationManager.serializedTemp ) );
-
-                sw.Stop();
-                Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
             }
         }
 

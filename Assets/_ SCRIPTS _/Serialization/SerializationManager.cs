@@ -1,22 +1,68 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PersistentObject;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace RPGGame.Serialization
 {
     public static class SerializationManager
     {
-        public static string serializedTemp = "";
+        //
+
+        /// <summary>
+        /// Gets the data for all persistent objects in the scene.
+        /// </summary>
+        public static JObject GetDataForPersistentObjects()
+        {
+            // returns a "list" of gameobjects keyed with their guid.
+
+            Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>(); //find all the persistent objects in the level
+
+            JObject json = new JObject();
+            foreach( var persistent in persist )
+            {
+                JObject gameObjectData = GetDataGameObject( persistent.gameObject );
+
+                json.Add( persistent.guid, gameObjectData );
+            }
+
+            return json;
+        }
+
+        /// <summary>
+        /// Sets the data for all persistent objects in the scene.
+        /// </summary>
+        public static void SetDataForPersistentObjects( JObject data )
+        {
+            Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>(); //find all the persistent objects in the level
+
+            foreach( var persistent in persist )
+            {
+                GameObject go = persistent.gameObject;
+                JObject objData = (JObject)data[persistent.guid];
+
+                if( objData == null )
+                {
+                    Debug.LogError( $"The data for object '{persistent.guid}' ('{go.name}') was missing." );
+                    continue;
+                }
+
+                SetDataGameObject( go, objData );
+            }
+        }
+
+        //
 
         /// <summary>
         /// Returns the JSON containing the saved data of this particular object.
         /// </summary>
-        public static JObject GetDataAll( GameObject obj )
+        public static JObject GetDataGameObject( GameObject obj )
         {
             JObject transformData = obj.transform.GetData();
 
@@ -35,7 +81,7 @@ namespace RPGGame.Serialization
         /// Applies the saved data to this object.
         /// </summary>
         /// <param name="data">The data. It's supposed to have come from the same object, saved earlier.</param>
-        public static void SetDataAll( GameObject obj, JObject data )
+        public static void SetDataGameObject( GameObject obj, JObject data )
         {
             JObject transformData = (JObject)data["Transform"];
 
@@ -45,9 +91,12 @@ namespace RPGGame.Serialization
             SetComponentData( obj, componentData );
         }
 
+        /// <summary>
+        /// Gets the data for every <see cref="ISerializedByData"/> component on this object.
+        /// </summary>
         public static JToken GetComponentData( GameObject obj )
         {
-            ISerializedBy[] serializedComponents = obj.GetComponents<ISerializedBy>();
+            ISerializedByData[] serializedComponents = obj.GetComponents<ISerializedByData>();
 
             var componentsGroupedByType = serializedComponents.GroupBy( c => c.GetType() );
 
@@ -70,9 +119,12 @@ namespace RPGGame.Serialization
             return allComps;
         }
 
+        /// <summary>
+        /// Sets the data for every <see cref="ISerializedByData"/> component on this object.
+        /// </summary>
         public static void SetComponentData( GameObject obj, JToken data )
         {
-            ISerializedBy[] serializedComponents = obj.GetComponents<ISerializedBy>();
+            ISerializedByData[] serializedComponents = obj.GetComponents<ISerializedByData>();
 
             var componentsGroupedByType = serializedComponents.GroupBy( c => c.GetType() );
 
@@ -84,7 +136,7 @@ namespace RPGGame.Serialization
                 int i = 0;
                 foreach( var sc in group )
                 {
-                    JObject d = (JObject)data[i];
+                    JObject d = (JObject)compData[i];
                     sc.SetData( d );
                     i++;
                 }

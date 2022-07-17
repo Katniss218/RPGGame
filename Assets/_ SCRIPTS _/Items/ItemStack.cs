@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -123,6 +124,21 @@ namespace RPGGame.Items
         public override string ToString()
         {
             return $"({Amount}x '{Item}')";
+        }
+
+        public JObject GetData()
+        {
+            return new JObject()
+            {
+                { "ItemID", Item.ID },
+                { "Amount", Amount }
+            };
+        }
+
+        public void SetData( JObject data )
+        {
+            this.Item = AssetManager.GetItem( (string)data["ItemID"] );
+            this.Amount = (int)data["Amount"];
         }
     }
 }

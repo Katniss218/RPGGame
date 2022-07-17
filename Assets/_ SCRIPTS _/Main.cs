@@ -1,6 +1,10 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RPGGame.Items;
 using RPGGame.Player;
+using RPGGame.Serialization;
 using RPGGame.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -125,6 +129,38 @@ namespace RPGGame
         private void Start()
         {
             SceneSwitcher.AppendScene( SceneSwitcher.MENU_SCENE_NAME, null );
+        }
+
+        static string serializedFile = "save.json";
+
+        private void Update()
+        {
+#warning TODO - hook this up to a save / load button and a file.
+            if( Input.GetKeyDown( KeyCode.R ) )
+            {
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+
+                string ser = JsonConvert.SerializeObject( SerializationManager.GetDataForPersistentObjects() );
+
+                sw.Stop();
+                Debug.LogWarning( "ser: " + sw.ElapsedTicks / 10000f + " ms" );
+
+                System.IO.File.WriteAllText( AppDomain.CurrentDomain.BaseDirectory + "/" + serializedFile, ser );
+            }
+
+            if( Input.GetKeyDown( KeyCode.T ) )
+            {
+                string ser = System.IO.File.ReadAllText( AppDomain.CurrentDomain.BaseDirectory + "/" + serializedFile );
+
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+
+                SerializationManager.SetDataForPersistentObjects( JsonConvert.DeserializeObject<JObject>( ser ) );
+
+                sw.Stop();
+                Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -87,6 +88,16 @@ namespace RPGGame.Items
         public int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
+        }
+
+        public JObject GetData()
+        {
+            return IInventoryEx.GetData( this );
+        }
+
+        public void SetData( JObject data )
+        {
+            IInventoryEx.SetData( this, data );
         }
     }
 }

@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -509,6 +511,16 @@ namespace RPGGame.Items
             }
 
             return sb.ToString();
+        }
+
+        public JObject GetData()
+        {
+            return IInventoryEx.GetData( this );
+        }
+
+        public void SetData( JObject data )
+        {
+            IInventoryEx.SetData( this, data );
         }
     }
 }

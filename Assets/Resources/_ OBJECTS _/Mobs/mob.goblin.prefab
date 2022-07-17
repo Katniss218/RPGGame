@@ -215,6 +215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LootTable: {fileID: 11400000, guid: a6659fd56b4da1b41bd409b433cea8b2, type: 2}
+  DropOnGround: 1
 --- !u!1 &2644617602263563771
 GameObject:
   m_ObjectHideFlags: 0
