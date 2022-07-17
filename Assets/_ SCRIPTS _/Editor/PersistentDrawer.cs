@@ -6,17 +6,17 @@ namespace RPGGame.ObjectCreation
     [CustomEditor( typeof( Persistent ) )]
     public class PersistentDrawer : Editor
     {
-        private Persistent guidComp;
+        private Persistent component;
 
         public override void OnInspectorGUI()
         {
-            if( guidComp == null )
+            if( component == null )
             {
-                guidComp = (Persistent)target;
+                component = (Persistent)target;
             }
 
             // Draw label
-            EditorGUILayout.LabelField( "Guid", guidComp.GetGuid().ToString() );
+            EditorGUILayout.LabelField( "Guid", component.GetGuid().ToString() );
         }
     }
 }

@@ -16,21 +16,18 @@ namespace RPGGame.ObjectCreation
 
         /// <summary>
         /// True if the object was spawned and was not part of the scene.
-        /// This is needed to distinguish objects which were part of the scene already from those that need to be created.
         /// </summary>
-#warning We could distinguish objects already present by the fact they won't ever have the prefab path set (because they were not spawned from a prefab).
-        public bool IsSpawned { get; private set; }
+        public bool IsSpawned => this.PrefabPath != null;
+
+        public bool HasGuid => guid != Guid.Empty;
 
         Guid guid = Guid.Empty;
 
         [SerializeField] [HideInInspector] byte[] serializedGuid;
 
-        public bool HasGuid => guid != Guid.Empty;
-
-
-        // Never return an invalid GUID
         public Guid GetGuid()
         {
+            // Never return an invalid GUID
             if( guid == Guid.Empty && serializedGuid != null && serializedGuid.Length == 16 )
             {
                 guid = new Guid( serializedGuid );
@@ -52,7 +49,6 @@ namespace RPGGame.ObjectCreation
                 {
                     return;
                 }
-                //Undo.RecordObject( this, "Added GUID" );
 #endif
                 guid = Guid.NewGuid();
                 serializedGuid = guid.ToByteArray();
@@ -90,7 +86,7 @@ namespace RPGGame.ObjectCreation
             }
         }
 
-        // This is needed to work around the OnValidate() being called twice when duplicating an object (so we'd get a double Guid in the 'AllPersistentObjects')
+        // This is needed to work around the OnValidate() being called twice when duplicating an object (we'd get a double Guid in the 'AllPersistentObjects' otherwise).
         [NonSerialized] bool alreadySet;
 
         void OnValidate()
@@ -191,6 +187,11 @@ namespace RPGGame.ObjectCreation
 
         public static GameObject InstantiatePersistent( string prefabPath, string name, Guid? guid, Vector3 position, Quaternion rotation )
         {
+            if( guid == null )
+            {
+                guid = Guid.NewGuid();
+            }
+
             GameObject obj = Instantiate( AssetManager.GetPrefab( prefabPath ), position, rotation );
             obj.name = name;
 
@@ -199,14 +200,9 @@ namespace RPGGame.ObjectCreation
             {
                 persistent = obj.AddComponent<Persistent>();
             }
-            if( guid == null )
-            {
-                guid = Guid.NewGuid();
-            }
             persistent.guid = guid.Value;
             persistent.serializedGuid = persistent.guid.ToByteArray();
             persistent.PrefabPath = prefabPath;
-            persistent.IsSpawned = true;
 
             return obj;
         }
