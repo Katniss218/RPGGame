@@ -1,11 +1,14 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RPGGame.Globals;
+using RPGGame.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPGGame.Items.LootTables
 {
-    public class LootTableController : MonoBehaviour
+    public class LootTableController : MonoBehaviour, ISerializedComponent
     {
         public LootTable LootTable;
 
@@ -44,6 +47,20 @@ namespace RPGGame.Items.LootTables
                     inventory.TryAdd( item );
                 }
             }
+        }
+
+        public JObject GetData()
+        {
+            return new JObject()
+            {
+                { "LootTable", LootTable },
+                { "DropOnGround", DropOnGround }
+            };
+        }
+
+        public void SetData( JObject data )
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

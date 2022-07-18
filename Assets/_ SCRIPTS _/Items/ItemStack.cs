@@ -123,22 +123,31 @@ namespace RPGGame.Items
 
         public override string ToString()
         {
+            if( this.IsEmpty )
+            {
+                return "(empty)";
+            }
+
             return $"({Amount}x '{Item}')";
         }
 
-        public JObject GetData()
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public static implicit operator JToken( ItemStack self )
         {
             return new JObject()
             {
-                { "ItemID", Item.ID },
-                { "Amount", Amount }
+                { "Item", self.Item },
+                { "Amount",self.Amount }
             };
         }
 
-        public void SetData( JObject data )
+        public static explicit operator ItemStack( JToken json )
         {
-            this.Item = AssetManager.GetItem( (string)data["ItemID"] );
-            this.Amount = (int)data["Amount"];
+            return new ItemStack( (Item)json["ItemID"], (int)json["Amount"] );
         }
     }
 }

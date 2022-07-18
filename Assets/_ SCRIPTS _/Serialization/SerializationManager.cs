@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -13,17 +14,41 @@ namespace RPGGame.Serialization
 {
     public static class SerializationManager
     {
-        public static JObject SavePersistentObjects()
-        {
-            Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>(); //find all the persistent objects in the level
+        public static Dictionary<object, Guid> identifyableObjects = new Dictionary<object, Guid>();
 
-            JObject dataJson = new JObject();
+        // objects that are not components (basically standalone classes/structs) are serialized via operator overloading.
+        // components are serialized via the interface.
+        // Everything that goes onto a gameobject is serialized by the Get/Set Data methods.
+
+        public static JObject SaveScene()
+        {
+            JObject obj = new JObject()
+            {
+                { "Objects", SaveSceneObjects() }
+            };
+
+            return obj;
+        }
+
+        public static JArray SaveSceneObjects()
+        {
+            // this is important. without this, it won't serialize at the 2nd attempt.
+            identifyableObjects = new Dictionary<object, Guid>();
+
+            GameObject[] persist = UnityEngine.Object.FindObjectsOfType<GameObject>(); //find all the persistent objects in the level
+
+            JArray dataJson = new JArray();
             foreach( var persistent in persist )
             {
+                // only serialize root objects.
+                if( persistent.transform.parent != null )
+                {
+                    continue;
+                }
                 try
                 {
-                    JObject data = GetDataGameObject( persistent );
-                    dataJson.Add( persistent.GetGuid().ToString("D"), data );
+                    JObject data = GetDataGameObject( persistent.gameObject );
+                    dataJson.Add( data );
                 }
                 catch( Exception ex )
                 {
@@ -34,45 +59,12 @@ namespace RPGGame.Serialization
             return dataJson;
         }
 
-        public static void LoadPersistentObjects( JObject data )
-        {
-            Persistent[] persist = UnityEngine.Object.FindObjectsOfType<Persistent>();
-
-            foreach( var (_guid, _objData) in data )
-            {
-                Guid guid = Guid.ParseExact( _guid, "D" );
-                JObject objData = (JObject)_objData;
-
-                try
-                {
-
-                    Persistent persistent;
-                    string prefabPath = (string)objData["PrefabPath"];
-                    // if the prefab path is not null, spawn it.
-                    if( prefabPath != null )
-                    {
-                        persistent = Persistent.InstantiatePersistent( prefabPath, default, guid, default, default ).GetComponent<Persistent>();
-                    }
-                    else
-                    {
-                        persistent = persist.First( p => p.GetGuid() == guid );
-                    }
-
-                    SetDataGameObject( persistent, objData );
-                }
-                catch( Exception ex )
-                {
-                    Debug.LogException( ex );
-                }
-            }
-        }
-
         //
 
         /// <summary>
         /// Returns the JSON containing the saved data of this particular object.
         /// </summary>
-        public static JObject GetDataGameObject( Persistent _obj )
+        public static JObject GetDataGameObject( GameObject _obj )
         {
             GameObject obj = _obj.gameObject;
 
@@ -80,9 +72,13 @@ namespace RPGGame.Serialization
 
             JToken componentData = GetComponentData( obj );
 
+            Guid guid = Guid.NewGuid();
+            identifyableObjects.Add( _obj, guid );
+
             JObject full = new JObject()
             {
-                { "PrefabPath", _obj.PrefabPath },
+                { "$id", guid.ToString("D") },
+                { "Prefab", obj.GetPrefabPath() },
                 { "Name", obj.name },
                 { "Transform", transformData },
                 { "Components", componentData },
@@ -95,10 +91,8 @@ namespace RPGGame.Serialization
         /// Applies the saved data to this object.
         /// </summary>
         /// <param name="data">The data. It's supposed to have come from the same object, saved earlier.</param>
-        public static void SetDataGameObject( Persistent _obj, JObject data )
+        public static void SetDataGameObject( GameObject obj, JObject data )
         {
-            GameObject obj = _obj.gameObject;
-
             obj.name = (string)data["Name"];
 
             JObject transformData = (JObject)data["Transform"];
@@ -110,11 +104,11 @@ namespace RPGGame.Serialization
         }
 
         /// <summary>
-        /// Gets the data for every <see cref="ISerializedByData"/> component on this object.
+        /// Gets the data for every <see cref="ISerializedComponent"/> component on this object.
         /// </summary>
         public static JToken GetComponentData( GameObject obj )
         {
-            ISerializedByData[] serializedComponents = obj.GetComponents<ISerializedByData>();
+            ISerializedComponent[] serializedComponents = obj.GetComponents<ISerializedComponent>();
 
             var componentsGroupedByType = serializedComponents.GroupBy( c => c.GetType() );
 
@@ -145,11 +139,11 @@ namespace RPGGame.Serialization
         }
 
         /// <summary>
-        /// Sets the data for every <see cref="ISerializedByData"/> component on this object.
+        /// Sets the data for every <see cref="ISerializedComponent"/> component on this object.
         /// </summary>
         public static void SetComponentData( GameObject obj, JToken data )
         {
-            ISerializedByData[] serializedComponents = obj.GetComponents<ISerializedByData>();
+            ISerializedComponent[] serializedComponents = obj.GetComponents<ISerializedComponent>();
 
             var componentsGroupedByType = serializedComponents.GroupBy( c => c.GetType() );
 

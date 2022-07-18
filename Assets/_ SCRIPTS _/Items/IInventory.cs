@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace RPGGame.Items
 {
-    public interface IInventory : ISerializedByData
+    public interface IInventory : ISerializedComponent
     {
         public class PickupEventInfo
         {

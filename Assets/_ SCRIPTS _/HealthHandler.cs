@@ -11,7 +11,7 @@ namespace RPGGame
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
-    public class HealthHandler : MonoBehaviour, ISerializedByData
+    public class HealthHandler : MonoBehaviour, ISerializedComponent
     {
         public class HealthChangeEventInfo
         {

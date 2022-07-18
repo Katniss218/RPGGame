@@ -80,7 +80,7 @@ namespace RPGGame.Items
             }
         }
 
-        [SerializeField] protected ItemSlot[,] inventorySlots =  null; // each slot points to an object containing the reference to the and amount.
+        [SerializeField] protected ItemSlot[,] inventorySlots = new ItemSlot[0,0]; // each slot points to an object containing the reference to the and amount.
 
         [SerializeField] UnityEvent<IInventory.PickupEventInfo> __onPickup;
         public UnityEvent<IInventory.PickupEventInfo> onPickup { get => __onPickup; }

@@ -1,10 +1,10 @@
 using UnityEditor;
 using UnityEngine;
-
+/*
 namespace RPGGame.ObjectCreation
 {
     [CustomEditor( typeof( Persistent ) )]
-    public class PersistentDrawer : Editor
+    public class PersistentDrawer : UnityEditor.Editor
     {
         private Persistent component;
 
@@ -19,4 +19,4 @@ namespace RPGGame.ObjectCreation
             EditorGUILayout.LabelField( "Guid", component.GetGuid().ToString() );
         }
     }
-}
+}*/

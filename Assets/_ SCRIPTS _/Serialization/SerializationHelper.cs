@@ -1,6 +1,8 @@
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace RPGGame
@@ -45,7 +47,7 @@ namespace RPGGame
         {
             return new Vector3( (float)json[0], (float)json[1], (float)json[2] );
         }
-        
+
         // Vector3Int
 
         public static JToken ToJson( this Vector3Int obj )
@@ -71,5 +73,30 @@ namespace RPGGame
         }
 
         // 
+
+        //
+
+        public static string GetPrefabPath( this GameObject obj )
+        {
+            // Returns a 'Prefabs/foo/bar/baz' path, where 'baz' is the filename.
+            // Null if object is not a prefab.
+
+            string rawPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot( obj );
+
+            if( string.IsNullOrEmpty( rawPath ) )
+            {
+                return null;
+            }
+
+            if( !rawPath.StartsWith( "Assets/Resources/" ) )
+            {
+                throw new Exception( $"Encountered a prefab that is not loadable. Please put it in Assets/Resources/... - '{rawPath}'" );
+            }
+
+            string prefabPath = System.IO.Path.GetRelativePath( "Assets/Resources", rawPath );
+            prefabPath = System.IO.Path.ChangeExtension( prefabPath, null );
+
+            return prefabPath;
+        }
     }
 }

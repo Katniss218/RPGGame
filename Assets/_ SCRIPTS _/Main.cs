@@ -133,7 +133,7 @@ namespace RPGGame
             SceneSwitcher.AppendScene( SceneSwitcher.MENU_SCENE_NAME, null );
         }
 
-        static string SAVE_FILE = AppDomain.CurrentDomain.BaseDirectory + "/" + "save.json";
+        public static string SAVE_FILE = AppDomain.CurrentDomain.BaseDirectory + "/" + "save.json";
 
         private void Update()
         {
@@ -143,7 +143,7 @@ namespace RPGGame
                 System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                 sw.Start();
 
-                JObject data = SerializationManager.SavePersistentObjects();
+                JObject data = SerializationManager.SaveScene();
 
                 string savedText = JsonConvert.SerializeObject( data, Formatting.Indented );
 
@@ -151,7 +151,7 @@ namespace RPGGame
 
                 sw.Stop();
                 Debug.LogWarning( "ser: " + sw.ElapsedTicks / 10000f + " ms" );
-            }
+            }/*
 
             if( Input.GetMouseButtonDown( 2 ) )
             {
@@ -164,7 +164,7 @@ namespace RPGGame
 
                 sw.Stop();
                 Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
-            }
+            }*/
         }
 
         public static void CreatePickup( Item item, int amount, Vector3 position, Quaternion rotation, bool applyForce )

@@ -30,6 +30,9 @@ namespace RPGGame
         //      ITEMS
         //
 
+        const string ASSET = "asset";
+        const string ITEM = "item";
+
         private static void LoadItems()
         {
             allItems = new Dictionary<string, Item>();
@@ -37,7 +40,7 @@ namespace RPGGame
             Item[] items = Resources.LoadAll<Item>( ITEMS_PATH );
             foreach( var item in items )
             {
-                allItems.Add( item.ID, item );
+                allItems.Add( $"${ASSET}:{ITEM}:{item.ID}", item );
             }
         }
 

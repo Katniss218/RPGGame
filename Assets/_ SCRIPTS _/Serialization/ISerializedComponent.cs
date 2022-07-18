@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RPGGame.Serialization
 {
-    public interface ISerializedByData
+    public interface ISerializedComponent
     {
         /// <summary>
         /// Returns the serialized data for this object.

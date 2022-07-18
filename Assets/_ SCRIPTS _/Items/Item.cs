@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,6 +34,20 @@ namespace RPGGame.Items
         public bool CanStackWith( Item other )
         {
             return this.ID == other.ID;
+        }
+
+        public static implicit operator JToken( Item self )
+        {
+#warning TODO - this won't work with derived classes. And they're not an easy problem. We'd need to keep the type info somewhere.
+            return new JObject()
+            {
+                { "$ref", $"$asset:item:{self.ID}" }
+            };
+        }
+
+        public static explicit operator Item( JToken json )
+        {
+            return AssetManager.GetItem( (string)json["$ref"] );
         }
     }
 }

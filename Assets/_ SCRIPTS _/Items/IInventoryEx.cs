@@ -116,7 +116,7 @@ namespace RPGGame.Items
             List<(ItemStack, int orig)> items = inv.GetItemSlots();
             foreach( var (itemStack, slot) in items )
             {
-                itemsKeyedBySlot.Add( slot.ToString(), itemStack.GetData() );
+                itemsKeyedBySlot.Add( slot.ToString(), itemStack );
             }
 
             return new JObject()
@@ -132,8 +132,7 @@ namespace RPGGame.Items
 
             foreach( var (slot, itemData) in (JObject)data["Items"] )
             {
-                ItemStack item = ItemStack.Empty;
-                item.SetData( (JObject)itemData );
+                ItemStack item = (ItemStack)itemData;
 
                 inv.AddItem( item, int.Parse( slot ), IInventory.Reason.INVENTORY_REARRANGEMENT );
             }

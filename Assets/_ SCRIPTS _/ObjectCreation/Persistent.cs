@@ -6,10 +6,11 @@ using UnityEngine;
 
 namespace RPGGame.ObjectCreation
 {
-    [ExecuteInEditMode]
-    [DisallowMultipleComponent]
-    public class Persistent : MonoBehaviour, ISerializationCallbackReceiver
-    {
+    //[ExecuteInEditMode]
+    //[DisallowMultipleComponent]
+    //public class Persistent : MonoBehaviour, ISerializationCallbackReceiver
+    public static class Persistent
+    {/*
         public static Dictionary<Guid, GameObject> AllPersistentObjects = new Dictionary<Guid, GameObject>();
 
         [NonSerialized] public string PrefabPath = null;
@@ -180,7 +181,7 @@ namespace RPGGame.ObjectCreation
         {
             AllPersistentObjects.Remove( guid );
         }
-
+        */
         //
         //
         //
@@ -192,9 +193,9 @@ namespace RPGGame.ObjectCreation
                 guid = Guid.NewGuid();
             }
 
-            GameObject obj = Instantiate( AssetManager.GetPrefab( prefabPath ), position, rotation );
+            GameObject obj = GameObject.Instantiate( AssetManager.GetPrefab( prefabPath ), position, rotation );
             obj.name = name;
-
+            /*
             Persistent persistent = obj.GetComponent<Persistent>();
             if( persistent == null )
             {
@@ -203,7 +204,7 @@ namespace RPGGame.ObjectCreation
             persistent.guid = guid.Value;
             persistent.serializedGuid = persistent.guid.ToByteArray();
             persistent.PrefabPath = prefabPath;
-
+            */
             return obj;
         }
     }
