@@ -17,6 +17,8 @@ namespace RPGGame.Items.LootTables
         /// </summary>
         public bool DropOnGround = true;
 
+        public bool Used = false;
+
         IInventory inventory = null;
 
         void Awake()
@@ -27,9 +29,16 @@ namespace RPGGame.Items.LootTables
         /// <summary>
         /// Drops or adds the items from the loot table.
         /// </summary>
-        public void DropItems()
+        public void TryDropItems()
         {
+            if( Used )
+            {
+                return;
+            }
+
             List<ItemStack> items = LootTable.GetItems();
+
+            Ensure.NotNull( LootTable );
 
             if( DropOnGround )
             {
@@ -40,13 +49,13 @@ namespace RPGGame.Items.LootTables
             }
             else
             {
-                Ensure.NotNull( LootTable );
-
                 foreach( var item in items )
                 {
                     inventory.TryAdd( item );
                 }
             }
+
+            Used = true;
         }
 
         public JObject GetData()
@@ -54,13 +63,16 @@ namespace RPGGame.Items.LootTables
             return new JObject()
             {
                 { "LootTable", LootTable },
-                { "DropOnGround", DropOnGround }
+                { "DropOnGround", DropOnGround },
+                { "Used", Used }
             };
         }
 
         public void SetData( JObject data )
         {
-            throw new System.NotImplementedException();
+            this.LootTable = (LootTable)data["LootTable"];
+            this.DropOnGround = (bool)data["DropOnGround"];
+            this.Used = (bool)data["Used"];
         }
     }
 }

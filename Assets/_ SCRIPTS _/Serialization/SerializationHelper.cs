@@ -76,6 +76,13 @@ namespace RPGGame
 
         //
 
+        public static string TAG_NO_SERIALIZATION = "NonSerialized";
+
+        public static bool ShouldSerialize( GameObject obj )
+        {
+            return obj.transform.parent == null && obj.tag != TAG_NO_SERIALIZATION;
+        }
+
         public static string GetPrefabPath( this GameObject obj )
         {
             // Returns a 'Prefabs/foo/bar/baz' path, where 'baz' is the filename.

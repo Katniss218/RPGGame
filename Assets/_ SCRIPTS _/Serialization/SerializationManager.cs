@@ -14,7 +14,8 @@ namespace RPGGame.Serialization
 {
     public static class SerializationManager
     {
-        public static Dictionary<object, Guid> identifyableObjects = new Dictionary<object, Guid>();
+        public static Dictionary<object, Guid> identGuid = new Dictionary<object, Guid>();
+        public static Dictionary<Guid, object> identObject = new Dictionary<Guid, object>();
 
         // objects that are not components (basically standalone classes/structs) are serialized via operator overloading.
         // components are serialized via the interface.
@@ -30,29 +31,48 @@ namespace RPGGame.Serialization
             return obj;
         }
 
+        public static void LoadScene( JObject json )
+        {
+            try
+            {
+                foreach( var objData in json["Objects"] )
+                {
+                    SpawnGameObject( (JObject)objData );
+                }
+
+                foreach( var objData in json["Objects"] )
+                {
+                    SetDataGameObject( (GameObject)identObject[(Guid)objData["$id"]], (JObject)objData );
+                }
+            }
+            finally
+            {
+                identGuid.Clear();
+                identObject.Clear();
+            }
+        }
+
         public static JArray SaveSceneObjects()
         {
             // this is important. without this, it won't serialize at the 2nd attempt.
-            identifyableObjects = new Dictionary<object, Guid>();
+            identGuid = new Dictionary<object, Guid>();
 
-            GameObject[] persist = UnityEngine.Object.FindObjectsOfType<GameObject>(); //find all the persistent objects in the level
+            GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>(); //find all the persistent objects in the level
 
             JArray dataJson = new JArray();
-            foreach( var persistent in persist )
+            foreach( var obj in allObjects )
             {
-                // only serialize root objects.
-                if( persistent.transform.parent != null )
+                if( SerializationHelper.ShouldSerialize( obj ) )
                 {
-                    continue;
-                }
-                try
-                {
-                    JObject data = GetDataGameObject( persistent.gameObject );
-                    dataJson.Add( data );
-                }
-                catch( Exception ex )
-                {
-                    Debug.LogException( ex );
+                    try
+                    {
+                        JObject data = GetDataGameObject( obj.gameObject );
+                        dataJson.Add( data );
+                    }
+                    catch( Exception ex )
+                    {
+                        Debug.LogException( ex );
+                    }
                 }
             }
 
@@ -60,31 +80,61 @@ namespace RPGGame.Serialization
         }
 
         //
+        //
+        //
 
         /// <summary>
         /// Returns the JSON containing the saved data of this particular object.
         /// </summary>
-        public static JObject GetDataGameObject( GameObject _obj )
+        public static JObject GetDataGameObject( GameObject obj )
         {
-            GameObject obj = _obj.gameObject;
-
             JObject transformData = obj.transform.GetData();
 
             JToken componentData = GetComponentData( obj );
 
             Guid guid = Guid.NewGuid();
-            identifyableObjects.Add( _obj, guid );
+            identGuid.Add( obj, guid );
+
+            string prefabPath = null;
+            PersistentGameObject pgo = obj.GetComponent<PersistentGameObject>();
+            if( pgo != null )
+            {
+                prefabPath = pgo.PrefabPath;
+            }
+            else
+            {
+                prefabPath = obj.GetPrefabPath();
+            }
 
             JObject full = new JObject()
             {
-                { "$id", guid.ToString("D") },
-                { "Prefab", obj.GetPrefabPath() },
+                { "$id", guid },
+                { "Prefab", prefabPath },
                 { "Name", obj.name },
                 { "Transform", transformData },
                 { "Components", componentData },
             };
 
             return full;
+        }
+
+        public static void SpawnGameObject( JObject data )
+        {
+            string prefabPath = (string)data["Prefab"];
+            if( prefabPath == null ) 
+            {
+                throw new Exception( "Prefab Path was null, can't spawn" );
+            }
+            Guid id = (Guid)data["$id"];
+
+            GameObject gameObject = UnityEngine.Object.Instantiate( AssetManager.GetPrefab( prefabPath ), null );
+
+            PersistentGameObject pgo = gameObject.AddComponent<PersistentGameObject>();
+            pgo.PrefabPath = prefabPath;
+
+#warning TODO - we need to add a component to persist the prefab path, because it's not persisted after you instantiate an object.
+            identGuid.Add( gameObject, id );
+            identObject.Add( id, gameObject );
         }
 
         /// <summary>

@@ -92,7 +92,7 @@ namespace RPGGame.Items.LootTables
 
         public static explicit operator LootTable( JToken json )
         {
-            LootTable self = new LootTable();
+            LootTable self = CreateInstance<LootTable>();
 
             self.Items = new List<Entry>();
             foreach( var entry in json["Items"] )

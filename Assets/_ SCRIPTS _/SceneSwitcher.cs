@@ -1,5 +1,8 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RPGGame.Items;
 using RPGGame.Player;
+using RPGGame.Serialization;
 using RPGGame.UI;
 using System;
 using System.Collections;
@@ -13,7 +16,7 @@ namespace RPGGame
     {
         public string SceneName;
 
-        public const string GAME_SCENE_NAME = "game";
+        public const string GAME_SCENE_NAME = "gameplay_empty";
         public const string MENU_SCENE_NAME = "main_menu";
 
         public void ChangeScene()
@@ -72,6 +75,18 @@ namespace RPGGame
 
         private static void OnGameLoaded()
         {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+
+            string savedText = System.IO.File.ReadAllText( Main.SAVE_FILE );
+
+            SerializationManager.LoadScene( JsonConvert.DeserializeObject<JObject>( savedText ) );
+
+            sw.Stop();
+            Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
+
+            //----------
+
             Main.CameraController.FollowTarget = Main.Player;
 
             PlayerMovementController pmc = Main.Player.GetComponent<PlayerMovementController>();

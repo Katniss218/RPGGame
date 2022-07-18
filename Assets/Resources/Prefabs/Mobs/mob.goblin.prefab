@@ -157,7 +157,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 3612429614593591316}
         m_TargetAssemblyTypeName: RPGGame.Items.LootTables.LootTableController, Assembly-CSharp
-        m_MethodName: DropItems
+        m_MethodName: TryDropItems
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -216,6 +216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LootTable: {fileID: 11400000, guid: a6659fd56b4da1b41bd409b433cea8b2, type: 2}
   DropOnGround: 1
+  Used: 0
 --- !u!1 &2644617602263563771
 GameObject:
   m_ObjectHideFlags: 0

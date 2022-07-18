@@ -147,7 +147,7 @@ namespace RPGGame.Items
 
         public static explicit operator ItemStack( JToken json )
         {
-            return new ItemStack( (Item)json["ItemID"], (int)json["Amount"] );
+            return new ItemStack( (Item)json["Item"], (int)json["Amount"] );
         }
     }
 }
