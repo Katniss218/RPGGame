@@ -36,6 +36,7 @@ namespace RPGGame.Items.LootTables
                 return;
             }
 
+#warning TODO - IMPORTANT! there seems to be some sort of call ordering issue here, resulting in exceptions when adding items by the loot table.
             List<ItemStack> items = LootTable.GetItems();
 
             Ensure.NotNull( LootTable );

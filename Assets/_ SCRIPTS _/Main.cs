@@ -140,31 +140,31 @@ namespace RPGGame
 #warning TODO - hook this up to a save / load button.
             if( Input.GetKeyDown( KeyCode.R ) )
             {
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
+            }
+        }
 
-                JObject data = SerializationManager.SaveScene();
+        public static void LoadGame( string file )
+        {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
 
-                string savedText = JsonConvert.SerializeObject( data, Formatting.Indented );
+            string savedText = System.IO.File.ReadAllText( file );
+            SerializationManager.LoadScene( JsonConvert.DeserializeObject<JObject>( savedText ) );
 
-                System.IO.File.WriteAllText( SAVE_FILE, savedText );
+            sw.Stop();
+            Debug.LogWarning( $"Loaded '{file}' in {sw.ElapsedTicks / 10000f} ms" );
+        }
 
-                sw.Stop();
-                Debug.LogWarning( "ser: " + sw.ElapsedTicks / 10000f + " ms" );
-            }/*
+        public static void SaveGame( string file )
+        {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
 
-            if( Input.GetMouseButtonDown( 2 ) )
-            {
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
+            string savedText = JsonConvert.SerializeObject( SerializationManager.SaveScene(), Formatting.Indented );
+            System.IO.File.WriteAllText( file, savedText );
 
-                string savedText = System.IO.File.ReadAllText( SAVE_FILE );
-
-                SerializationManager.LoadPersistentObjects( JsonConvert.DeserializeObject<JObject>( savedText ) );
-
-                sw.Stop();
-                Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
-            }*/
+            sw.Stop();
+            Debug.LogWarning( $"Saved '{file}' in {sw.ElapsedTicks / 10000f} ms" );
         }
 
         public static void CreatePickup( Item item, int amount, Vector3 position, Quaternion rotation, bool applyForce )

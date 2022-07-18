@@ -75,15 +75,7 @@ namespace RPGGame
 
         private static void OnGameLoaded()
         {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-
-            string savedText = System.IO.File.ReadAllText( Main.SAVE_FILE );
-
-            SerializationManager.LoadScene( JsonConvert.DeserializeObject<JObject>( savedText ) );
-
-            sw.Stop();
-            Debug.LogWarning( "deser: " + sw.ElapsedTicks / 10000f + " ms" );
+            Main.LoadGame( Main.SAVE_FILE );
 
             //----------
 

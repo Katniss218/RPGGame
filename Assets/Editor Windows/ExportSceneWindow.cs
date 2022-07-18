@@ -27,13 +27,7 @@ namespace RPGGame.Editor
         {
             if( GUILayout.Button( "Export" ) )
             {
-                JObject data = SerializationManager.SaveScene();
-
-                string savedText = JsonConvert.SerializeObject( data, Formatting.Indented );
-
-                System.IO.File.WriteAllText( Main.SAVE_FILE, savedText );
-
-                Debug.Log( $"Exported to '{Main.SAVE_FILE}'." );
+                Main.SaveGame( Main.SAVE_FILE );
             }
 
             //

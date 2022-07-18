@@ -127,12 +127,8 @@ namespace RPGGame.Serialization
             }
             Guid id = (Guid)data["$id"];
 
-            GameObject gameObject = UnityEngine.Object.Instantiate( AssetManager.GetPrefab( prefabPath ), null );
+            GameObject gameObject = PersistentGameObject.Instantiate( AssetManager.GetPrefab( prefabPath ) );
 
-            PersistentGameObject pgo = gameObject.AddComponent<PersistentGameObject>();
-            pgo.PrefabPath = prefabPath;
-
-#warning TODO - we need to add a component to persist the prefab path, because it's not persisted after you instantiate an object.
             identGuid.Add( gameObject, id );
             identObject.Add( id, gameObject );
         }
