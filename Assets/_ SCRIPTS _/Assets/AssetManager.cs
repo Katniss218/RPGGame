@@ -1,3 +1,4 @@
+using RPGGame.Assets.Providers;
 using RPGGame.Items;
 using RPGGame.Items.LootTables;
 using System;
@@ -9,7 +10,7 @@ namespace RPGGame.Assets
 {
     public static class AssetManager
     {
-        const string ITEMS_PATH = "_ OBJECTS _/Items";
+        //const string ITEMS_PATH = "_ OBJECTS _/Items";
         const string LOOT_TABLES_PATH = "_ OBJECTS _/LootTables";
         const string MOBS_PATH = "Prefabs/Mobs";
 
@@ -34,9 +35,11 @@ namespace RPGGame.Assets
         //
 
         const string ASSET = "asset";
-        const string ITEM = "item";
+        //const string ITEM = "item";
         const string LOOT_TABLE = "loot_table";
 
+        public static AssetRegistry<Item> Items = new AssetRegistry<Item>( new ItemProviderResources() );
+        /*
         private static void LoadItems()
         {
             allItems = new Dictionary<string, Item>();
@@ -73,7 +76,7 @@ namespace RPGGame.Assets
             }
 
             return allItems.Values.ToArray();
-        }
+        }*/
         
         //
         //      LOOT TABLES

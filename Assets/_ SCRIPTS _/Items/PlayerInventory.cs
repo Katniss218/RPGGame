@@ -43,7 +43,8 @@ namespace RPGGame.Items
 
         void Start()
         {
-            AddItem( new ItemStack( AssetManager.GetItem( "$asset:item:item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
+#error TODO - add the asset type path handling to the asset registry.
+            AddItem( new ItemStack( AssetManager.Items.Get( "$asset:item:item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
         }
 
         public static int MapSlotIndexToEquipIndex( int slotIndex )

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0fabc9eb346c9439be8a7747ac2ce7, type: 3}
   m_Name: goblin_mace
   m_EditorClassIdentifier: 
-  ID: item.goblin_mace
+  <ID>k__BackingField: item.goblin_mace
   DisplayName: Goblin Mace
   Description: A weak Goblin Mace.
   model: {fileID: 919132149155446097, guid: 32a4e055f3b81bd4b981a7d86339f9f7, type: 3}

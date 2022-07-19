@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0fabc9eb346c9439be8a7747ac2ce7, type: 3}
   m_Name: sword
   m_EditorClassIdentifier: 
-  ID: item.sword
+  <ID>k__BackingField: item.sword
   DisplayName: Sword
   Description: A nimble Sword, can slice off an arm.
   model: {fileID: 919132149155446097, guid: cceecd7305da5b9458eb0fa3c802e9ea, type: 3}

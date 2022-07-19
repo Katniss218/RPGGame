@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0fabc9eb346c9439be8a7747ac2ce7, type: 3}
   m_Name: spear
   m_EditorClassIdentifier: 
-  ID: item.spear
+  <ID>k__BackingField: item.spear
   DisplayName: Spear
   Description: A long reaching perfect for keeping your opponent at bay.
   model: {fileID: 919132149155446097, guid: 20143226b6525944085d5f7b60db523b, type: 3}
