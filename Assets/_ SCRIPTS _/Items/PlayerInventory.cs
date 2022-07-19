@@ -12,7 +12,15 @@ namespace RPGGame.Items
     [DisallowMultipleComponent]
     public sealed class PlayerInventory : GridInventory
     {
-        private ItemStack[] Equip = new ItemStack[6];
+        private ItemStack[] Equip = new ItemStack[6]
+        {
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+        };
 
         public ItemStack EquipHand => Equip[0];
         public ItemStack EquipOffhand => Equip[1];
@@ -25,10 +33,6 @@ namespace RPGGame.Items
         void Awake()
         {
             SetSize( 6, 12 );
-            for( int i = 0; i < Equip.Length; i++ )
-            {
-                Equip[i] = ItemStack.Empty;
-            }
 
             inventorySlots[0, 0].MakeBlockingSlot();
             inventorySlots[5, 0].MakeBlockingSlot();

@@ -36,7 +36,7 @@ namespace RPGGame.Items.LootTables
 
         void Start()
         {
-            if( OnStart && !Used )
+            if( OnStart )
             {
                 TryDropItems();
             }
@@ -65,7 +65,6 @@ namespace RPGGame.Items.LootTables
             }
             else
             {
-                Debug.LogWarning( this.gameObject.name );
                 foreach( var item in items )
                 {
                     inventory.TryAdd( item );
