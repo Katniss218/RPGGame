@@ -1,3 +1,4 @@
+using RPGGame.Assets;
 using RPGGame.Player;
 using RPGGame.UI;
 using System.Collections;

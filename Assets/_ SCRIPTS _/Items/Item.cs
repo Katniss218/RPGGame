@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using RPGGame.Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace RPGGame.Items
 #warning TODO - this won't work with derived classes. And they're not an easy problem. We'd need to keep the type info somewhere.
             return new JObject()
             {
+#warning TODO - make getting ID into a method on the asset manager class.
                 { "$ref", $"$asset:item:{self.ID}" }
             };
         }

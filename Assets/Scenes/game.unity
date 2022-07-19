@@ -3859,6 +3859,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2787470385590796372, guid: 85d662bdd8b671449ad0bd85977e1e81, type: 3}
+      propertyPath: OnStart
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2787470385590796373, guid: 85d662bdd8b671449ad0bd85977e1e81, type: 3}
       propertyPath: m_Name
       value: chest

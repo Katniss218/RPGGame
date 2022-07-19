@@ -513,6 +513,11 @@ namespace RPGGame.Items
             return sb.ToString();
         }
 
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
         public JObject GetData()
         {
             return IInventoryEx.GetData( this );

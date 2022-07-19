@@ -17,6 +17,14 @@ namespace RPGGame.Items.LootTables
         /// </summary>
         public bool DropOnGround = true;
 
+        /// <summary>
+        /// If true, the loot table controller will drop its items on Start().
+        /// </summary>
+        public bool OnStart = false;
+
+        /// <summary>
+        /// True marks that this loot table controller has dropped its items and shouldn't drop them again.
+        /// </summary>
         public bool Used = false;
 
         IInventory inventory = null;
@@ -24,6 +32,14 @@ namespace RPGGame.Items.LootTables
         void Awake()
         {
             inventory = this.GetComponent<IInventory>();
+        }
+
+        void Start()
+        {
+            if( OnStart && !Used )
+            {
+                TryDropItems();
+            }
         }
 
         /// <summary>
@@ -36,7 +52,6 @@ namespace RPGGame.Items.LootTables
                 return;
             }
 
-#warning TODO - IMPORTANT! there seems to be some sort of call ordering issue here, resulting in exceptions when adding items by the loot table.
             List<ItemStack> items = LootTable.GetItems();
 
             Ensure.NotNull( LootTable );
@@ -50,6 +65,7 @@ namespace RPGGame.Items.LootTables
             }
             else
             {
+                Debug.LogWarning( this.gameObject.name );
                 foreach( var item in items )
                 {
                     inventory.TryAdd( item );
@@ -65,6 +81,7 @@ namespace RPGGame.Items.LootTables
             {
                 { "LootTable", LootTable },
                 { "DropOnGround", DropOnGround },
+                { "OnStart", OnStart },
                 { "Used", Used }
             };
         }
@@ -73,6 +90,7 @@ namespace RPGGame.Items.LootTables
         {
             this.LootTable = (LootTable)data["LootTable"];
             this.DropOnGround = (bool)data["DropOnGround"];
+            this.OnStart = (bool)data["OnStart"];
             this.Used = (bool)data["Used"];
         }
     }

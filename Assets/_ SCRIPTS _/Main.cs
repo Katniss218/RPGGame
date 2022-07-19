@@ -135,14 +135,6 @@ namespace RPGGame
 
         public static string SAVE_FILE = AppDomain.CurrentDomain.BaseDirectory + "/" + "save.json";
 
-        private void Update()
-        {
-#warning TODO - hook this up to a save / load button.
-            if( Input.GetKeyDown( KeyCode.R ) )
-            {
-            }
-        }
-
         public static void LoadGame( string file )
         {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();

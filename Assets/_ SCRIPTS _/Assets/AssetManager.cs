@@ -1,17 +1,20 @@
 using RPGGame.Items;
+using RPGGame.Items.LootTables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace RPGGame
+namespace RPGGame.Assets
 {
     public static class AssetManager
     {
         const string ITEMS_PATH = "_ OBJECTS _/Items";
-        const string MOBS_PATH = "_ OBJECTS _/Mobs";
+        const string LOOT_TABLES_PATH = "_ OBJECTS _/LootTables";
+        const string MOBS_PATH = "Prefabs/Mobs";
 
         private static Dictionary<string, Item> allItems = null;
+        private static Dictionary<string, LootTable> allLootTables = null;
         private static Dictionary<string, GameObject> allMobs = null;
 
         const string PREFABS_PATH = "Prefabs";
@@ -32,6 +35,7 @@ namespace RPGGame
 
         const string ASSET = "asset";
         const string ITEM = "item";
+        const string LOOT_TABLE = "loot_table";
 
         private static void LoadItems()
         {
@@ -69,6 +73,48 @@ namespace RPGGame
             }
 
             return allItems.Values.ToArray();
+        }
+        
+        //
+        //      LOOT TABLES
+        //
+
+        private static void LoadLootTables()
+        {
+            allLootTables = new Dictionary<string, LootTable>();
+
+            LootTable[] lootTables = Resources.LoadAll<LootTable>( LOOT_TABLES_PATH );
+            foreach( var lootTable in lootTables )
+            {
+                allLootTables.Add( $"${ASSET}:{LOOT_TABLE}:{lootTable.ID}", lootTable );
+            }
+        }
+
+        public static LootTable GetLootTable( string id )
+        {
+            if( allLootTables == null )
+            {
+                LoadLootTables();
+            }
+
+            if( allLootTables.TryGetValue( id, out LootTable lootTable ) )
+            {
+                return lootTable;
+            }
+            throw new InvalidOperationException( $"Couldn't get the loot table with an ID '{id}'. Loot table doesn't exist." );
+        }
+
+        /// <summary>
+        /// Returns an array containing every single item available in the game.
+        /// </summary>
+        public static LootTable[] GetLootTables()
+        {
+            if( allLootTables == null )
+            {
+                LoadLootTables();
+            }
+
+            return allLootTables.Values.ToArray();
         }
 
         //

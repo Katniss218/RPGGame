@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RPGGame.Assets;
 using RPGGame.ObjectCreation;
 using System;
 using System.Collections.Generic;
@@ -159,6 +160,11 @@ namespace RPGGame.Serialization
             var componentsGroupedByType = serializedComponents.GroupBy( c => c.GetType() );
 
             JObject allComps = new JObject();
+
+            if( obj.name == "Player" )
+            {
+
+            }
 
             // Save the components grouped by their type, and for each type, preserve their ordering (order within the type will matter, but each type can be rearranged).
             foreach( var group in componentsGroupedByType )

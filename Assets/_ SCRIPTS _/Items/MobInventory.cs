@@ -91,6 +91,11 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
         public JObject GetData()
         {
             return IInventoryEx.GetData( this );
