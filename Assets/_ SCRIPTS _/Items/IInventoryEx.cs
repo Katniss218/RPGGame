@@ -127,14 +127,13 @@ namespace RPGGame.Items
 
         public static void SetData( this IInventory inv, JObject data )
         {
-#warning TODO - add one more reason - SERIALIZATION
-            inv.Clear( IInventory.Reason.INVENTORY_REARRANGEMENT );
+            inv.Clear( IInventory.Reason.PERSISTENCE );
 
             foreach( var (slot, itemData) in (JObject)data["Items"] )
             {
                 ItemStack item = (ItemStack)itemData;
 
-                inv.AddItem( item, int.Parse( slot ), IInventory.Reason.INVENTORY_REARRANGEMENT );
+                inv.AddItem( item, int.Parse( slot ), IInventory.Reason.PERSISTENCE );
             }
         }
     }

@@ -18,7 +18,7 @@ namespace RPGGame.Serialization
         static Dictionary<Guid, object> identObject = new Dictionary<Guid, object>();
 
         /// <summary>
-        /// Registers the object-identifier pair with the registry.
+        /// Registers the object-identifier pair with the reference registry.
         /// </summary>
         public static void RegisterObject<T>( Guid guid, T obj ) where T : class
         {
@@ -27,7 +27,7 @@ namespace RPGGame.Serialization
         }
 
         /// <summary>
-        /// Clears the object-identifier registry.
+        /// Clears the reference registry.
         /// </summary>
         public static void ClearRegistry()
         {
@@ -45,7 +45,7 @@ namespace RPGGame.Serialization
         }
 
         /// <summary>
-        /// Returns the identifier for a given object.
+        /// Gets the identifier for a given object from the reference registry.
         /// </summary>
         public static Guid? GetGuid( object obj )
         {
@@ -57,7 +57,7 @@ namespace RPGGame.Serialization
         }
 
         /// <summary>
-        /// Returns the object for a given identifier.
+        /// Gets the object for a given identifier from the reference registry.
         /// </summary>
         public static T GetObject<T>( Guid guid ) where T : class
         {

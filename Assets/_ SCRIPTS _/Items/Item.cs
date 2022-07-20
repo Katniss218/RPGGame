@@ -41,7 +41,6 @@ namespace RPGGame.Items
 
         public static implicit operator JToken( Item self )
         {
-#warning TODO - this won't work with derived classes. And they're not an easy problem. We'd need to keep the type info somewhere.
             return new JObject()
             {
                 { "$ref", SerializationHelper.ToReferenceString(ReferenceType.ASSET, self.ID) }

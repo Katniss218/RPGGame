@@ -105,12 +105,13 @@ namespace RPGGame.Items
         {
             if( slotIndex < 0 )
             {
-                // Accessing the equipment slot is only possible by dragging an item there.
+                // Do not allow the picked up items, etc to fall into the equipment slots directly.
 
-                if( reason != IInventory.Reason.INVENTORY_REARRANGEMENT )
+                if( reason == IInventory.Reason.GENERIC )
                 {
                     return null;
                 }
+
                 int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
 
                 if( Equip[equipIndex].CanStackWith( itemStack ) )
@@ -152,12 +153,6 @@ namespace RPGGame.Items
         {
             if( slotIndex < 0 )
             {
-                // Accessing the equipment slot is only possible by dragging an item there.
-                if( reason != IInventory.Reason.INVENTORY_REARRANGEMENT )
-                {
-                    return null;
-                }
-
                 int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
 
                 if( Equip[equipIndex].IsEmpty )
