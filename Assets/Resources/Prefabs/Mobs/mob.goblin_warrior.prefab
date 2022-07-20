@@ -354,19 +354,7 @@ MonoBehaviour:
       m_Calls: []
   __onDrop:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 9dee400a192360e438ef794cd5e85f74, type: 2}
-        m_TargetAssemblyTypeName: RPGGame.Globals.ObjectScripts, Assembly-CSharp
-        m_MethodName: OnDropCreatePickup
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   __onResize:
     m_PersistentCalls:
       m_Calls: []
@@ -396,6 +384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LootTable: {fileID: 11400000, guid: bb96470a4cde43a43b1ecc1267a568fd, type: 2}
   DropOnGround: 1
+  OnStart: 0
   Used: 0
 --- !u!1001 &7340396752409310540
 PrefabInstance:

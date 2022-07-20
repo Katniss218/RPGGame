@@ -159,6 +159,8 @@ namespace RPGGame
             Debug.LogWarning( $"Saved '{file}' in {sw.ElapsedTicks / 10000f} ms" );
         }
 
+#warning TODO - after spawning the player, their hooks into the HUD are lost.
+
         public static void CreatePickup( Item item, int amount, Vector3 position, Quaternion rotation, bool applyForce )
         {
             const float HEIGHT_OFFSET = 0.25f;

@@ -1,10 +1,10 @@
+using Newtonsoft.Json.Linq;
 using RPGGame.Assets;
 using RPGGame.Player;
 using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace RPGGame.Mobs
 {
