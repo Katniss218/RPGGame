@@ -1,30 +1,34 @@
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RPGGame.Assets;
-using RPGGame.ObjectCreation;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
 namespace RPGGame.Serialization
 {
+    /// <summary>
+    /// Manages the scene saving and loading (JSON).
+    /// </summary>
     public static class SerializationManager
     {
+        // The registry can hold uniquely identified objects of any type for referencing during the serialization/deserialization.
+
         static Dictionary<object, Guid> identGuid = new Dictionary<object, Guid>();
         static Dictionary<Guid, object> identObject = new Dictionary<Guid, object>();
 
+        /// <summary>
+        /// Registers the object-identifier pair with the registry.
+        /// </summary>
         public static void RegisterObject<T>( Guid guid, T obj ) where T : class
         {
             identGuid.Add( obj, guid );
             identObject.Add( guid, obj );
         }
 
+        /// <summary>
+        /// Clears the object-identifier registry.
+        /// </summary>
         public static void ClearRegistry()
         {
             if( identObject == null )
@@ -40,6 +44,9 @@ namespace RPGGame.Serialization
             identGuid.Clear();
         }
 
+        /// <summary>
+        /// Returns the identifier for a given object.
+        /// </summary>
         public static Guid? GetGuid( object obj )
         {
             if( identGuid.TryGetValue( obj, out Guid guid ) )
@@ -49,6 +56,9 @@ namespace RPGGame.Serialization
             return null;
         }
 
+        /// <summary>
+        /// Returns the object for a given identifier.
+        /// </summary>
         public static T GetObject<T>( Guid guid ) where T : class
         {
             if( identObject.TryGetValue( guid, out object obj ) )
@@ -58,10 +68,16 @@ namespace RPGGame.Serialization
             return null;
         }
 
-        // objects that are not components (basically standalone classes/structs) are serialized via operator overloading.
-        // components are serialized via the interface.
-        // Everything that goes onto a gameobject is serialized by the Get/Set Data methods.
+        // Serialization methods:
+        // - implicit/explicit pair Operator Overloading:
+        //   - assets
+        //   - standalone classes
+        // - ISerializedComponent interface (Get/Set Data methods)
+        //   - monobehaviours / components
 
+        /// <summary>
+        /// Serializes and saves the scene to a JSON JObject.
+        /// </summary>
         public static JObject SaveScene()
         {
             ClearRegistry();
@@ -99,6 +115,9 @@ namespace RPGGame.Serialization
             }
         }
 
+        /// <summary>
+        /// Deserializes and loads the scene from a JSON JObject.
+        /// </summary>
         public static void LoadScene( JObject json )
         {
             ClearRegistry();

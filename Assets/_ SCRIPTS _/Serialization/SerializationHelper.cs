@@ -22,22 +22,28 @@ namespace RPGGame.Serialization
     /// </summary>
     public static class SerializationHelper
     {
+        // Should-serialize stuff
+
         /// <summary>
         /// This tag indicates that the object should not be serialized.
         /// </summary>
         public static string TAG_NO_SERIALIZATION = "NonSerialized";
 
+        /// <summary>
+        /// Checks whether a given object should be serialized or not.
+        /// </summary>
         public static bool ShouldSerialize( GameObject obj )
         {
             return obj.transform.parent == null 
                 && obj.tag != TAG_NO_SERIALIZATION;
         }
 
-        public static string GetPrefabPath( this GameObject obj )
+        /// <summary>
+        /// Gets the path for a given prefab object.
+        /// </summary>
+        /// <returns>The path, relative to 'Assets/Resources/'. Null if object is not a prefab.</returns>
+        public static string GetLoadablePrefabPath( this GameObject obj )
         {
-            // Returns a 'Prefabs/foo/bar/baz' path, where 'baz' is the filename.
-            // Null if object is not a prefab.
-
             string rawPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot( obj );
 
             if( string.IsNullOrEmpty( rawPath ) )
@@ -55,6 +61,8 @@ namespace RPGGame.Serialization
 
             return prefabPath;
         }
+
+        // Reference path stuff.
 
         const char REF = '$';
         const char REF_SEPARATOR = ';';
@@ -95,7 +103,7 @@ namespace RPGGame.Serialization
         }
 
         //
-        //
+        //      Unity object serialization stuff.
         //
 
         public static GameObject SpawnAndRegisterGameObject( JObject data )
@@ -127,7 +135,7 @@ namespace RPGGame.Serialization
 
             PersistentGameObject pgo = obj.GetComponent<PersistentGameObject>();
 
-            string prefabPath = pgo == null ? obj.GetPrefabPath() : pgo.PrefabPath;
+            string prefabPath = pgo == null ? obj.GetLoadablePrefabPath() : pgo.PrefabPath;
 
             JObject full = new JObject()
             {
