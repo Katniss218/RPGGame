@@ -44,7 +44,6 @@ namespace RPGGame.Assets
             this.providers = assetProviders;
         }
 
-
         private void TryLazyLoad()
         {
             // Already loaded and wasn't cleared - return.

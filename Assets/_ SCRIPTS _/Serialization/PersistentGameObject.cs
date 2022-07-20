@@ -11,7 +11,7 @@ namespace RPGGame.Serialization
 
         public static GameObject Instantiate( string prefabPath )
         {
-            GameObject gameObject = Instantiate( AssetManager.GetPrefab( prefabPath ), null );
+            GameObject gameObject = Instantiate( AssetManager.Prefabs.Get( prefabPath ), null );
 
             PersistentGameObject pgo = gameObject.AddComponent<PersistentGameObject>();
             pgo.PrefabPath = prefabPath;

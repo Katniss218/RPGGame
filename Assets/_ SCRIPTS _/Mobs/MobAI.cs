@@ -40,7 +40,7 @@ namespace RPGGame.Mobs
         {
             HealthHandler healthHandler = this.GetComponent<HealthHandler>();
 
-            GameObject hud = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/MobHud" ), Main.MobHudCanvas.transform );
+            GameObject hud = Instantiate( AssetManager.Prefabs.Get( "Prefabs/UI/MobHud" ), Main.MobHudCanvas.transform );
             FollowObjectUI follower = hud.GetComponent<FollowObjectUI>();
             follower.TrackedObject = this.transform;
             follower.WorldOffset = new Vector3( 0, 2, 0 ); // in the future, change depending on the size of the monster.

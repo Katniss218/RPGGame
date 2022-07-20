@@ -76,7 +76,7 @@ namespace RPGGame.UI
         /// </summary>
         protected void SpawnSlot( int index )
         {
-            GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_slot" ), slotContainer );
+            GameObject go = Instantiate( AssetManager.Prefabs.Get( "Prefabs/UI/inventory_slot" ), slotContainer );
             RectTransform rt = (RectTransform)go.transform;
 
             InventorySlotUI slotUI = go.GetComponent<InventorySlotUI>();
@@ -93,7 +93,7 @@ namespace RPGGame.UI
         /// </summary>
         protected void SpawnItem( Item item, int amount, int slotIndex )
         {
-            GameObject go = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/inventory_item" ), itemContainer );
+            GameObject go = Instantiate( AssetManager.Prefabs.Get( "Prefabs/UI/inventory_item" ), itemContainer );
             InventoryItemUI itemUI = go.GetComponent<InventoryItemUI>();
             itemUI.SetAmount( amount );
 

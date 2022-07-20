@@ -16,7 +16,7 @@ namespace RPGGame.ObjectCreation
                 guid = Guid.NewGuid();
             }
 
-            GameObject obj = GameObject.Instantiate( AssetManager.GetPrefab( prefabPath ), position, rotation );
+            GameObject obj = UnityEngine.Object.Instantiate( AssetManager.Prefabs.Get( prefabPath ), position, rotation );
             obj.name = name;
 
             return obj;

@@ -18,7 +18,7 @@ namespace RPGGame.Assets.Providers
         /// Returns an assetID for a given asset.
         /// </summary>
         /// <remarks>
-        /// NOTE TO IMPLEMENTERS - Return false if your provider doesn't support individual fetching.
+        /// NOTE TO IMPLEMENTERS - Return false if your provider doesn't support individual reverse fetching.
         /// </remarks>
         bool GetAssetID( T obj, out string assetID );
 

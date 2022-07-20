@@ -56,13 +56,13 @@ namespace RPGGame.Items.LootTables
         {
             return new JObject()
             {
-                { "$ref", $"$asset:loot_table:{self.ID}" }
+                { "$ref", SerializationHelper.ToReferenceString( ReferenceType.ASSET, self.ID ) }
             };
         }
 
         public static explicit operator LootTable( JToken json )
         {
-            return AssetManager.GetLootTable( (string)json["$ref"] );
+            return AssetManager.LootTables.Get( SerializationHelper.ToAssetID( (string)json["$ref"] ).assetID );
         }
     }
 }
