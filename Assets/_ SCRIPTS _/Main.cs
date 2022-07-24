@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RPGGame.Assets;
 using RPGGame.Items;
-using RPGGame.ObjectCreation;
 using RPGGame.Player;
 using RPGGame.Serialization;
 using RPGGame.UI;
@@ -126,7 +126,8 @@ namespace RPGGame
 
             Vector3 offset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
 
-            GameObject go = Persistent.InstantiatePersistent( "Prefabs/pickup", "pickup", null, position + offset, Quaternion.identity );
+            GameObject go = Instantiate( AssetManager.Prefabs.Get( "Prefabs/pickup" ), position + offset, Quaternion.identity );
+            go.name = "pickup";
 
 #warning TODO - Move this to begin the code for modifying the visuals based on what's equipped.
             GameObject itemVisual = Instantiate( item.model, go.transform );

@@ -23,5 +23,7 @@ namespace RPGGame.UI
                 return __playerUI;
             }
         }
+
+#warning TODO - the "show" inventory button doesn't have the player inventory referenced.
     }
 }

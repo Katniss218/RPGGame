@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEditor;
-using RPGGame.Serialization;
+using RPGGame.SaveStates;
 
 namespace RPGGame.Editor
 {

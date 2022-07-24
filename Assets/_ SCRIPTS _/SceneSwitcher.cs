@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RPGGame.Items;
 using RPGGame.Player;
+using RPGGame.SaveStates;
 using RPGGame.Serialization;
 using RPGGame.UI;
 using System;
@@ -75,7 +76,7 @@ namespace RPGGame
 
         private static void OnPlaySceneLoaded()
         {
-            SaveAreaManager.Load( null );
+            SaveStateManager.Load( null );
 
             //----------
 

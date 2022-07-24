@@ -1,13 +1,14 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RPGGame.Player;
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace RPGGame.Serialization
+namespace RPGGame.SaveStates
 {
     /// <summary>
     /// Interfaces between the saves and actual files on disk.
@@ -116,4 +117,30 @@ namespace RPGGame.Serialization
             File.WriteAllText( globalObjectsFilePath, globalText );
         }
     }
+
+    //
+    //      Save file structure
+    //
+    /*
+            saves
+                <save>
+                    save.json
+                    objects.json
+                    areas
+                        <area>
+                            objects.json
+
+    */
+
+    //      save.json structure:
+    //
+    /*
+    
+    {
+        CurrentArea (string)
+        Player (object)
+    }
+    
+
+    */
 }
