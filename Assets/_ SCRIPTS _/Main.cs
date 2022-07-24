@@ -34,32 +34,6 @@ namespace RPGGame
             }
         }
 
-        private static CameraController __cameraController = null;
-        public static CameraController CameraController
-        {
-            get
-            {
-                if( __cameraController == null )
-                {
-                    __cameraController = FindObjectOfType<CameraController>();
-                }
-                return __cameraController;
-            }
-        }
-
-        private static Camera __camera = null;
-        public static Camera Camera
-        {
-            get
-            {
-                if( __camera == null )
-                {
-                    __camera = CameraController.Camera;
-                }
-                return __camera;
-            }
-        }
-
         private static Canvas __mobHudCanvas = null;
         public static Canvas MobHudCanvas
         {

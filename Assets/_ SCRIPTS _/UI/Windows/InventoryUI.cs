@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPGGame.UI
+namespace RPGGame.UI.Windows
 {
     public abstract class InventoryUI : UIWindow
     {

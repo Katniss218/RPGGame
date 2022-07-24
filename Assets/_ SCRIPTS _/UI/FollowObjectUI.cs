@@ -25,7 +25,7 @@ namespace RPGGame.UI
         /// </summary>
         public void SnapToTracked()
         {
-            this.transform.position = Main.Camera.WorldToScreenPoint( TrackedObject.transform.position + WorldOffset ) + ScreenOffset;
+            this.transform.position = CameraController.Camera.WorldToScreenPoint( TrackedObject.transform.position + WorldOffset ) + ScreenOffset;
         }
     }
 }

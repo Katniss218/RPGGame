@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace RPGGame.UI
+namespace RPGGame.UI.Windows
 {
     public class UIWindow : MonoBehaviour
     {
@@ -163,7 +163,7 @@ namespace RPGGame.UI
         /// <param name="parent">The canvas onto which the UI window will be placed.</param>
         public static (RectTransform rt, T window) Create<T>( string objectName, Transform owner, Canvas parent ) where T : UIWindow
         {
-            RectTransform rt = GameObjectUtils.CreateUI( objectName, parent.transform );
+            RectTransform rt = GameObjectEx.CreateUI( objectName, parent.transform );
 
             rt.gameObject.AddComponent<CanvasRenderer>();
             Image image = rt.gameObject.AddComponent<Image>();

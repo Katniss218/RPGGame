@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace RPGGame.UI
 {
+    /// <summary>
+    /// Holds references to GameCanvas UI elements.
+    /// </summary>
     public class MainUI : MonoBehaviour
     {
         [field: SerializeField]
@@ -24,7 +27,7 @@ namespace RPGGame.UI
             {
                 if( __playerUI == null )
                 {
-                    __playerUI = Object.FindObjectOfType<MainUI>();
+                    __playerUI = FindObjectOfType<MainUI>();
                 }
                 return __playerUI;
             }

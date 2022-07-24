@@ -4,12 +4,23 @@ using UnityEngine;
 
 namespace RPGGame
 {
-    public class CameraController : MonoBehaviour
+    /// <summary>
+    /// Controls the camera
+    /// </summary>
+    public class CameraController : SingletonMonoBehaviour<CameraController>
     {
-        public Transform FollowTarget;
+        /// <summary>
+        /// The target that this camera controller will follow.
+        /// </summary>
+        [field: SerializeField]
+        public Transform FollowTarget { get; set; }
+
+        /// <summary>
+        /// Returns the main camera.
+        /// </summary>
+        public static Camera Camera { get => Instance.camera; }
 
         [SerializeField] private new Camera camera;
-        public Camera Camera { get => camera; }
 
         void Update()
         {

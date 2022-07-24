@@ -2,6 +2,7 @@ using RPGGame.Animation;
 using RPGGame.Interactions;
 using RPGGame.Items;
 using RPGGame.UI;
+using RPGGame.UI.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;

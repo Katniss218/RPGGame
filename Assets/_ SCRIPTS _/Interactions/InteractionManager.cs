@@ -22,7 +22,7 @@ namespace RPGGame.Interactions
                     return;
                 }
 
-                Ray ray = Main.Camera.ScreenPointToRay( Input.mousePosition );
+                Ray ray = CameraController.Camera.ScreenPointToRay( Input.mousePosition );
                 if( Physics.Raycast( ray, out RaycastHit hitInfo, float.PositiveInfinity ) )
                 {
                     Interactible inter = hitInfo.collider.GetComponent<Interactible>();

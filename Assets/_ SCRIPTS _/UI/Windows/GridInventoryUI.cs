@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPGGame.UI
+namespace RPGGame.UI.Windows
 {
     public class GridInventoryUI : InventoryUI
     {
@@ -17,10 +17,10 @@ namespace RPGGame.UI
 
             rt.ApplyTransformUI( Vector2.up, Vector2.up, Vector2.zero, new Vector2( windowSizeX, windowSizeY ) );
 
-            RectTransform slotContainer = GameObjectUtils.CreateUI( "Slot Container", rt );
+            RectTransform slotContainer = GameObjectEx.CreateUI( "Slot Container", rt );
             slotContainer.ApplyTransformUI( new Vector2( 0.5f, 0.0f ), 10, 10, 40, 10 );
 
-            RectTransform itemContainer = GameObjectUtils.CreateUI( "Item Container", rt );
+            RectTransform itemContainer = GameObjectEx.CreateUI( "Item Container", rt );
             itemContainer.ApplyTransformUI( new Vector2( 0.5f, 0.5f ), 0f, 0f, 0f, 0f );
 
             invUI.slotContainer = slotContainer;

@@ -37,11 +37,7 @@ namespace RPGGame.Items
 
         private void OnDrop( IInventory.DropEventInfo e )
         {
-            //if( e.SlotOrigin == PlayerInventory.SLOT_HAND )
-            // {
-            Destroy( model );
-            model = null;
-            // }
+            // do nothing. You can't add items to a drop. Once a drop is partially emptied, it should remain a box. When it's fully empty, it's gonna disappear anyway.
         }
     }
 }

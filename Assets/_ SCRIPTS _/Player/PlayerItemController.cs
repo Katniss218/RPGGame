@@ -49,7 +49,7 @@ namespace RPGGame.Player
 
             Vector3 aoi = this.transform.position;
 
-            Ray ray = Main.Camera.ScreenPointToRay( Input.mousePosition );
+            Ray ray = CameraController.Camera.ScreenPointToRay( Input.mousePosition );
             if( Physics.Raycast( ray, out RaycastHit hitInfo, float.PositiveInfinity, 1 << 3 ) )
             {
                 aoi = hitInfo.point;

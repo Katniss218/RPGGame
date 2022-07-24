@@ -1,43 +1,13 @@
 using RPGGame.Assets;
 using RPGGame.Items;
 using RPGGame.UI;
+using RPGGame.UI.Windows;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPGGame.Player
 {
-    /*
-    public class SingletonComponent<TFind, T>
-        where TFind : Component
-        where T : Component 
-    {
-        private static T instance;
-
-        public T Instance
-        {
-            get
-            {
-                if( instance == null )
-                {
-                    TFind temp = Object.FindObjectOfType<TFind>();
-                    if( temp == null )
-                    {
-                        throw new System.Exception( $"Tried accessing a singleton component {typeof( TFind )}, but none exist." );
-                    }
-                    instance = temp.GetComponent<T>();
-                }
-
-                return instance;
-            }
-        }
-
-        public static implicit operator T( SingletonComponent<TFind, T> obj )  // doesn't work with expressions and member access.
-        {
-            return obj.Instance;
-        }
-    }*/
-
     public static class PlayerManager
     {
         private static Transform __player = null;
@@ -56,6 +26,9 @@ namespace RPGGame.Player
             }
         }
 
+        /// <summary>
+        /// Spawns the player object.
+        /// </summary>
         public static GameObject SpawnPlayer()
         {
             GameObject player = Object.Instantiate( AssetManager.Prefabs.Get( "Prefabs/player" ) );
@@ -63,8 +36,20 @@ namespace RPGGame.Player
             return player;
         }
 
+        /// <summary>
+        /// Hooks up the spawned player to the pre-existing UI elements.
+        /// </summary>
         public static void SetUpPlayerHooks()
         {
+            CameraController.Instance.FollowTarget = Player;
+
+            PlayerMovementController pmc = Player.GetComponent<PlayerMovementController>();
+            if( pmc != null )
+            {
+                pmc.CameraPivot = CameraController.Instance.transform;
+                PlayerInventoryUI.CreateUIWindow( Player.GetComponent<PlayerInventory>(), Player );
+            }
+
             HealthHandler health = Player.GetComponent<HealthHandler>();
             if( health != null )
             {
@@ -84,7 +69,6 @@ namespace RPGGame.Player
                     PlayerInventoryUI.CreateUIWindow( inv, inv.transform );
                 } );
             }
-
         }
     }
 }

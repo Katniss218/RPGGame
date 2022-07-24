@@ -5,6 +5,7 @@ using RPGGame.Player;
 using RPGGame.SaveStates;
 using RPGGame.Serialization;
 using RPGGame.UI;
+using RPGGame.UI.Windows;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,6 +34,12 @@ namespace RPGGame
             } );
         }
 
+        /// <summary>
+        /// Unloads the active scene and loads a new one.
+        /// </summary>
+        /// <param name="sceneName">The new scene to load.</param>
+        /// <param name="onUnload">The action that'll run after the scene is unloaded, and before the new one begins loading.</param>
+        /// <param name="onLoad">The action that'll run after the new scene is loaded.</param>
         public static void ChangeScene( string sceneName, Action onUnload, Action onLoad )
         {
             AsyncOperation sceneUnloadOper = SceneManager.UnloadSceneAsync( SceneManager.GetActiveScene() );
@@ -52,6 +59,11 @@ namespace RPGGame
             };
         }
 
+        /// <summary>
+        /// Additively loads a new scene.
+        /// </summary>
+        /// <param name="sceneName">The new scene to load.</param>
+        /// <param name="onLoad">The action that'll run after the new scene is loaded.</param>
         public static void AppendScene( string sceneName, Action onLoad )
         {
             AsyncOperation sceneLoadOper = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Additive );
@@ -64,6 +76,9 @@ namespace RPGGame
             };
         }
 
+        /// <summary>
+        /// This is hooked up to the start game button in the main menu.
+        /// </summary>
         public void LoadGame()
         {
             StartGame();
@@ -77,19 +92,6 @@ namespace RPGGame
         private static void OnPlaySceneLoaded()
         {
             SaveStateManager.Load( null );
-
-            //----------
-
-            Main.CameraController.FollowTarget = PlayerManager.Player;
-
-            PlayerMovementController pmc = PlayerManager.Player.GetComponent<PlayerMovementController>();
-            if( pmc == null )
-            {
-                return;
-            }
-
-            pmc.CameraPivot = Main.CameraController.transform;
-            PlayerInventoryUI.CreateUIWindow( PlayerManager.Player.GetComponent<PlayerInventory>(), PlayerManager.Player );
         }
     }
 }
