@@ -44,8 +44,12 @@ namespace RPGGame.Serialization
         /// <returns>The path, relative to 'Assets/Resources/'. Null if object is not a prefab.</returns>
         public static string GetLoadablePrefabPath( this GameObject obj )
         {
+#warning TODO - need to store the prefab path when instantiating (so need a method and that method should take the path, load from Resources, store it on a component).
+#if UNITY_EDITOR
             string rawPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot( obj );
-
+#else
+            string rawPath = "";
+#endif
             if( string.IsNullOrEmpty( rawPath ) )
             {
                 return null;
@@ -114,6 +118,7 @@ namespace RPGGame.Serialization
                 throw new Exception( "Prefab Path was null, can't spawn" );
             }
 
+#warning TODO - objects don't persist their prefab paths. We can't use PrefabUtility because it's in the UnityEditor namespace.
             GameObject gameObject = Object.Instantiate( AssetManager.Prefabs.Get( prefabPath ) );
 
             SerializationManager.RegisterObject( (Guid)data["$id"], gameObject );

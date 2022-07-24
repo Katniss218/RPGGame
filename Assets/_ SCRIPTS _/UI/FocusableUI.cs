@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class FocusableUI : EventTrigger
 {
-    public RectTransform Window;
+    [SerializeField] public RectTransform Window;
 
     public override void OnPointerDown( PointerEventData eventData )
     {

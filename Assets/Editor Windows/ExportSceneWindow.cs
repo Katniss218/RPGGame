@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using RPGGame.SaveStates;
@@ -44,3 +45,4 @@ namespace RPGGame.Editor
         }
     }
 }
+#endif

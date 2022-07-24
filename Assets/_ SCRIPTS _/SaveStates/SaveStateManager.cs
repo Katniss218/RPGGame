@@ -52,6 +52,14 @@ namespace RPGGame.SaveStates
 
         private static void Load( string save, string area )
         {
+            SceneSwitcher.ChangeScene( SceneSwitcher.GAME_SCENE_NAME, null, () =>
+            {
+                FinishLoading( save, area );
+            } );
+        }
+
+        private static void FinishLoading( string save, string area )
+        {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 

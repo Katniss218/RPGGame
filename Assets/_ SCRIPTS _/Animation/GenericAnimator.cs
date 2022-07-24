@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace RPGGame.Animation
 {
@@ -17,7 +18,7 @@ namespace RPGGame.Animation
         /// <summary>
         /// Holds the different instantiated AnimatorController state machines for each animation clip.
         /// </summary>
-        static Dictionary<AnimationClip, UnityEditor.Animations.AnimatorController> animatorControllers = new Dictionary<AnimationClip, UnityEditor.Animations.AnimatorController>();
+        static Dictionary<AnimationClip, RuntimeAnimatorController> animatorControllers = new Dictionary<AnimationClip, RuntimeAnimatorController>();
 
         /// <summary>
         /// The clip to assign on start.
@@ -42,14 +43,18 @@ namespace RPGGame.Animation
         Animator animator;
         bool isPlayingBackwards;
 
-        private static UnityEditor.Animations.AnimatorController GetAnimatorController( AnimationClip clip )
+        private static RuntimeAnimatorController GetAnimatorController( AnimationClip clip )
         {
             // For an clip that has already a state machine created - return that state machine.
-            if( animatorControllers.TryGetValue( clip, out UnityEditor.Animations.AnimatorController animatorController ) )
+            if( animatorControllers.TryGetValue( clip, out RuntimeAnimatorController animatorController ) )
             {
                 return animatorController;
             }
 
+#warning TODO - this doesn't work in build. - UnityEditor
+            // Unity sucks ass, I'll probably use Animation conponent, even though it's "obsolete", because there is no other way.
+
+#if UNITY_EDITOR
             // For a new clip, make a new state machine and save it for later reuse.
             animatorController = new UnityEditor.Animations.AnimatorController()
             {
@@ -86,6 +91,7 @@ namespace RPGGame.Animation
                     }
                 }
             };
+#endif
 
             animatorControllers.Add( clip, animatorController );
 
@@ -106,10 +112,6 @@ namespace RPGGame.Animation
 
         void Start()
         {
-            //AnimationCurve translateX = AnimationCurve.Linear( 0.0f, 0.0f, 2.0f, 2.0f );
-            //AnimationClip animationClip = new AnimationClip();
-            //animationClip.SetCurve( "", typeof( Transform ), "localPosition.x", translateX );
-
             animator = GetComponent<Animator>();
 
             AssignAnimation( animationClip );
@@ -118,6 +120,19 @@ namespace RPGGame.Animation
         private void AssignAnimation( AnimationClip clip )
         {
             CurrentClip = clip;
+
+            // in build, this is just 'RuntimeAnimatorController'.
+            Type type = animator.runtimeAnimatorController.GetType();
+            Main.Instance.text.text += type + "\n";
+            foreach( var prop in type.GetProperties() )
+            {
+                Main.Instance.text.text += " -p " + prop.Name + "\n";
+            }
+            foreach( var prop in type.GetFields() )
+            {
+                Main.Instance.text.text += " -f " + prop.Name + "\n";
+            }
+
             animator.runtimeAnimatorController = GetAnimatorController( clip );
             PauseAnimation();
         }

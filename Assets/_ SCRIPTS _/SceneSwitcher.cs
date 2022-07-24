@@ -86,12 +86,13 @@ namespace RPGGame
 
         public static void StartGame()
         {
-            ChangeScene( GAME_SCENE_NAME, null, OnPlaySceneLoaded );
+            SaveStateManager.Load( null );
+           // ChangeScene( GAME_SCENE_NAME, null, OnPlaySceneLoaded );
         }
-
+        /*
         private static void OnPlaySceneLoaded()
         {
             SaveStateManager.Load( null );
-        }
+        }*/
     }
 }

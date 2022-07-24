@@ -34,6 +34,8 @@ namespace RPGGame
             }
         }
 
+        public TMPro.TextMeshProUGUI text;
+
         private static Canvas __mobHudCanvas = null;
         public static Canvas MobHudCanvas
         {

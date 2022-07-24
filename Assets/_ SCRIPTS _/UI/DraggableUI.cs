@@ -1,3 +1,4 @@
+using RPGGame.UI.Windows;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace RPGGame.UI
 {
     public class DraggableUI : EventTrigger
     {
-        public RectTransform Window;
+        [SerializeField] public RectTransform Window;
 
         bool isDragging = false;
         Vector2 cursorOffset = Vector2.zero;
