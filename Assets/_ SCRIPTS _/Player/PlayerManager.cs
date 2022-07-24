@@ -1,4 +1,5 @@
 using RPGGame.Assets;
+using RPGGame.Items;
 using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -59,14 +60,31 @@ namespace RPGGame.Player
         {
             GameObject player = Object.Instantiate( AssetManager.Prefabs.Get( "Prefabs/Player" ) );
 
-            HealthHandler health = player.GetComponent<HealthHandler>();
+            return player;
+        }
+
+        public static void SetUpPlayerHooks()
+        {
+            HealthHandler health = Player.GetComponent<HealthHandler>();
             if( health != null )
             {
-                health.onHealthChange?.AddListener( PlayerUI.Instance.healthbarUI.OnHealthOrMaxHealthChange );
-                health.onMaxHealthChange?.AddListener( PlayerUI.Instance.healthbarUI.OnHealthOrMaxHealthChange );
+                health.onHealthChange?.AddListener( MainUI.Instance.PlayerHealthbar.OnHealthOrMaxHealthChange );
+                health.onMaxHealthChange?.AddListener( MainUI.Instance.PlayerHealthbar.OnHealthOrMaxHealthChange );
             }
 
-            return player;
+            PlayerInventory inv = Player.GetComponent<PlayerInventory>();
+            if( inv != null )
+            {
+                MainUI.Instance.ShowInventoryBtn.onClick?.AddListener( () =>
+                {
+                    if( UIWindow.ExistsAny<PlayerInventoryUI>() )
+                    {
+                        return;
+                    }
+                    PlayerInventoryUI.CreateUIWindow( inv, inv.transform );
+                } );
+            }
+
         }
     }
 }

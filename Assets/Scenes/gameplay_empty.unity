@@ -784,10 +784,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 425741021}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 893af17c806f826429c42cc895e10f85, type: 3}
+  m_Script: {fileID: 11500000, guid: 54bf31787a1a75b4591f63b572679fec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthbarUI: {fileID: 1425010144}
+  <PlayerHealthbar>k__BackingField: {fileID: 1425010144}
+  <ShowInventoryBtn>k__BackingField: {fileID: 1440790977}
 --- !u!1 &514688461
 GameObject:
   m_ObjectHideFlags: 0

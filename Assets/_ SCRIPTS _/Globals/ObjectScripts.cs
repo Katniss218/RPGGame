@@ -62,18 +62,6 @@ namespace RPGGame.Globals
         /// <summary>
         /// Meant to run when you click on the "Open inventory" button.
         /// </summary>
-        public void OnClick_Inventory( PlayerInventory inv )
-        {
-            if( UIWindow.ExistsAny<PlayerInventoryUI>() )
-            {
-                return;
-            }
-            PlayerInventoryUI.CreateUIWindow( inv, inv.transform );
-        }
-
-        /// <summary>
-        /// Meant to run when you click on the "Open inventory" button.
-        /// </summary>
         public void OnStartInteracting_Chest( Interactible.OnInteractEventInfo e )
         {
             UIWindow ui = GridInventoryUI.CreateUIWindow( e.Self.GetComponent<GridInventory>(), e.Self.transform );

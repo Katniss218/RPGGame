@@ -17,7 +17,9 @@ namespace RPGGame.SaveStates
     {
         // multiple saves, each save contains every area.
         // when saving as, every area and player data and more is copied to the new save's directory.
-        
+
+        public const string DEFAULT_SAVE_STATE = "_init";
+
         /// <summary>
         /// Returns the saves root directory.
         /// </summary>
@@ -28,9 +30,11 @@ namespace RPGGame.SaveStates
         /// </summary>
         public static string GetSaveDirectory( string save )
         {
+            // saves/<save>
+
             if( save == null )
             {
-                return Path.Combine( SavesDirectory, "_init" );
+                return Path.Combine( SavesDirectory, DEFAULT_SAVE_STATE );
             }
             return Path.Combine( SavesDirectory, save );
         }
@@ -40,20 +44,22 @@ namespace RPGGame.SaveStates
         /// </summary>
         public static string GetAreaSaveDirectory( string save, string areaID )
         {
-            return Path.Combine( GetSaveDirectory( save ), areaID );
+            // saves/<save>/areas/<area>
+
+            return Path.Combine( GetSaveDirectory( save ), "areas", areaID );
         }
 
-        static string GetAreaObjectsSaveFile( string save, string areaID )
+        static string GetAreaObjectsFile( string save, string areaID )
         {
             return Path.Combine( GetAreaSaveDirectory( save, areaID ), "objects.json" );
         }
 
-        static string GetMetaSaveFile( string save )
+        static string GetSaveDataFile( string save )
         {
-            return Path.Combine( GetSaveDirectory( save ), "meta.json" );
+            return Path.Combine( GetSaveDirectory( save ), "save.json" );
         }
         
-        static string GetGlobalObjectsFile( string save )
+        static string GetSaveObjectsFile( string save )
         {
             return Path.Combine( GetSaveDirectory( save ), "objects.json" );
         }
@@ -63,10 +69,10 @@ namespace RPGGame.SaveStates
         /// </summary>
         public static void LoadArea( string save, string areaID )
         {
-            string objectsFilePath = GetAreaObjectsSaveFile( save, areaID );
+            string path = GetAreaObjectsFile( save, areaID );
 
-            string savedText = File.ReadAllText( objectsFilePath );
-            SerializationManager.LoadScene( JsonConvert.DeserializeObject<JObject>( savedText ) );
+            string str = File.ReadAllText( path );
+            SerializationManager.LoadScene( JsonConvert.DeserializeObject<JObject>( str ) );
         }
 
         /// <summary>
@@ -74,12 +80,12 @@ namespace RPGGame.SaveStates
         /// </summary>
         public static void SaveArea( string save, string areaID )
         {
-            string objectsFilePath = GetAreaObjectsSaveFile( save, areaID );
+            string path = GetAreaObjectsFile( save, areaID );
 
-            string savedText = JsonConvert.SerializeObject( SerializationManager.SaveScene(), Formatting.Indented );
+            string str = JsonConvert.SerializeObject( SerializationManager.SaveScene(), Formatting.Indented );
 
-            DirectoryEx.EnsureExists( Path.GetDirectoryName( objectsFilePath ) );
-            File.WriteAllText( objectsFilePath, savedText );
+            DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
+            File.WriteAllText( path, str );
         }
 
         /// <summary>
@@ -87,12 +93,15 @@ namespace RPGGame.SaveStates
         /// </summary>
         public static void LoadPlayer( string save )
         {
-            string globalObjectsFilePath = GetGlobalObjectsFile( save );
+            string path = GetSaveObjectsFile( save );
 
-            string globalText = File.ReadAllText( globalObjectsFilePath );
-            JObject globalJson = JsonConvert.DeserializeObject<JObject>( globalText );
+            string str = File.ReadAllText( path );
+
+            JObject json = JsonConvert.DeserializeObject<JObject>( str );
+
             GameObject player = PlayerManager.SpawnPlayer();
-            SerializationHelper.SetDataGameObject( player, globalJson );
+            PlayerManager.SetUpPlayerHooks();
+            SerializationHelper.SetDataGameObject( player, json );
         }
 
         /// <summary>
@@ -109,12 +118,33 @@ namespace RPGGame.SaveStates
         /// <param name="player">The specific player object to serialize.</param>
         public static void SavePlayer( string save, GameObject player )
         {
-            string globalObjectsFilePath = GetGlobalObjectsFile( save );
+            string path = GetSaveObjectsFile( save );
 
-            string globalText = JsonConvert.SerializeObject( SerializationHelper.GetDataGameObject( player ), Formatting.Indented );
+            string str = JsonConvert.SerializeObject( SerializationHelper.GetDataGameObject( player ), Formatting.Indented );
 
-            DirectoryEx.EnsureExists( Path.GetDirectoryName( globalObjectsFilePath ) );
-            File.WriteAllText( globalObjectsFilePath, globalText );
+            DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
+            File.WriteAllText( path, str );
+        }
+
+        public static SaveData LoadSaveData( string save )
+        {
+            string path = GetSaveDataFile( save );
+
+            string str = File.ReadAllText( path );
+
+            SaveData data = JsonConvert.DeserializeObject<SaveData>( str );
+
+            return data;
+        }
+
+        public static void SaveSaveData( string save, SaveData data )
+        {
+            string path = GetSaveDataFile( save );
+
+            string str = JsonConvert.SerializeObject( data );
+
+            DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
+            File.WriteAllText( path, str );
         }
     }
 
@@ -124,8 +154,8 @@ namespace RPGGame.SaveStates
     /*
             saves
                 <save>
-                    save.json
-                    objects.json
+                    save.json           -- non-object scene-independent info about the save (display name, current area the player is in, quests, etc)
+                    objects.json        -- contains persistent area-independent objects (player, player minions, etc etc)
                     areas
                         <area>
                             objects.json
@@ -138,7 +168,6 @@ namespace RPGGame.SaveStates
     
     {
         CurrentArea (string)
-        Player (object)
     }
     
 

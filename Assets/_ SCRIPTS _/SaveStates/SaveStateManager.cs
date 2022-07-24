@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using RPGGame.Player;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,9 @@ namespace RPGGame.SaveStates
         /// <param name="save">The name of the save state (must exist).</param>
         public static void Load( string save )
         {
-            Load( save, "default_area" );
+            SaveData data = SaveGameUtils.LoadSaveData( save );
+
+            Load( save, data.CurrentArea );
         }
 
         private static void Load( string save, string area )
@@ -81,6 +84,10 @@ namespace RPGGame.SaveStates
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            SaveGameUtils.SaveSaveData( save, new SaveData()
+            {
+                CurrentArea = CurrentAreaID
+            } );
             SaveGameUtils.SaveArea( save, area );
             SaveGameUtils.SavePlayer( save, PlayerManager.Player.gameObject );
 
