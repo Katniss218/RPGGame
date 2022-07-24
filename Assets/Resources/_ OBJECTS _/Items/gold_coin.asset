@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1ff95a5e13ec234caaf57fb81a1b391, type: 3}
   m_Name: gold_coin
   m_EditorClassIdentifier: 
-  ID: item.gold_coin
+  <ID>k__BackingField: item.gold_coin
   DisplayName: Gold Coin
   Description: 
   model: {fileID: 919132149155446097, guid: d6fe4d5a21ab97a45afcea361d144391, type: 3}

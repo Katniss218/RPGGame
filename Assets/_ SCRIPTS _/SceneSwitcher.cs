@@ -1,5 +1,9 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RPGGame.Items;
 using RPGGame.Player;
+using RPGGame.SaveStates;
+using RPGGame.Serialization;
 using RPGGame.UI;
 using System;
 using System.Collections;
@@ -13,7 +17,7 @@ namespace RPGGame
     {
         public string SceneName;
 
-        public const string GAME_SCENE_NAME = "game";
+        public const string GAME_SCENE_NAME = "gameplay_empty";
         public const string MENU_SCENE_NAME = "main_menu";
 
         public void ChangeScene()
@@ -67,21 +71,25 @@ namespace RPGGame
 
         public static void StartGame()
         {
-            ChangeScene( GAME_SCENE_NAME, null, OnGameLoaded );
+            ChangeScene( GAME_SCENE_NAME, null, OnPlaySceneLoaded );
         }
 
-        private static void OnGameLoaded()
+        private static void OnPlaySceneLoaded()
         {
-            Main.CameraController.FollowTarget = Main.Player;
+            SaveStateManager.Load( null );
 
-            PlayerMovementController pmc = Main.Player.GetComponent<PlayerMovementController>();
+            //----------
+
+            Main.CameraController.FollowTarget = PlayerManager.Player;
+
+            PlayerMovementController pmc = PlayerManager.Player.GetComponent<PlayerMovementController>();
             if( pmc == null )
             {
                 return;
             }
 
             pmc.CameraPivot = Main.CameraController.transform;
-            PlayerInventoryUI.CreateUIWindow( Main.Player.GetComponent<PlayerInventory>(), Main.Player );
+            PlayerInventoryUI.CreateUIWindow( PlayerManager.Player.GetComponent<PlayerInventory>(), PlayerManager.Player );
         }
     }
 }

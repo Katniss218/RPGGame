@@ -1,3 +1,4 @@
+using RPGGame.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,13 +32,13 @@ namespace RPGGame.Interactions
                         return;
                     }
 
-                    if( inter.IsInteracting( Main.Player ) )
+                    if( inter.IsInteracting( PlayerManager.Player ) )
                     {
-                        inter.StopInteracting( Main.Player );
+                        inter.StopInteracting( PlayerManager.Player );
                     }
                     else
                     {
-                        inter.StartInteracting( Main.Player );
+                        inter.StartInteracting( PlayerManager.Player );
                     }
                 }
             }

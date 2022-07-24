@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using RPGGame.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +9,7 @@ namespace RPGGame.Mobs
 {
     [RequireComponent( typeof( NavMeshAgent ) )]
     [DisallowMultipleComponent]
-    public class MobTargetTracking : MonoBehaviour
+    public class MobTargetTracking : MonoBehaviour, ISerializedComponent
     {
         public Transform Target { get; set; } = null;
 
@@ -51,6 +53,19 @@ namespace RPGGame.Mobs
                 this.navMeshAgent.SetDestination( Target.position );
                 lastPathUpdateTimestamp = Time.time;
             }
+        }
+
+        public JObject GetData()
+        {
+            return new JObject()
+            {
+                { "Position", this.transform.position.ToJson() }
+            };
+        }
+
+        public void SetData( JObject data ) // This is needed because the position was weird after setting it just via the transform.
+        {
+            this.navMeshAgent.Warp( data["Position"].ToVector3() );
         }
     }
 }

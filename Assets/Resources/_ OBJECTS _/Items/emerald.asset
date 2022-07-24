@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1ff95a5e13ec234caaf57fb81a1b391, type: 3}
   m_Name: emerald
   m_EditorClassIdentifier: 
-  ID: item.emerald
+  <ID>k__BackingField: item.emerald
   DisplayName: Emerald
   Description: 
   model: {fileID: 919132149155446097, guid: 1744fad7961041c4e8a3b12c61490da5, type: 3}

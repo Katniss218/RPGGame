@@ -1,3 +1,4 @@
+using RPGGame.Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -167,13 +168,13 @@ namespace RPGGame.UI
             rt.gameObject.AddComponent<CanvasRenderer>();
             Image image = rt.gameObject.AddComponent<Image>();
             image.type = Image.Type.Sliced;
-            image.sprite = AssetManager.GetSprite( "Sprites/ui_window" );
+            image.sprite = AssetManager.Sprites.Get( "Sprites/ui_window" );
 
-            GameObject dragStrip = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/drag_strip" ), rt );
+            GameObject dragStrip = Instantiate( AssetManager.Prefabs.Get( "Prefabs/UI/drag_strip" ), rt );
             dragStrip.GetComponent<DraggableUI>().Window = rt;
             dragStrip.GetComponent<FocusableUI>().Window = rt;
 
-            GameObject closeButtonGO = Instantiate( AssetManager.GetPrefab( "Prefabs/UI/x_button" ), rt );
+            GameObject closeButtonGO = Instantiate( AssetManager.Prefabs.Get( "Prefabs/UI/x_button" ), rt );
 
             Button closeButton = closeButtonGO.GetComponent<Button>();
 

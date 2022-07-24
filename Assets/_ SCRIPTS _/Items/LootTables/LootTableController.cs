@@ -1,11 +1,14 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RPGGame.Globals;
+using RPGGame.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPGGame.Items.LootTables
 {
-    public class LootTableController : MonoBehaviour
+    public class LootTableController : MonoBehaviour, ISerializedComponent
     {
         public LootTable LootTable;
 
@@ -14,6 +17,16 @@ namespace RPGGame.Items.LootTables
         /// </summary>
         public bool DropOnGround = true;
 
+        /// <summary>
+        /// If true, the loot table controller will drop its items on Start().
+        /// </summary>
+        public bool OnStart = false;
+
+        /// <summary>
+        /// True marks that this loot table controller has dropped its items and shouldn't drop them again.
+        /// </summary>
+        public bool Used = false;
+
         IInventory inventory = null;
 
         void Awake()
@@ -21,29 +34,63 @@ namespace RPGGame.Items.LootTables
             inventory = this.GetComponent<IInventory>();
         }
 
+        void Start()
+        {
+            if( OnStart )
+            {
+                TryDropItems();
+            }
+        }
+
         /// <summary>
         /// Drops or adds the items from the loot table.
         /// </summary>
-        public void DropItems()
+        public void TryDropItems()
         {
+            if( Used )
+            {
+                return;
+            }
+
             List<ItemStack> items = LootTable.GetItems();
+
+            Ensure.NotNull( LootTable );
 
             if( DropOnGround )
             {
                 foreach( var item in items )
                 {
-                    ObjectScripts.CreatePickup( item.Item, item.Amount, this.transform.position, this.transform.rotation, false );
+                    Main.CreatePickup( item.Item, item.Amount, this.transform.position, this.transform.rotation, false );
                 }
             }
             else
             {
-                Ensure.NotNull( LootTable );
-
                 foreach( var item in items )
                 {
                     inventory.TryAdd( item );
                 }
             }
+
+            Used = true;
+        }
+
+        public JObject GetData()
+        {
+            return new JObject()
+            {
+                { "LootTable", LootTable },
+                { "DropOnGround", DropOnGround },
+                { "OnStart", OnStart },
+                { "Used", Used }
+            };
+        }
+
+        public void SetData( JObject data )
+        {
+            this.LootTable = (LootTable)data["LootTable"];
+            this.DropOnGround = (bool)data["DropOnGround"];
+            this.OnStart = (bool)data["OnStart"];
+            this.Used = (bool)data["Used"];
         }
     }
 }

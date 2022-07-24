@@ -1,10 +1,16 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RPGGame.Assets;
 using RPGGame.Items;
 using RPGGame.Player;
+using RPGGame.Serialization;
 using RPGGame.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace RPGGame
 {
@@ -51,22 +57,6 @@ namespace RPGGame
                     __camera = CameraController.Camera;
                 }
                 return __camera;
-            }
-        }
-
-        private static Transform __player = null;
-        /// <summary>
-        /// The player's root object, null if none exist.
-        /// </summary>
-        public static Transform Player
-        {
-            get
-            {
-                if( __player == null )
-                {
-                    __player = FindObjectOfType<PlayerMovementController>()?.transform;
-                }
-                return __player;
             }
         }
 
@@ -122,9 +112,37 @@ namespace RPGGame
             }
         }
 
+        public static string GameDirectory { get => AppDomain.CurrentDomain.BaseDirectory; }
+
         private void Start()
         {
             SceneSwitcher.AppendScene( SceneSwitcher.MENU_SCENE_NAME, null );
         }
+
+        public static void CreatePickup( Item item, int amount, Vector3 position, Quaternion rotation, bool applyForce )
+        {
+            const float HEIGHT_OFFSET = 0.25f;
+            const float JITTER_RANGE = 0.05f;
+
+            Vector3 offset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
+
+            GameObject go = Instantiate( AssetManager.Prefabs.Get( "Prefabs/pickup" ), position + offset, Quaternion.identity );
+            go.name = "pickup";
+
+#warning TODO - Move this to begin the code for modifying the visuals based on what's equipped.
+            GameObject itemVisual = Instantiate( item.model, go.transform );
+
+            PickupInventory inventory = go.GetComponent<PickupInventory>();
+            inventory.SetCapacityAndPickUp( new ItemStack( item, amount ) );
+
+            if( applyForce )
+            {
+                Rigidbody rigidbody = go.GetComponent<Rigidbody>();
+
+                Vector3 dir = ((rotation * Vector3.forward) + new Vector3( 0.0f, 0.4f, 0.0f )).normalized;
+                rigidbody.velocity = dir * 60f;
+            }
+        }
+
     }
 }

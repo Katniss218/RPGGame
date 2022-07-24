@@ -1,3 +1,6 @@
+using Newtonsoft.Json.Linq;
+using RPGGame.Assets;
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,7 +20,9 @@ namespace RPGGame.Items.LootTables
             public float DropChance = 1.0f;
         }
 
-        public Entry[] Items;
+        public string ID;
+
+        public List<Entry> Items;
 
         /// <summary>
         /// Collapses the loot table and returns the resulting items.
@@ -40,6 +45,24 @@ namespace RPGGame.Items.LootTables
             }
 
             return items;
+        }
+
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public static implicit operator JToken( LootTable self )
+        {
+            return new JObject()
+            {
+                { "$ref", SerializationHelper.ToReferenceString( ReferenceType.ASSET, self.ID ) }
+            };
+        }
+
+        public static explicit operator LootTable( JToken json )
+        {
+            return AssetManager.LootTables.Get( SerializationHelper.ToAssetID( (string)json["$ref"] ).assetID );
         }
     }
 }

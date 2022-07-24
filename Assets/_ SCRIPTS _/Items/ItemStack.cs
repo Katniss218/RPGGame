@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -122,7 +123,31 @@ namespace RPGGame.Items
 
         public override string ToString()
         {
+            if( this.IsEmpty )
+            {
+                return "(empty)";
+            }
+
             return $"({Amount}x '{Item}')";
+        }
+
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public static implicit operator JToken( ItemStack self )
+        {
+            return new JObject()
+            {
+                { "Item", self.Item },
+                { "Amount",self.Amount }
+            };
+        }
+
+        public static explicit operator ItemStack( JToken json )
+        {
+            return new ItemStack( (Item)json["Item"], (int)json["Amount"] );
         }
     }
 }

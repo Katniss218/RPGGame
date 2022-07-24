@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0fabc9eb346c9439be8a7747ac2ce7, type: 3}
   m_Name: axe
   m_EditorClassIdentifier: 
-  ID: item.axe
+  <ID>k__BackingField: item.axe
   DisplayName: Axe
   Description: A heavy Axe, can chop off a head.
   model: {fileID: 919132149155446097, guid: c72110e0f82fc5c48b3b558ee303d308, type: 3}

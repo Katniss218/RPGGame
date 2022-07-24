@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -76,6 +77,7 @@ namespace RPGGame.Items
 
         public int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
+            return 0;
             throw new System.NotImplementedException();
         }
 
@@ -87,6 +89,21 @@ namespace RPGGame.Items
         public int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
+        }
+
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public JObject GetData()
+        {
+            return IInventoryEx.GetData( this );
+        }
+
+        public void SetData( JObject data )
+        {
+            IInventoryEx.SetData( this, data );
         }
     }
 }

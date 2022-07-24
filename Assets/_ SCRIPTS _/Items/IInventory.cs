@@ -1,3 +1,4 @@
+using RPGGame.Serialization;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine.Events;
 
 namespace RPGGame.Items
 {
-    public interface IInventory
+    public interface IInventory : ISerializedComponent
     {
         public class PickupEventInfo
         {
@@ -34,8 +35,20 @@ namespace RPGGame.Items
 
         public enum Reason
         {
+            /// <summary>
+            /// Any generic picking up, dropping after death, etc.
+            /// </summary>
             GENERIC,
-            INVENTORY_REARRANGEMENT
+
+            /// <summary>
+            /// Clicking around in an inventory.
+            /// </summary>
+            INVENTORY_REARRANGEMENT,
+
+            /// <summary>
+            /// Saving or loading (serialization).
+            /// </summary>
+            PERSISTENCE
         }
 
         UnityEvent<PickupEventInfo> onPickup { get; }

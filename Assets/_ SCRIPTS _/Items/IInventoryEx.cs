@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace RPGGame.Items
         /// <summary>
         /// Removes all items from the inventory.
         /// </summary>
-        public static void Clear( this IInventory inv )
+        public static void Clear( this IInventory inv, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             foreach( var (itemSlot, orig) in inv.GetItemSlots() )
             {
@@ -42,6 +43,7 @@ namespace RPGGame.Items
                 inv.onDrop?.Invoke( new IInventory.DropEventInfo()
                 {
                     Self = inv,
+                    Reason = reason,
                     Item = item,
                     Amount = amt,
                     SlotOrigin = orig
@@ -100,6 +102,39 @@ namespace RPGGame.Items
             }
 
             return amountLeft;
+        }
+
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public static JObject GetData( this IInventory inv )
+        {
+            JObject itemsKeyedBySlot = new JObject();
+
+            List<(ItemStack, int orig)> items = inv.GetItemSlots();
+            foreach( var (itemStack, slot) in items )
+            {
+                itemsKeyedBySlot.Add( slot.ToString(), itemStack );
+            }
+
+            return new JObject()
+            {
+                { "Items", itemsKeyedBySlot }
+            };
+        }
+
+        public static void SetData( this IInventory inv, JObject data )
+        {
+            inv.Clear( IInventory.Reason.PERSISTENCE );
+
+            foreach( var (slot, itemData) in (JObject)data["Items"] )
+            {
+                ItemStack item = (ItemStack)itemData;
+
+                inv.AddItem( item, int.Parse( slot ), IInventory.Reason.PERSISTENCE );
+            }
         }
     }
 }

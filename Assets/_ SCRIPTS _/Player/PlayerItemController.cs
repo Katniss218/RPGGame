@@ -1,6 +1,4 @@
-using RPGGame.Audio;
 using RPGGame.Items;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -80,8 +78,6 @@ namespace RPGGame.Player
                     closestEnemy = (collider.transform, distance);
                 }
             }
-
-
 
             return closestEnemy.t;
         }

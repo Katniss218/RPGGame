@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ namespace RPGGame
     /// <remarks>
     /// Attach to the root object.
     /// </remarks>
-    public class HealthHandler : MonoBehaviour
+    public class HealthHandler : MonoBehaviour, ISerializedComponent
     {
         public class HealthChangeEventInfo
         {
@@ -48,24 +50,20 @@ namespace RPGGame
 
         public void SetHealth( float amount, float? maxAmount = null )
         {
-            float delta = amount - Health;
-            if( delta == 0 )
-            {
-                throw new ArgumentException( "Can't change health by '0'." );
-            }
-
             if( maxAmount != null )
             {
                 float maxDelta = maxAmount.Value - MaxHealth;
-                if( maxDelta == 0 )
+                if( maxDelta != 0 )
                 {
-                    throw new ArgumentException( "Can't change max health by '0'." );
+                    ChangeMaxHealth( maxDelta );
                 }
-
-                ChangeMaxHealth( maxDelta );
             }
 
-            ChangeHealth( delta );
+            float delta = amount - Health;
+            if( delta != 0 )
+            {
+                ChangeHealth( delta );
+            }
         }
 
         public void ChangeMaxHealth( float delta )
@@ -118,6 +116,25 @@ namespace RPGGame
             {
                 Self = this
             } );
+        }
+
+        //  --------------------------
+
+        //      DATA SERIALIZATION
+        //
+
+        public JObject GetData()
+        {
+            return new JObject()
+            {
+                { "Health", (float)this.Health },
+                { "MaxHealth", (float)this.MaxHealth }
+            };
+        }
+
+        public void SetData( JObject data )
+        {
+            this.SetHealth( (float)data["Health"], (float)data["MaxHealth"] );
         }
     }
 }

@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using RPGGame.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +12,15 @@ namespace RPGGame.Items
     [DisallowMultipleComponent]
     public sealed class PlayerInventory : GridInventory
     {
-        private ItemStack[] Equip = new ItemStack[6];
+        private ItemStack[] Equip = new ItemStack[6]
+        {
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+            ItemStack.Empty,
+        };
 
         public ItemStack EquipHand => Equip[0];
         public ItemStack EquipOffhand => Equip[1];
@@ -23,10 +33,6 @@ namespace RPGGame.Items
         void Awake()
         {
             SetSize( 6, 12 );
-            for( int i = 0; i < Equip.Length; i++ )
-            {
-                Equip[i] = ItemStack.Empty;
-            }
 
             inventorySlots[0, 0].MakeBlockingSlot();
             inventorySlots[5, 0].MakeBlockingSlot();
@@ -37,7 +43,7 @@ namespace RPGGame.Items
 
         void Start()
         {
-            AddItem( new ItemStack( AssetManager.GetItem( "item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            AddItem( new ItemStack( AssetManager.Items.Get( "item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
         }
 
         public static int MapSlotIndexToEquipIndex( int slotIndex )
@@ -99,12 +105,13 @@ namespace RPGGame.Items
         {
             if( slotIndex < 0 )
             {
-                // Accessing the equipment slot is only possible by dragging an item there.
+                // Do not allow the picked up items, etc to fall into the equipment slots directly.
 
-                if( reason != IInventory.Reason.INVENTORY_REARRANGEMENT )
+                if( reason == IInventory.Reason.GENERIC )
                 {
                     return null;
                 }
+
                 int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
 
                 if( Equip[equipIndex].CanStackWith( itemStack ) )
@@ -146,12 +153,6 @@ namespace RPGGame.Items
         {
             if( slotIndex < 0 )
             {
-                // Accessing the equipment slot is only possible by dragging an item there.
-                if( reason != IInventory.Reason.INVENTORY_REARRANGEMENT )
-                {
-                    return null;
-                }
-
                 int equipIndex = MapSlotIndexToEquipIndex( slotIndex );
 
                 if( Equip[equipIndex].IsEmpty )

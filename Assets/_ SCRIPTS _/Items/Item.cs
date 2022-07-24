@@ -1,3 +1,6 @@
+using Newtonsoft.Json.Linq;
+using RPGGame.Assets;
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +14,8 @@ namespace RPGGame.Items
         /// <summary>
         /// The identifier of the item.
         /// </summary>
-        public string ID;
+        [field: SerializeField]
+        public string ID { get; set; }
 
         public string DisplayName;
         public string Description;
@@ -33,6 +37,19 @@ namespace RPGGame.Items
         public bool CanStackWith( Item other )
         {
             return this.ID == other.ID;
+        }
+
+        public static implicit operator JToken( Item self )
+        {
+            return new JObject()
+            {
+                { "$ref", SerializationHelper.ToReferenceString(ReferenceType.ASSET, self.ID) }
+            };
+        }
+
+        public static explicit operator Item( JToken json )
+        {
+            return AssetManager.Items.Get( SerializationHelper.ToAssetID( (string)json["$ref"] ).assetID );
         }
     }
 }

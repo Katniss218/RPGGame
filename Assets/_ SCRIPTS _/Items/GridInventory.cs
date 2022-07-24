@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -78,7 +80,7 @@ namespace RPGGame.Items
             }
         }
 
-        [SerializeField] protected ItemSlot[,] inventorySlots =  null; // each slot points to an object containing the reference to the and amount.
+        [SerializeField] protected ItemSlot[,] inventorySlots = new ItemSlot[0,0]; // each slot points to an object containing the reference to the and amount.
 
         [SerializeField] UnityEvent<IInventory.PickupEventInfo> __onPickup;
         public UnityEvent<IInventory.PickupEventInfo> onPickup { get => __onPickup; }
@@ -509,6 +511,21 @@ namespace RPGGame.Items
             }
 
             return sb.ToString();
+        }
+
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public JObject GetData()
+        {
+            return IInventoryEx.GetData( this );
+        }
+
+        public void SetData( JObject data )
+        {
+            IInventoryEx.SetData( this, data );
         }
     }
 }

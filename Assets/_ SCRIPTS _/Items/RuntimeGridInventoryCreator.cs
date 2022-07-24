@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace RPGGame.Items
 {
-    [RequireComponent(typeof(GridInventory))]
+    [RequireComponent( typeof( GridInventory ) )]
     public class RuntimeGridInventoryCreator : MonoBehaviour
     {
         public int sizeX;
         public int sizeY;
 
-        void Start()
+        void Awake()
         {
             GridInventory inv = this.GetComponent<GridInventory>();
 

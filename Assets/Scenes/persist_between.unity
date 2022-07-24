@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 163091079}
   m_Layer: 0
   m_Name: EventSystem
-  m_TagString: Untagged
+  m_TagString: NonSerialized
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 790860614}
   m_Layer: 0
   m_Name: CameraPivot
-  m_TagString: Untagged
+  m_TagString: NonSerialized
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 1883606023}
   m_Layer: 0
   m_Name: ------- MAIN ------------
-  m_TagString: Untagged
+  m_TagString: NonSerialized
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
