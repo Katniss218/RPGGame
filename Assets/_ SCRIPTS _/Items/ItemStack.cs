@@ -72,9 +72,9 @@ namespace RPGGame.Items
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="unstacked">If true, the max amount of this item stack will be ignored, allowing it to overflow.</param>
+        /// <param name="canOverstack">If true, the max amount of this item stack will be ignored, allowing it to overstack (overflow).</param>
         /// <returns>The amount of items that were added to the item stack.</returns>
-        public int Add( ItemStack desiredItemStack, bool unstacked )
+        public int Add( ItemStack desiredItemStack, bool canOverstack )
         {
             if( desiredItemStack.IsEmpty )
             {
@@ -88,7 +88,7 @@ namespace RPGGame.Items
                     this.Item = desiredItemStack.Item;
                 }
 
-                int amountToAdd = AmountToAdd( desiredItemStack, unstacked );
+                int amountToAdd = AmountToAdd( desiredItemStack, canOverstack );
 
                 this.Amount += amountToAdd;
 

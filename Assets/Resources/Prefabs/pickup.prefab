@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2611850998566813513}
   - component: {fileID: 5759132709471551709}
   - component: {fileID: 5759132709471551708}
+  - component: {fileID: 1631188372322288203}
   m_Layer: 10
   m_Name: pickup
   m_TagString: Untagged
@@ -97,3 +98,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   createdTime: 0
+--- !u!114 &1631188372322288203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5759132709471551711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72e57cd80f5e1634d8eeaa4cefa6f386, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

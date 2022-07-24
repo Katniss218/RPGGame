@@ -6,8 +6,14 @@ using UnityEngine.Events;
 
 namespace RPGGame.Items
 {
+    /// <summary>
+    /// A generic inventory that can hold items.
+    /// </summary>
     public interface IInventory : ISerializedComponent
     {
+        // The inventory should only be concerned with *storing* items.
+        // Any additional functionality should be obtained with additional components.
+
         public class PickupEventInfo
         {
             public IInventory Self;
@@ -33,6 +39,9 @@ namespace RPGGame.Items
             public IInventory Self;
         }
 
+        /// <summary>
+        /// Contains the possible reasons for picking up / dropping the item.
+        /// </summary>
         public enum Reason
         {
             /// <summary>
@@ -55,6 +64,10 @@ namespace RPGGame.Items
         UnityEvent<DropEventInfo> onDrop { get; }
         UnityEvent<ResizeEventInfo> onResize { get; }
 
+        /// <summary>
+        /// Checks if the slot index is a valid index for a given item.
+        /// </summary>
+        /// <returns>True if the slot is a valid slot index, and can accept the item, otherwise false.</returns>
         bool IsValidIndex( int slotIndex, Item item );
 
         /// <summary>
@@ -62,15 +75,50 @@ namespace RPGGame.Items
         /// </summary>
         List<int> GetAllSlots();
 
+        /// <summary>
+        /// Returns a sequence of slot and amount pairs that can be used at the time to fill the inventory with the specified items.
+        /// A leftover value is provided, if the inventory can't fit all the items.
+        /// </summary>
         (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack );
         (ItemStack, int orig) GetItemSlot( int slotIndex );
+
+        /// <summary>
+        /// Returns the complete list of items in the inventory.
+        /// </summary>
         List<(ItemStack, int orig)> GetItemSlots();
 
-        int? CanSetItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
+        /// <summary>
+        /// Checks whether the item can be added to a particular slot, given a reason.
+        /// </summary>
+        /// <returns>If the item is compatible, the amount of space in the slot (including 0 for a compatible item, but not enough space). Null if the item is incompatible.</returns>
+        int? CanAddItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
+        /// <summary>
+        /// Adds an amount of specified item into a slot.
+        /// </summary>
+        /// <remarks>
+        /// This should throw an exception if the operation would replace (delete) a different item already present in the inventory.
+        /// This shouldn't overstack the items.
+        /// </remarks>
+        /// <returns>The amount of items that were actually added.</returns>
         int AddItem( ItemStack itemStack, int slotIndex, Reason reason = Reason.GENERIC );
 
+        /// <summary>
+        /// Checks whether the item can be removed from a particular slot, given a reason.
+        /// </summary>
+        /// <returns>If the item is compatible, the amount of space in the slot. Null if the item is incompatible.</returns>
         int? CanRemoveItem( int slotIndex, Reason reason = Reason.GENERIC );
+        /// <summary>
+        /// Removes an amount of the item from a slot.
+        /// </summary>
+        /// <remarks>
+        /// This should throw an exception if there is no item to remove.
+        /// </remarks>
+        /// <returns>The amount of items that were actually removed.</returns>
         int RemoveItem( int amount, int slotIndex, Reason reason = Reason.GENERIC );
+
+        //  -----------------------------
+
+        //      Force a MonoBehaviour
 
         public GameObject gameObject { get; }
         public Transform transform { get; }

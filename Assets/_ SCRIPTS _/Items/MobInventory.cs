@@ -70,7 +70,7 @@ namespace RPGGame.Items
             return items;
         }
 
-        public int? CanSetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             throw new System.NotImplementedException();
         }

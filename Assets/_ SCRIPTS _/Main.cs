@@ -124,13 +124,11 @@ namespace RPGGame
             const float HEIGHT_OFFSET = 0.25f;
             const float JITTER_RANGE = 0.05f;
 
-            Vector3 offset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
+            // This helps de-clump the items if multiple are spawned by the same dropping entity.
+            Vector3 randomOffset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
 
-            GameObject go = Instantiate( AssetManager.Prefabs.Get( "Prefabs/pickup" ), position + offset, Quaternion.identity );
+            GameObject go = Instantiate( AssetManager.Prefabs.Get( "Prefabs/pickup" ), position + randomOffset, rotation );
             go.name = "pickup";
-
-#warning TODO - Move this to begin the code for modifying the visuals based on what's equipped.
-            GameObject itemVisual = Instantiate( item.model, go.transform );
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetCapacityAndPickUp( new ItemStack( item, amount ) );

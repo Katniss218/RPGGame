@@ -53,7 +53,7 @@ namespace RPGGame.UI
 
                 // slot empty, cursor non-empty.
 
-                int? canFit = Inventory.CanSetItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+                int? canFit = Inventory.CanAddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
                 if( canFit == null || canFit < slotItem.Amount )
                 {
                     return;

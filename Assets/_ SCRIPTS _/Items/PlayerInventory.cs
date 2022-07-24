@@ -22,28 +22,36 @@ namespace RPGGame.Items
             ItemStack.Empty,
         };
 
-        public ItemStack EquipHand => Equip[0];
-        public ItemStack EquipOffhand => Equip[1];
+        public const int SLOT_HAND = -1;
+        public const int SLOT_OFFHAND = -2;
+        public const int SLOT_HEAD = -3;
+        public const int SLOT_CHEST = -4;
+        public const int SLOT_LEGS = -5;
+        public const int SLOT_FEET = -6;
 
-        public ItemStack EquipHead => Equip[2];
-        public ItemStack EquipBody => Equip[3];
-        public ItemStack EquipLegs => Equip[4];
-        public ItemStack EquipFeet => Equip[5];
+
+        public ItemStack EquipHand => Equip[MapSlotIndexToEquipIndex( SLOT_HAND )];
+        public ItemStack EquipOffhand => Equip[MapSlotIndexToEquipIndex( SLOT_OFFHAND )];
+
+        public ItemStack EquipHead => Equip[MapSlotIndexToEquipIndex( SLOT_HEAD )];
+        public ItemStack EquipBody => Equip[MapSlotIndexToEquipIndex( SLOT_CHEST )];
+        public ItemStack EquipLegs => Equip[MapSlotIndexToEquipIndex( SLOT_LEGS )];
+        public ItemStack EquipFeet => Equip[MapSlotIndexToEquipIndex( SLOT_FEET )];
 
         void Awake()
         {
             SetSize( 6, 12 );
 
-            inventorySlots[0, 0].MakeBlockingSlot();
-            inventorySlots[5, 0].MakeBlockingSlot();
+            inventorySlots[0, 0].MakeNonExistent();
+            inventorySlots[5, 0].MakeNonExistent();
 
-            inventorySlots[0, 11].MakeBlockingSlot();
-            inventorySlots[5, 11].MakeBlockingSlot();
+            inventorySlots[0, 11].MakeNonExistent();
+            inventorySlots[5, 11].MakeNonExistent();
         }
 
         void Start()
         {
-            AddItem( new ItemStack( AssetManager.Items.Get( "item.spear" ), 1 ), -1, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            AddItem( new ItemStack( AssetManager.Items.Get( "item.spear" ), 1 ), SLOT_HAND, IInventory.Reason.PERSISTENCE );
         }
 
         public static int MapSlotIndexToEquipIndex( int slotIndex )
@@ -62,7 +70,15 @@ namespace RPGGame.Items
 
         public override List<int> GetAllSlots()
         {
-            List<int> equip = new List<int>() { -6, -5, -4, -3, -2, -1 };
+            List<int> equip = new List<int>()
+            { 
+                SLOT_FEET,
+                SLOT_LEGS,
+                SLOT_CHEST,
+                SLOT_HEAD,
+                SLOT_OFFHAND,
+                SLOT_HAND
+            };
             equip.AddRange( base.GetAllSlots() );
 
             return equip;
@@ -101,7 +117,7 @@ namespace RPGGame.Items
             return base.GetItemSlot( slotIndex );
         }
 
-        public override int? CanSetItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public override int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
         {
             if( slotIndex < 0 )
             {
@@ -121,7 +137,7 @@ namespace RPGGame.Items
                 return null;
             }
 
-            return base.CanSetItem( itemStack, slotIndex );
+            return base.CanAddItem( itemStack, slotIndex );
         }
 
         public override int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
