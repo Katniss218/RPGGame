@@ -70,25 +70,25 @@ namespace RPGGame
 
         public static void StartGame()
         {
-            ChangeScene( GAME_SCENE_NAME, null, OnGameLoaded );
+            ChangeScene( GAME_SCENE_NAME, null, OnPlaySceneLoaded );
         }
 
-        private static void OnGameLoaded()
+        private static void OnPlaySceneLoaded()
         {
-            Main.LoadGame( Main.SAVE_FILE );
+            SaveAreaManager.Load( null );
 
             //----------
 
-            Main.CameraController.FollowTarget = Main.Player;
+            Main.CameraController.FollowTarget = PlayerManager.Player;
 
-            PlayerMovementController pmc = Main.Player.GetComponent<PlayerMovementController>();
+            PlayerMovementController pmc = PlayerManager.Player.GetComponent<PlayerMovementController>();
             if( pmc == null )
             {
                 return;
             }
 
             pmc.CameraPivot = Main.CameraController.transform;
-            PlayerInventoryUI.CreateUIWindow( Main.Player.GetComponent<PlayerInventory>(), Main.Player );
+            PlayerInventoryUI.CreateUIWindow( PlayerManager.Player.GetComponent<PlayerInventory>(), PlayerManager.Player );
         }
     }
 }

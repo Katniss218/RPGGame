@@ -60,22 +60,6 @@ namespace RPGGame
             }
         }
 
-        private static Transform __player = null;
-        /// <summary>
-        /// The player's root object, null if none exist.
-        /// </summary>
-        public static Transform Player
-        {
-            get
-            {
-                if( __player == null )
-                {
-                    __player = FindObjectOfType<PlayerMovementController>()?.transform;
-                }
-                return __player;
-            }
-        }
-
         private static Canvas __mobHudCanvas = null;
         public static Canvas MobHudCanvas
         {
@@ -128,38 +112,12 @@ namespace RPGGame
             }
         }
 
+        public static string GameDirectory { get => AppDomain.CurrentDomain.BaseDirectory; }
+
         private void Start()
         {
             SceneSwitcher.AppendScene( SceneSwitcher.MENU_SCENE_NAME, null );
         }
-
-        public static string SAVE_FILE = AppDomain.CurrentDomain.BaseDirectory + "/" + "save.json";
-
-        public static void LoadGame( string file )
-        {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-
-            string savedText = System.IO.File.ReadAllText( file );
-            SerializationManager.LoadScene( JsonConvert.DeserializeObject<JObject>( savedText ) );
-
-            sw.Stop();
-            Debug.LogWarning( $"Loaded '{file}' in {sw.ElapsedTicks / 10000f} ms" );
-        }
-
-        public static void SaveGame( string file )
-        {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-
-            string savedText = JsonConvert.SerializeObject( SerializationManager.SaveScene(), Formatting.Indented );
-            System.IO.File.WriteAllText( file, savedText );
-
-            sw.Stop();
-            Debug.LogWarning( $"Saved '{file}' in {sw.ElapsedTicks / 10000f} ms" );
-        }
-
-#warning TODO - after spawning the player, their hooks into the HUD are lost.
 
         public static void CreatePickup( Item item, int amount, Vector3 position, Quaternion rotation, bool applyForce )
         {

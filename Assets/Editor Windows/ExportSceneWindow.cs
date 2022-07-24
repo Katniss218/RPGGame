@@ -1,46 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using RPGGame.Serialization;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
 namespace RPGGame.Editor
 {
     public class ExportSceneWindow : EditorWindow
     {
-        //string myString = "Hello World";
-       // bool groupEnabled;
-        //bool myBool = true;
-        //float myFloat = 1.23f;
+        [SerializeField] string areaId = "default_area";
+        [SerializeField] GameObject defaultPlayer;
 
-        // Add menu item named "My Window" to the Window menu
         [MenuItem( "Window/RPGGame/Scene Export" )]
         public static void ShowWindow()
         {
-            //Show existing window instance. If one doesn't exist, make one.
             GetWindow( typeof( ExportSceneWindow ) );
         }
 
         void OnGUI()
         {
+            areaId = EditorGUILayout.TextField( "Area ID", areaId );
+            defaultPlayer = EditorGUILayout.ObjectField( "Default Player", defaultPlayer, typeof( GameObject ), false ) as GameObject;
+
             if( GUILayout.Button( "Export" ) )
             {
-                Main.SaveGame( Main.SAVE_FILE );
+                SaveGameUtils.SaveArea( null, areaId );
+                SaveGameUtils.SavePlayer( null, defaultPlayer );
             }
-
-            //
-            /*
-            GUILayout.Label( "Base Settings", EditorStyles.boldLabel );
-            myString = EditorGUILayout.TextField( "Text Field", myString );
-
-            groupEnabled = EditorGUILayout.BeginToggleGroup( "Optional Settings", groupEnabled );
-            {
-                myBool = EditorGUILayout.Toggle( "Toggle", myBool );
-                myFloat = EditorGUILayout.Slider( "Slider", myFloat, -3, 3 );
-                EditorGUILayout.EndToggleGroup();
-            }*/
         }
     }
 }
