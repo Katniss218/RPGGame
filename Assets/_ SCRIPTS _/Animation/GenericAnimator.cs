@@ -51,9 +51,16 @@ namespace RPGGame.Animation
                 return animatorController;
             }
 
+            animatorController = new AnimatorOverrideController();
+
+            AnimatorOverrideController animController = (AnimatorOverrideController)animatorController;
+
+            animController["state"] = clip;
+            animController["state_backwards"] = clip;
+
 #warning TODO - this doesn't work in build. - UnityEditor
             // Unity sucks ass, I'll probably use Animation conponent, even though it's "obsolete", because there is no other way.
-
+            /*
 #if UNITY_EDITOR
             // For a new clip, make a new state machine and save it for later reuse.
             animatorController = new UnityEditor.Animations.AnimatorController()
@@ -91,7 +98,8 @@ namespace RPGGame.Animation
                     }
                 }
             };
-#endif
+#endif*/
+
 
             animatorControllers.Add( clip, animatorController );
 

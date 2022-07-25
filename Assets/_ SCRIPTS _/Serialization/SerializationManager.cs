@@ -109,6 +109,10 @@ namespace RPGGame.Serialization
 
                 return json;
             }
+            catch
+            {
+                throw;
+            }
             finally
             {
                 ClearRegistry();
@@ -132,6 +136,10 @@ namespace RPGGame.Serialization
                 {
                     SerializationHelper.SetDataGameObject( GetObject<GameObject>( (Guid)objData["$id"] ), (JObject)objData );
                 }
+            }
+            catch
+            {
+                throw;
             }
             finally
             {

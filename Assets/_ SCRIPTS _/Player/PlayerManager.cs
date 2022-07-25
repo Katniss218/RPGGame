@@ -31,7 +31,7 @@ namespace RPGGame.Player
         /// </summary>
         public static GameObject SpawnPlayer()
         {
-            GameObject player = Object.Instantiate( AssetManager.Prefabs.Get( "Prefabs/player" ) );
+            GameObject player = RPGObject.Instantiate( "Prefabs/player", "player" );
 
             return player;
         }

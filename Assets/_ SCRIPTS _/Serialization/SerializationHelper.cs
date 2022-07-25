@@ -34,36 +34,8 @@ namespace RPGGame.Serialization
         /// </summary>
         public static bool ShouldSerialize( GameObject obj )
         {
-            return obj.transform.parent == null 
+            return obj.transform.parent == null
                 && obj.tag != TAG_NO_SERIALIZATION;
-        }
-
-        /// <summary>
-        /// Gets the path for a given prefab object.
-        /// </summary>
-        /// <returns>The path, relative to 'Assets/Resources/'. Null if object is not a prefab.</returns>
-        public static string GetLoadablePrefabPath( this GameObject obj )
-        {
-#warning TODO - need to store the prefab path when instantiating (so need a method and that method should take the path, load from Resources, store it on a component).
-#if UNITY_EDITOR
-            string rawPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot( obj );
-#else
-            string rawPath = "";
-#endif
-            if( string.IsNullOrEmpty( rawPath ) )
-            {
-                return null;
-            }
-
-            if( !rawPath.StartsWith( "Assets/Resources/" ) )
-            {
-                throw new Exception( $"Encountered a prefab that is not loadable. Please put it in Assets/Resources/... - '{rawPath}'" );
-            }
-
-            string prefabPath = System.IO.Path.GetRelativePath( "Assets/Resources", rawPath );
-            prefabPath = System.IO.Path.ChangeExtension( prefabPath, null );
-
-            return prefabPath;
         }
 
         // Reference path stuff.
@@ -84,7 +56,7 @@ namespace RPGGame.Serialization
             {
                 ReferenceType.ID => $"{REF}{ID}{REF_SEPARATOR}{assetID}",
                 ReferenceType.ASSET => $"{REF}{ASSET}{REF_SEPARATOR}{assetID}",
-                _ => throw new Exception($"Unknown reference type '{type}'.")
+                _ => throw new Exception( $"Unknown reference type '{type}'." )
             };
         }
 
@@ -118,8 +90,7 @@ namespace RPGGame.Serialization
                 throw new Exception( "Prefab Path was null, can't spawn" );
             }
 
-#warning TODO - objects don't persist their prefab paths. We can't use PrefabUtility because it's in the UnityEditor namespace.
-            GameObject gameObject = Object.Instantiate( AssetManager.Prefabs.Get( prefabPath ) );
+            GameObject gameObject = RPGObject.Instantiate( prefabPath, "<not_assigned_yet>" );
 
             SerializationManager.RegisterObject( (Guid)data["$id"], gameObject );
 
@@ -131,16 +102,29 @@ namespace RPGGame.Serialization
         /// </summary>
         public static JObject GetDataGameObject( GameObject obj )
         {
+            RPGObject rpgObject = obj.GetComponent<RPGObject>();
+
+            string prefabPath;
+
+            if( rpgObject == null )
+            {
+#if UNITY_EDITOR
+                prefabPath = RPGObject.GetLoadablePrefabPath( obj );
+#else
+                throw new Exception( "Can't serialize a non-RPGObject." );
+#endif
+            }
+            else
+            {
+                prefabPath = rpgObject.PrefabPath;
+            }
+
             JObject transformData = obj.transform.GetData();
 
             JToken componentData = GetComponentData( obj );
 
             Guid objectId = Guid.NewGuid();
             SerializationManager.RegisterObject( objectId, obj );
-
-            PersistentGameObject pgo = obj.GetComponent<PersistentGameObject>();
-
-            string prefabPath = pgo == null ? obj.GetLoadablePrefabPath() : pgo.PrefabPath;
 
             JObject full = new JObject()
             {

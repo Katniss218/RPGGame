@@ -12,8 +12,7 @@ namespace RPGGame.Mobs
 
         void Start()
         {
-            GameObject go = Instantiate( AssetManager.Prefabs.Get( PrefabPath ), this.transform.position, this.transform.rotation );
-            go.name = "mob";
+            GameObject go = RPGObject.Instantiate( PrefabPath, "mob", null, this.transform.position, this.transform.rotation );
         }
 
         void OnDrawGizmos()

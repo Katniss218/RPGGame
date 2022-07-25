@@ -103,8 +103,7 @@ namespace RPGGame
             // This helps de-clump the items if multiple are spawned by the same dropping entity.
             Vector3 randomOffset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
 
-            GameObject go = Instantiate( AssetManager.Prefabs.Get( "Prefabs/pickup" ), position + randomOffset, rotation );
-            go.name = "pickup";
+            GameObject go = RPGObject.Instantiate( "Prefabs/pickup", "pickup", null, position + randomOffset, rotation );
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
             inventory.SetCapacityAndPickUp( new ItemStack( item, amount ) );

@@ -276,8 +276,9 @@ GameObject:
   - component: {fileID: 347178730}
   - component: {fileID: 347178732}
   - component: {fileID: 347178731}
+  - component: {fileID: 347178733}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: console
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -317,7 +318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -400,6 +401,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 347178729}
   m_CullTransparentMesh: 1
+--- !u!114 &347178733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347178729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f638eca9f1a7eb46aa84c017a921717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  consoleGameObject: {fileID: 347178729}
+  output: {fileID: 347178731}
 --- !u!1 &389361697
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,7 +429,7 @@ GameObject:
   - component: {fileID: 389361698}
   m_Layer: 5
   m_Name: ConsoleCanvas
-  m_TagString: Untagged
+  m_TagString: NonSerialized
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

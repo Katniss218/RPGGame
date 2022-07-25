@@ -118,12 +118,24 @@ namespace RPGGame.SaveStates
         /// <param name="player">The specific player object to serialize.</param>
         public static void SavePlayer( string save, GameObject player )
         {
-            string path = GetSaveObjectsFile( save );
+            SerializationManager.ClearRegistry();
+            try
+            {
+                string path = GetSaveObjectsFile( save );
 
-            string str = JsonConvert.SerializeObject( SerializationHelper.GetDataGameObject( player ), Formatting.Indented );
+                string str = JsonConvert.SerializeObject( SerializationHelper.GetDataGameObject( player ), Formatting.Indented );
 
-            DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
-            File.WriteAllText( path, str );
+                DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
+                File.WriteAllText( path, str );
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                SerializationManager.ClearRegistry();
+            }
         }
 
         public static SaveData LoadSaveData( string save )
