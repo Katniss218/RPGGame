@@ -4,13 +4,11 @@ using UnityEngine;
 
 namespace QueuedInputSystem
 {
-	public class QueuedMouseInput : MonoBehaviour
+	public sealed class QueuedMouseInput : MonoBehaviour
 	{
-		private Dictionary<MouseCode, InputQueue> press = new Dictionary<MouseCode, InputQueue>();
-		private Dictionary<MouseCode, InputQueue> hold = new Dictionary<MouseCode, InputQueue>();
-		private Dictionary<MouseCode, InputQueue> release = new Dictionary<MouseCode, InputQueue>();
-
-
+		Dictionary<MouseCode, InputQueue> press = new Dictionary<MouseCode, InputQueue>();
+		Dictionary<MouseCode, InputQueue> hold = new Dictionary<MouseCode, InputQueue>();
+		Dictionary<MouseCode, InputQueue> release = new Dictionary<MouseCode, InputQueue>();
 
 		public void EnableHold( MouseCode button, Action<InputQueue> method )
 		{
@@ -19,6 +17,7 @@ namespace QueuedInputSystem
 				inputQueue.Enable( method );
 			}
 		}
+
 		public void DisableHold( MouseCode button, Action<InputQueue> method )
 		{
 			if( this.hold.TryGetValue( button, out InputQueue inputQueue ) )
@@ -35,6 +34,7 @@ namespace QueuedInputSystem
 				inputQueue.Enable( method );
 			}
 		}
+
 		public void DisableRelease( MouseCode button, Action<InputQueue> method )
 		{
 			if( this.hold.TryGetValue( button, out InputQueue inputQueue ) )
@@ -51,6 +51,7 @@ namespace QueuedInputSystem
 				inputQueue.Enable( method );
 			}
 		}
+
 		public void DisablePress( MouseCode button, Action<InputQueue> method )
 		{
 			if( this.hold.TryGetValue( button, out InputQueue inputQueue ) )
@@ -59,6 +60,9 @@ namespace QueuedInputSystem
 			}
 		}
 
+		/// <summary>
+		/// Registers a function to run when a button is pressed.
+		/// </summary>
 		public void RegisterOnPress( MouseCode button, float priorityId, Action<InputQueue> method, bool isEnabled = true, bool isOneShot = false )
 		{
 			InputQueue inputQueue;
@@ -72,6 +76,9 @@ namespace QueuedInputSystem
 			this.press.Add( button, inputQueue );
 		}
 
+		/// <summary>
+		/// Registers a function to run when a button is being held down.
+		/// </summary>
 		public void RegisterOnHold( MouseCode button, float priorityId, Action<InputQueue> method, bool isEnabled = true, bool isOneShot = false )
 		{
 			InputQueue inputQueue;
@@ -85,6 +92,9 @@ namespace QueuedInputSystem
 			this.hold.Add( button, inputQueue );
 		}
 
+		/// <summary>
+		/// Registers a function to run when a button is released.
+		/// </summary>
 		public void RegisterOnRelease( MouseCode button, float priorityId, Action<InputQueue> method, bool isEnabled = true, bool isOneShot = false )
 		{
 			InputQueue inputQueue;
@@ -98,6 +108,9 @@ namespace QueuedInputSystem
 			this.release.Add( button, inputQueue );
 		}
 
+		/// <summary>
+		/// Unregisters a function from running.
+		/// </summary>
 		public void ClearOnPress( MouseCode button, Action<InputQueue> method )
 		{
 			if( this.press.TryGetValue( button, out InputQueue inputQueue ) )
@@ -106,6 +119,9 @@ namespace QueuedInputSystem
 			}
 		}
 
+		/// <summary>
+		/// Unregisters a function from running.
+		/// </summary>
 		public void ClearOnHold( MouseCode button, Action<InputQueue> method )
 		{
 			if( this.hold.TryGetValue( button, out InputQueue inputQueue ) )
@@ -114,6 +130,9 @@ namespace QueuedInputSystem
 			}
 		}
 
+		/// <summary>
+		/// Unregisters a function from running.
+		/// </summary>
 		public void ClearOnRelease( MouseCode button, Action<InputQueue> method )
 		{
 			if( this.release.TryGetValue( button, out InputQueue inputQueue ) )
@@ -122,7 +141,10 @@ namespace QueuedInputSystem
 			}
 		}
 
-		public void ClearInputSources()
+		/// <summary>
+		/// Unregisters every input.
+		/// </summary>
+		public void ClearRegistries()
 		{
 			this.press.Clear();
 			this.hold.Clear();
@@ -137,29 +159,29 @@ namespace QueuedInputSystem
 			// Copy the queue so if the function running in the keypress wants to register another keypress it won't throw that the dictionary was modified.
 			Dictionary<MouseCode, InputQueue> pressQueue = new Dictionary<MouseCode, InputQueue>( this.press );
 
-			foreach( var kvp in pressQueue )// this.press )
+			foreach( var kvp in pressQueue )
 			{
 				if( Input.GetMouseButtonDown( (int)kvp.Key ) )
 				{
 					// count number of presses.
 					if( 
-						   (Time.time <= kvp.Value.pressTimestamp + MAX_DOUBLE_CLICK_DELAY)
-						&& (kvp.Value.pressCount < MAX_CLICK_COUNT)
-						&& (kvp.Value.lastControllerPosition - Input.mousePosition).sqrMagnitude <= (3.0f * 3.0f)
+						   (Time.time <= kvp.Value.PressTimestamp + MAX_DOUBLE_CLICK_DELAY)
+						&& (kvp.Value.PressCount < MAX_CLICK_COUNT)
+						&& (kvp.Value.LastControllerPosition - Input.mousePosition).sqrMagnitude <= (3.0f * 3.0f)
 						)
 					{
-						kvp.Value.pressCount++;
+						kvp.Value.PressCount++;
 					}
 					else
 					{
-						kvp.Value.pressCount = 1;
+						kvp.Value.PressCount = 1;
 					}
 					kvp.Value.Execute();
-					kvp.Value.lastControllerPosition = Input.mousePosition;
+					kvp.Value.LastControllerPosition = Input.mousePosition;
 				}
 				if( Input.GetMouseButtonUp( (int)kvp.Key ) )
 				{
-					kvp.Value.pressTimestamp = Time.time;
+					kvp.Value.PressTimestamp = Time.time;
 				}
 			}
 

@@ -1,139 +1,175 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QueuedInputSystem
 {
-	public class InputQueue
-	{
-		public class InputMethod
-		{
-			public System.Action<InputQueue> method { get; set; }
-			public bool isEnabled { get; set; }
-			public bool isOneShot { get; set; }
-			/// <summary>
-			/// Lower priority runs first.
-			/// </summary>
-			public float priority { get; set; }
-		}
-		
-		private List<InputMethod> methods;
+    /// <summary>
+    /// A queue of methods for a given input key/button.
+    /// </summary>
+    public class InputQueue
+    {
+        private class InputMethod
+        {
+            /// <summary>
+            /// The action performed by the method.
+            /// </summary>
+            public Action<InputQueue> Method { get; set; }
 
-		public Vector3 lastControllerPosition { get; set; }
-		public int pressCount { get; set; }
-		public float pressTimestamp { get; set; } = float.MinValue;
-		public bool isStopped { get; private set; }
+            public bool IsEnabled { get; set; }
 
-		public InputQueue()
-		{
-			this.methods = new List<InputMethod>();
-		}
+            /// <summary>
+            /// If true, the method will be removed after playing.
+            /// </summary>
+            public bool IsOneShot { get; set; }
 
-		public void Add( System.Action<InputQueue> method, float priority, bool isEnabled, bool isOneShot )
-		{
-			int lastBelowIndex = -1;
-			for( int i = 0; i < methods.Count; i++ )
-			{
-				if( this.methods[i].priority <= priority )
-				{
-					lastBelowIndex = i;
-				}
-			}
-			if( this.methods.Count == 0 )
-			{
-				this.methods.Add( new InputMethod() { method = method, priority = priority, isEnabled = isEnabled, isOneShot = isOneShot } );
-			}
-			else
-			{
-				if( lastBelowIndex == this.methods.Count - 1 )
-				{
-					this.methods.Add( new InputMethod() { method = method, priority = priority, isEnabled = isEnabled, isOneShot = isOneShot } );
-				}
-				else
-				{
-					this.methods.Insert( lastBelowIndex + 1, new InputMethod() { method = method, priority = priority, isEnabled = isEnabled, isOneShot = isOneShot } );
-				}
-			}
-		}
+            /// <summary>
+            /// Lower priority runs first.
+            /// </summary>
+            public float Priority { get; set; }
+        }
 
-		public bool Remove( System.Action<InputQueue> method )
-		{
-			for( int i = 0; i < methods.Count; i++ )
-			{
-				if( this.methods[i].method == method )
-				{
-					this.methods.RemoveAt( i );
-					return true;
-				}
-			}
-			return false;
-		}
+        public Vector3 LastControllerPosition { get; set; }
 
-		public void StopExecution()
-		{
-			this.isStopped = true;
-		}
+        public int PressCount { get; set; }
 
-		public void Execute()
-		{
-			this.isStopped = false;
-			List<InputMethod> oneShots = new List<InputMethod>();
+        public float PressTimestamp { get; set; } = float.MinValue;
 
-			for( int i = 0; i < this.methods.Count; i++ )
-			{
-				if( !this.methods[i].isEnabled )
-				{
-					continue;
-				}
-				if( this.isStopped )
-				{
-					return;
-				}
-				if( this.methods[i].isOneShot )
-				{
-					oneShots.Add( this.methods[i] );
-				}
-				this.methods[i].method.Invoke( this );
-			}
-			for( int i = 0; i < oneShots.Count; i++ )
-			{
-				this.methods.Remove( oneShots[i] );
-			}
-		}
+        /// <summary>
+        /// True if the queue was stopped in this execution and will not execute later methods.
+        /// </summary>
+        public bool IsStopped { get; private set; }
 
-		public void Enable( System.Action<InputQueue> method )
-		{
-			for( int i = 0; i < this.methods.Count; i++ )
-			{
-				if( this.methods[i].method != method )
-				{
-					continue;
-				}
-				if( this.methods[i].isEnabled )
-				{
-					throw new System.Exception( "The method is already enabled." );
-				}
 
-				this.methods[i].isEnabled = true;
-				return;
-			}
-		}
+        List<InputMethod> methods;
 
-		public void Disable( System.Action<InputQueue> method )
-		{
-			for( int i = 0; i < this.methods.Count; i++ )
-			{
-				if( this.methods[i].method != method )
-				{
-					continue;
-				}
-				if( !this.methods[i].isEnabled )
-				{
-					throw new System.Exception( "The method is already disabled." );
-				}
+        public InputQueue()
+        {
+            this.methods = new List<InputMethod>();
+        }
 
-				this.methods[i].isEnabled = false;
-				return;
-			}
-		}
-	}
+        public void Add( Action<InputQueue> method, float priority, bool isEnabled, bool isOneShot )
+        {
+            // Get the last index with priority still lower than the new method's priority.
+            int lastBelowIndex = -1;
+            for( int i = 0; i < methods.Count; i++ )
+            {
+                if( this.methods[i].Priority <= priority )
+                {
+                    lastBelowIndex = i;
+                }
+            }
+
+            InputMethod inputMethod = new InputMethod()
+            {
+                Method = method,
+                Priority = priority,
+                IsEnabled = isEnabled,
+                IsOneShot = isOneShot
+            };
+
+            if( this.methods.Count == 0 )
+            {
+                this.methods.Add( inputMethod );
+                return;
+            }
+
+            if( lastBelowIndex == this.methods.Count - 1 )
+            {
+                this.methods.Add( inputMethod );
+            }
+            else
+            {
+                this.methods.Insert( lastBelowIndex + 1, inputMethod );
+            }
+        }
+
+        public bool Remove( Action<InputQueue> method )
+        {
+            for( int i = 0; i < methods.Count; i++ )
+            {
+                if( this.methods[i].Method == method )
+                {
+                    this.methods.RemoveAt( i );
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void StopExecution()
+        {
+            this.IsStopped = true;
+        }
+
+        public void Execute()
+        {
+            this.IsStopped = false;
+            List<InputMethod> oneShots = new List<InputMethod>();
+
+            foreach( var inputMethod in methods )
+            {
+                if( !inputMethod.IsEnabled )
+                {
+                    continue;
+                }
+
+                // Important, do not take it in front of the loop, because it's gonna be set from within the invoked method.
+                if( this.IsStopped )
+                {
+                    return;
+                }
+
+                if( inputMethod.IsOneShot )
+                {
+                    oneShots.Add( inputMethod );
+                }
+
+                inputMethod.Method.Invoke( this );
+            }
+
+            foreach( var oneshotMethod in oneShots )
+            {
+                this.methods.Remove( oneshotMethod );
+            }
+        }
+
+        public void Enable( Action<InputQueue> method )
+        {
+            foreach( var inputMethod in methods )
+            {
+                if( inputMethod.Method != method )
+                {
+                    continue;
+                }
+
+                if( inputMethod.IsEnabled )
+                {
+                    throw new Exception( "The method is already enabled." );
+                }
+
+                inputMethod.IsEnabled = true;
+                return;
+            }
+        }
+
+        public void Disable( Action<InputQueue> method )
+        {
+            foreach( var inputMethod in methods )
+            {
+                if( inputMethod.Method != method )
+                {
+                    continue;
+                }
+
+                if( !inputMethod.IsEnabled )
+                {
+                    throw new Exception( "The method is already disabled." );
+                }
+
+                inputMethod.IsEnabled = false;
+                return;
+            }
+        }
+    }
 }

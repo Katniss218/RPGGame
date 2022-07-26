@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace QueuedInputSystem
 {
-	public class QueuedKeyboardInput : MonoBehaviour
+	public sealed class QueuedKeyboardInput : MonoBehaviour
 	{
-		private Dictionary<KeyCode, InputQueue> press = new Dictionary<KeyCode, InputQueue>();
-		private Dictionary<KeyCode, InputQueue> hold = new Dictionary<KeyCode, InputQueue>();
-		private Dictionary<KeyCode, InputQueue> release = new Dictionary<KeyCode, InputQueue>();
+		Dictionary<KeyCode, InputQueue> press = new Dictionary<KeyCode, InputQueue>();
+		Dictionary<KeyCode, InputQueue> hold = new Dictionary<KeyCode, InputQueue>();
+		Dictionary<KeyCode, InputQueue> release = new Dictionary<KeyCode, InputQueue>();
 
 		/// <summary>
 		/// Registers a function to run when a key is pressed.
@@ -27,7 +27,7 @@ namespace QueuedInputSystem
 		}
 
 		/// <summary>
-		/// Registers a function to run when a key is held.
+		/// Registers a function to run when a key is being held down.
 		/// </summary>
 		public void RegisterOnHold( KeyCode key, float priorityId, Action<InputQueue> method, bool isEnabled = true, bool isOneShot = false )
 		{
