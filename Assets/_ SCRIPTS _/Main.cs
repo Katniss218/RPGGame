@@ -1,40 +1,39 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using RPGGame.Assets;
+using QueuedInputSystem;
 using RPGGame.Items;
 using RPGGame.Player;
-using RPGGame.Serialization;
-using RPGGame.UI;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace RPGGame
 {
     [DisallowMultipleComponent]
-    public sealed class Main : MonoBehaviour
+    public sealed class Main : SingletonMonoBehaviour<Main>
     {
         public const string MOB_UI_CANVAS_NAME = "MobHudCanvas";
         public const string GAME_UI_CANVAS_NAME = "GameHudCanvas";
         public const string UI_WINDOW_CANVAS_NAME = "UIWindowCanvas";
 
-        private static Main __instance = null;
-        public static Main Instance
+        private static QueuedKeyboardInput __keyboardInput = null;
+        public static QueuedKeyboardInput keyboardInput
         {
             get
             {
-                if( __instance == null )
-                {
-                    __instance = FindObjectOfType<Main>();
-                }
-                return __instance;
+                if( __keyboardInput == null ) { __keyboardInput = FindObjectOfType<QueuedKeyboardInput>(); }
+                return __keyboardInput;
             }
         }
 
-        public TMPro.TextMeshProUGUI text;
+        private static QueuedMouseInput __mouseInput = null;
+        public static QueuedMouseInput mouseInput
+        {
+            get
+            {
+                if( __mouseInput == null ) { __mouseInput = FindObjectOfType<QueuedMouseInput>(); }
+                return __mouseInput;
+            }
+        }
+
 
         private static Canvas __mobHudCanvas = null;
         public static Canvas MobHudCanvas

@@ -1,3 +1,4 @@
+using QueuedInputSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,12 +59,13 @@ namespace RPGGame.Console
                     break;
             }
         }
-        /*
+        
         private void Inp_Tilde( InputQueue self )
         {
             consoleGameObject.SetActive( !consoleGameObject.activeSelf );
+            Debug.LogException( new System.Exception( "aaa" ) );
         }
-        */
+        
         void Awake()
         {
             if( !output.richText )
@@ -72,26 +74,25 @@ namespace RPGGame.Console
                 output.richText = true;
             }
             output.text = "Console:\n\n"; // This is required to fix glitch requiring reenabling the gameObject after adding some text to the output (if it's set to blank).
-           // consoleGameObject.SetActive( false );
+            consoleGameObject.SetActive( false );
         }
         
         void OnEnable()
         {
-            /*if( Main.keyboardInput != null )
+            if( Main.keyboardInput != null )
             {
                 Main.keyboardInput.RegisterOnPress( KeyCode.BackQuote, -666.69f, this.Inp_Tilde, true );
-            }*/
+            }
             Application.logMessageReceived += this.HandleLog;
         }
 
         void OnDisable()
         {
-            /*if( Main.keyboardInput != null )
+            if( Main.keyboardInput != null )
             {
                 Main.keyboardInput.ClearOnPress( KeyCode.BackQuote, this.Inp_Tilde );
-            }*/
+            }
             Application.logMessageReceived -= this.HandleLog;
         }
-        
     }
 }

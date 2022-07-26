@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 15
+  m_ScrollSensitivity: 32
   m_Viewport: {fileID: 6681624593466573991}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 3150430802485073238}
@@ -208,6 +208,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 6681624593466573991}
     m_Modifications:
+    - target: {fileID: 113180379585328138, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
+      propertyPath: m_Size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 113180379585328138, guid: a188f703002882d4d9cf0ff819f8f09f, type: 3}
       propertyPath: m_Value
       value: 0

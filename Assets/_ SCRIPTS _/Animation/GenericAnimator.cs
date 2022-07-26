@@ -11,12 +11,6 @@ namespace RPGGame.Animation
     [RequireComponent( typeof( Animator ) )]
     public class GenericAnimator : MonoBehaviour
     {
-
-        /// <summary>
-        /// Holds the different instantiated AnimatorController state machines for each animation clip.
-        /// </summary>
-        static Dictionary<AnimationClip, RuntimeAnimatorController> animatorControllers = new Dictionary<AnimationClip, RuntimeAnimatorController>();
-
         /// <summary>
         /// The clip to assign on start.
         /// </summary>
