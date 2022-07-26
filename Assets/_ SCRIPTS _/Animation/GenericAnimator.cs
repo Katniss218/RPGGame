@@ -11,9 +11,6 @@ namespace RPGGame.Animation
     [RequireComponent( typeof( Animator ) )]
     public class GenericAnimator : MonoBehaviour
     {
-        const string STATE_NAME = "state";
-        const string STATE_NAME_BACKWARDS = "state_backwards";
-        const string LAYER_NAME = "layer";
 
         /// <summary>
         /// Holds the different instantiated AnimatorController state machines for each animation clip.
@@ -43,69 +40,6 @@ namespace RPGGame.Animation
         Animator animator;
         bool isPlayingBackwards;
 
-        private static RuntimeAnimatorController GetAnimatorController( AnimationClip clip )
-        {
-            // For an clip that has already a state machine created - return that state machine.
-            if( animatorControllers.TryGetValue( clip, out RuntimeAnimatorController animatorController ) )
-            {
-                return animatorController;
-            }
-
-            animatorController = new AnimatorOverrideController();
-
-            AnimatorOverrideController animController = (AnimatorOverrideController)animatorController;
-
-            animController["state"] = clip;
-            animController["state_backwards"] = clip;
-
-#warning TODO - this doesn't work in build. - UnityEditor
-            // Unity sucks ass, I'll probably use Animation conponent, even though it's "obsolete", because there is no other way.
-            /*
-#if UNITY_EDITOR
-            // For a new clip, make a new state machine and save it for later reuse.
-            animatorController = new UnityEditor.Animations.AnimatorController()
-            {
-                layers = new UnityEditor.Animations.AnimatorControllerLayer[1]
-                {
-                    new UnityEditor.Animations.AnimatorControllerLayer()
-                    {
-                        name = LAYER_NAME,
-                        stateMachine = new UnityEditor.Animations.AnimatorStateMachine()
-                        {
-                            states = new UnityEditor.Animations.ChildAnimatorState[]
-                            {
-                                // 2 states, because you can't set the 'animator.speed' to be negative. It has to be done in the state.
-                                new UnityEditor.Animations.ChildAnimatorState()
-                                {
-                                    state = new UnityEditor.Animations.AnimatorState()
-                                    {
-                                        name = STATE_NAME,
-                                        motion = clip,
-                                        speed = 1.0f
-                                    }
-                                },
-                                new UnityEditor.Animations.ChildAnimatorState()
-                                {
-                                    state = new UnityEditor.Animations.AnimatorState()
-                                    {
-                                        name = STATE_NAME_BACKWARDS,
-                                        motion = clip,
-                                        speed = -1.0f
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-#endif*/
-
-
-            animatorControllers.Add( clip, animatorController );
-
-            return animatorController;
-        }
-
         /// <summary>
         /// Converts between the time in the state machine and the time on the <see cref="AnimationClip"/>.
         /// </summary>
@@ -118,30 +52,27 @@ namespace RPGGame.Animation
             return (-forwardNormalizedTime + 1);
         }
 
+        void Awake()
+        {
+            animator = this.GetComponent<Animator>();
+        }
+
         void Start()
         {
-            animator = GetComponent<Animator>();
-
             AssignAnimation( animationClip );
         }
 
-        private void AssignAnimation( AnimationClip clip )
+        private void AssignAnimation( AnimationClip animDefault )
         {
-            CurrentClip = clip;
+            const string ANIM_DEFAULT = "_generic_default";
 
-            // in build, this is just 'RuntimeAnimatorController'.
-            Type type = animator.runtimeAnimatorController.GetType();
-            Main.Instance.text.text += type + "\n";
-            foreach( var prop in type.GetProperties() )
-            {
-                Main.Instance.text.text += " -p " + prop.Name + "\n";
-            }
-            foreach( var prop in type.GetFields() )
-            {
-                Main.Instance.text.text += " -f " + prop.Name + "\n";
-            }
+            CurrentClip = animDefault;
 
-            animator.runtimeAnimatorController = GetAnimatorController( clip );
+            AnimatorOverrideController animatorController = new AnimatorOverrideController( animator.runtimeAnimatorController );
+
+            animatorController[ANIM_DEFAULT] = animDefault;
+
+            animator.runtimeAnimatorController = animatorController;
             PauseAnimation();
         }
 
@@ -165,6 +96,9 @@ namespace RPGGame.Animation
         /// <param name="speed">The playback speed (1 - forward, -1 - backwards, interpolated)</param>
         public void PlayAnimation( float normalizedTime, float speed )
         {
+            const string STATE_NAME = "state";
+            const string STATE_NAME_BACKWARDS = "state_backwards";
+
             if( speed == 0 )
             {
                 throw new Exception( "Use PauseAnimation() instead." );

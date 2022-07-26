@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/gameplay_empty.unity
     guid: e9523d94703633e4eb8e3de7e4d192ee
-  - enabled: 1
-    path: Assets/Scenes/game.unity
+  - enabled: 0
+    path: Assets/Scenes/game_thaaris.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
