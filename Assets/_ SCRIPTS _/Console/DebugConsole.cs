@@ -63,7 +63,6 @@ namespace RPGGame.Console
         private void Inp_Tilde( InputQueue self )
         {
             consoleGameObject.SetActive( !consoleGameObject.activeSelf );
-            Debug.LogException( new System.Exception( "aaa" ) );
         }
         
         void Awake()
