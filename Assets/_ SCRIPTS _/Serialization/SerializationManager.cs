@@ -12,62 +12,6 @@ namespace RPGGame.Serialization
     /// </summary>
     public static class SerializationManager
     {
-        // The registry can hold uniquely identified objects of any type for referencing during the serialization/deserialization.
-
-        static Dictionary<object, Guid> identGuid = new Dictionary<object, Guid>();
-        static Dictionary<Guid, object> identObject = new Dictionary<Guid, object>();
-
-        /// <summary>
-        /// Registers the object-identifier pair with the reference registry.
-        /// </summary>
-        public static void RegisterObject<T>( Guid guid, T obj ) where T : class
-        {
-            identGuid.Add( obj, guid );
-            identObject.Add( guid, obj );
-        }
-
-        /// <summary>
-        /// Clears the reference registry.
-        /// </summary>
-        public static void ClearRegistry()
-        {
-            if( identObject == null )
-            {
-                identObject = new Dictionary<Guid, object>();
-            }
-            if( identGuid == null )
-            {
-                identGuid = new Dictionary<object, Guid>();
-            }
-
-            identObject.Clear();
-            identGuid.Clear();
-        }
-
-        /// <summary>
-        /// Gets the identifier for a given object from the reference registry.
-        /// </summary>
-        public static Guid? GetGuid( object obj )
-        {
-            if( identGuid.TryGetValue( obj, out Guid guid ) )
-            {
-                return guid;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the object for a given identifier from the reference registry.
-        /// </summary>
-        public static T GetObject<T>( Guid guid ) where T : class
-        {
-            if( identObject.TryGetValue( guid, out object obj ) )
-            {
-                return obj as T;
-            }
-            return null;
-        }
-
         // Serialization methods:
         // - implicit/explicit pair Operator Overloading:
         //   - assets
@@ -80,43 +24,31 @@ namespace RPGGame.Serialization
         /// </summary>
         public static JObject SaveScene()
         {
-            ClearRegistry();
-            try
-            {
-                GameObject[] allObjects = Object.FindObjectsOfType<GameObject>(); //find all the persistent objects in the level
+            GameObject[] allObjects = Object.FindObjectsOfType<GameObject>(); //find all the persistent objects in the level
 
-                JArray dataJson = new JArray();
-                foreach( var obj in allObjects )
+            JArray dataJson = new JArray();
+            foreach( var obj in allObjects )
+            {
+                if( SerializationHelper.ShouldSerialize( obj ) )
                 {
-                    if( SerializationHelper.ShouldSerialize( obj ) )
+                    try
                     {
-                        try
-                        {
-                            JObject data = SerializationHelper.GetDataGameObject( obj.gameObject );
-                            dataJson.Add( data );
-                        }
-                        catch( Exception ex )
-                        {
-                            Debug.LogException( ex );
-                        }
+                        JObject data = SerializationHelper.GetDataGameObject( obj.gameObject );
+                        dataJson.Add( data );
+                    }
+                    catch( Exception ex )
+                    {
+                        Debug.LogException( ex );
                     }
                 }
+            }
 
-                JObject json = new JObject()
-                {
-                    { "Objects", dataJson }
-                };
+            JObject json = new JObject()
+            {
+                { "Objects", dataJson }
+            };
 
-                return json;
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                ClearRegistry();
-            }
+            return json;
         }
 
         /// <summary>
@@ -124,26 +56,14 @@ namespace RPGGame.Serialization
         /// </summary>
         public static void LoadScene( JObject json )
         {
-            ClearRegistry();
-            try
+            foreach( var objData in json["Objects"] )
             {
-                foreach( var objData in json["Objects"] )
-                {
-                    SerializationHelper.SpawnAndRegisterGameObject( (JObject)objData );
-                }
+                SerializationHelper.SpawnAndRegisterGameObject( (JObject)objData );
+            }
 
-                foreach( var objData in json["Objects"] )
-                {
-                    SerializationHelper.SetDataGameObject( GetObject<GameObject>( (Guid)objData["$id"] ), (JObject)objData );
-                }
-            }
-            catch
+            foreach( var objData in json["Objects"] )
             {
-                throw;
-            }
-            finally
-            {
-                ClearRegistry();
+                SerializationHelper.SetDataGameObject( RPGObject.Get( (Guid)objData["$id"] ).gameObject, (JObject)objData );
             }
         }
     }

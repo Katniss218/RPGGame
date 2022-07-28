@@ -90,9 +90,7 @@ namespace RPGGame.Serialization
                 throw new Exception( "Prefab Path was null, can't spawn" );
             }
 
-            GameObject gameObject = RPGObject.Instantiate( prefabPath, "<not_assigned_yet>" );
-
-            SerializationManager.RegisterObject( (Guid)data["$id"], gameObject );
+            GameObject gameObject = RPGObject.Instantiate( prefabPath, "<not_assigned_yet>", (Guid)data["$id"] );
 
             return gameObject;
         }
@@ -104,6 +102,7 @@ namespace RPGGame.Serialization
         {
             RPGObject rpgObject = obj.GetComponent<RPGObject>();
 
+            Guid objectId;
             string prefabPath;
 
             if( rpgObject == null )
@@ -111,11 +110,13 @@ namespace RPGGame.Serialization
 #if UNITY_EDITOR
                 prefabPath = RPGObject.GetLoadablePrefabPath( obj );
 #else
-                throw new Exception( "Can't serialize a non-RPGObject." );
+                throw new Exception( "Can't serialize a non-RPGObject outside of the editor." );
 #endif
+                objectId = Guid.NewGuid();
             }
             else
             {
+                objectId = RPGObject.Get( rpgObject );
                 prefabPath = rpgObject.PrefabPath;
             }
 
@@ -123,8 +124,7 @@ namespace RPGGame.Serialization
 
             JToken componentData = GetComponentData( obj );
 
-            Guid objectId = Guid.NewGuid();
-            SerializationManager.RegisterObject( objectId, obj );
+           // SerializationManager.RegisterObject( objectId, obj );
 
             JObject full = new JObject()
             {
@@ -219,6 +219,5 @@ namespace RPGGame.Serialization
                 }
             }
         }
-
     }
 }
