@@ -18,7 +18,7 @@ namespace RPGGame.Globals
     {
         public void OnDeathDestroy( HealthHandler.DeathEventInfo e )
         {
-            Destroy( e.Self.gameObject );
+            RPGObject.Destroy( e.Self.GetComponent<RPGObject>() );
         }
 
         public void OnDeathDropInventory( HealthHandler.DeathEventInfo e )
@@ -46,7 +46,7 @@ namespace RPGGame.Globals
 
             if( inv.IsEmpty() )
             {
-                Destroy( e.Self.gameObject );
+                RPGObject.Destroy( e.Self.GetComponent<RPGObject>() );
             }
         }
 

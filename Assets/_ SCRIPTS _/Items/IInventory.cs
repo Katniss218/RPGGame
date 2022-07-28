@@ -122,5 +122,7 @@ namespace RPGGame.Items
 
         public GameObject gameObject { get; }
         public Transform transform { get; }
+
+        T GetComponent<T>();
     }
 }

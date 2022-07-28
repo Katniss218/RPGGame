@@ -5,9 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace RPGGame
 {
+    /// <summary>
+    /// RPGObjects are basically the non-static serialized scene objects.
+    /// </summary>
     /// <remarks>
     /// You're not supposed to have these in scene.
     /// </remarks>
@@ -165,7 +169,7 @@ namespace RPGGame
                 throw new Exception( "Object must have its guid set." );
             }
 
-            Destroy( obj );
+            Object.Destroy( obj );
             allRpgObjects.Remove( obj.guid );
         }
 
