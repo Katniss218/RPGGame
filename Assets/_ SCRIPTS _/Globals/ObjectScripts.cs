@@ -53,7 +53,7 @@ namespace RPGGame.Globals
 
         public void OnDropCreatePickup( IInventory.DropEventInfo e )
         {
-            if( e.Reason == IInventory.Reason.INVENTORY_REARRANGEMENT )
+            if( e.Reason == IInventory.ChangeReason.INVENTORY_REARRANGEMENT )
             {
                 return;
             }

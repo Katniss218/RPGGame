@@ -16,7 +16,7 @@ namespace RPGGame.Items.Inventories
         /// Represents a single cell in the inventory grid.
         /// </summary>
         [Serializable]
-        protected class ItemSlot : ItemStack
+        protected class GridSlot : ItemStack
         {
             // The inventory is a grid comprised of ItemSlots.
             // An item can take up multiple slots (diablo/metin2 style).
@@ -28,9 +28,9 @@ namespace RPGGame.Items.Inventories
 
             // Other derived classes can provide their own systems.
 
-            public static new ItemSlot Empty( int index )
+            public static new GridSlot Empty( int index )
             {
-                return new ItemSlot( null, 0, index, index );
+                return new GridSlot( null, 0, index, index );
             }
 
             public void MakeNonExistent()
@@ -56,7 +56,7 @@ namespace RPGGame.Items.Inventories
 
             public bool IsOrigin => OriginIndex == Index;
 
-            public ItemSlot( Item item, int amount, int originIndex, int index ) : base( item, amount )
+            public GridSlot( Item item, int amount, int originIndex, int index ) : base( item, amount )
             {
                 this.OriginIndex = originIndex;
                 this.Index = index;
@@ -72,19 +72,24 @@ namespace RPGGame.Items.Inventories
             /// <summary>
             /// Copies the slot with a change in coordinates.
             /// </summary>
-            public ItemSlot Copy( int index )
+            public GridSlot Copy( int index )
             {
                 if( this.IsEmpty )
                 {
                     return Empty( index );
                 }
 
-                return new ItemSlot( this.Item, this.Amount, this.OriginIndex, index );
+                return new GridSlot( this.Item, this.Amount, this.OriginIndex, index );
             }
         }
 
-#warning TODO - change this to a jagged array perhaps? (so it can be set up without the runtime grid inventory creator thing). - 2D arrays can't be serialized into a prefab/scene at all. Not just viewed.
-        protected ItemSlot[,] inventorySlots = new ItemSlot[0, 0]; // each slot points to an object containing the reference to the and amount.
+        [SerializeField]
+        protected GridSlot[] slots;
+
+        [field: SerializeField]
+        public int SizeX { get; private set; }
+
+        public int SizeY => slots.Length / SizeX; // If the array isn't a "full" grid, it'll skip the last row.
 
         [SerializeField] UnityEvent<IInventory.PickupEventInfo> __onPickup;
         public UnityEvent<IInventory.PickupEventInfo> onPickup { get => __onPickup; }
@@ -93,10 +98,6 @@ namespace RPGGame.Items.Inventories
         [SerializeField] UnityEvent<IInventory.ResizeEventInfo> __onResize;
         public UnityEvent<IInventory.ResizeEventInfo> onResize { get => __onResize; }
 
-        public int SizeX => inventorySlots.GetLength( 0 );
-        public int SizeY => inventorySlots.GetLength( 1 );
-
-        // pos is top-left-based.
 
         private bool IsValidIndex( int slotIndex, int sizeX = 0, int sizeY = 0 )
         {
@@ -108,11 +109,6 @@ namespace RPGGame.Items.Inventories
             }
 
             return true;
-        }
-
-        private ItemSlot GetSlot( int slotIndex )
-        {
-            return inventorySlots[(slotIndex % SizeX), (slotIndex / SizeX)];
         }
 
         public static (int x, int y) GetSlotCoords( int slotIndex, int InvSizeX )
@@ -139,14 +135,11 @@ namespace RPGGame.Items.Inventories
 
         public void SetSize( int sizeX, int sizeY )
         {
-            inventorySlots = new ItemSlot[sizeX, sizeY];
+            slots = new GridSlot[sizeX * sizeY];
 
-            for( int y = 0; y < SizeY; y++ )
+            for( int i = 0; i < slots.Length; i++ )
             {
-                for( int x = 0; x < SizeX; x++ )
-                {
-                    inventorySlots[x, y] = ItemSlot.Empty( GetSlotIndex( x, y, SizeX ) );
-                }
+                slots[i] = GridSlot.Empty( i );
             }
 
             onResize?.Invoke( new IInventory.ResizeEventInfo()
@@ -164,7 +157,7 @@ namespace RPGGame.Items.Inventories
         {
             List<int> indexArray = new List<int>();
 
-            foreach( var slot in this.inventorySlots )
+            foreach( var slot in slots )
             {
                 if( slot.IsNonExistent )
                 {
@@ -176,7 +169,7 @@ namespace RPGGame.Items.Inventories
             return indexArray;
         }
 
-        public virtual (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
+        public virtual (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -277,20 +270,20 @@ namespace RPGGame.Items.Inventories
 
         public virtual (ItemStack, int orig) GetItemSlot( int slotIndex )
         {
-            ItemSlot slot = GetSlot( slotIndex );
+            GridSlot slot = slots[slotIndex];
             if( slot.IsNonExistent )
             {
                 throw new InvalidOperationException( "Can't get an item from a blocking slot" );
             }
 
-            return (GetSlot( slot.OriginIndex ), slot.OriginIndex);
+            return (slot.Copy(), slot.OriginIndex);
         }
 
         public virtual IEnumerable<(ItemStack, int orig)> GetItemSlots()
         {
             List<(ItemStack, int orig)> items = new List<(ItemStack, int orig)>();
 
-            foreach( var slot in inventorySlots )
+            foreach( var slot in slots )
             {
                 if( slot.IsNonExistent || slot.IsEmpty || !slot.IsOrigin )
                 {
@@ -307,7 +300,7 @@ namespace RPGGame.Items.Inventories
         //      PICK UP (ADD)
         //
 
-        public virtual int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public virtual int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -327,7 +320,7 @@ namespace RPGGame.Items.Inventories
             {
                 for( int x = posX; x < posX + itemStack.Item.Size.x; x++ )
                 {
-                    ItemSlot slot = inventorySlots[x, y];
+                    GridSlot slot = slots[GetSlotIndex( x, y, SizeX )];
 
                     // Blocking slot or different item.
                     if( slot.IsNonExistent || (!slot.IsEmpty && !slot.Item.CanStackWith( itemStack.Item )) )
@@ -343,7 +336,7 @@ namespace RPGGame.Items.Inventories
                 }
             }
 
-            ItemSlot clickedSlot = GetSlot( slotIndex );
+            GridSlot clickedSlot = slots[slotIndex];
 
             return clickedSlot.AmountToAdd( itemStack, false );
         }
@@ -355,7 +348,7 @@ namespace RPGGame.Items.Inventories
         /// <param name="amount"></param>
         /// <param name="pos">The slot to pick the item up to (doesn't need to be origin)</param>
         /// <returns>Returns now many items were added to the inventory.</returns>
-        public virtual int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public virtual int AddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -372,8 +365,8 @@ namespace RPGGame.Items.Inventories
                 throw new InvalidOperationException( $"Placing an item in the slot '{slotIndex}' would replace another item." );
             }
 
-            int originIndex = GetSlot( slotIndex ).OriginIndex;
-            ItemSlot originSlot = GetSlot( originIndex );
+            int originIndex = slots[slotIndex].OriginIndex;
+            GridSlot originSlot = slots[originIndex];
 
             int amountAdded = originSlot.Add( itemStack, false );
 
@@ -384,7 +377,7 @@ namespace RPGGame.Items.Inventories
             {
                 for( int x = posX; x < posX + itemStack.Item.Size.x; x++ )
                 {
-                    inventorySlots[x, y] = originSlot.Copy( GetSlotIndex( x, y, SizeX ) );
+                    slots[GetSlotIndex( x, y, SizeX )] = originSlot.Copy( GetSlotIndex( x, y, SizeX ) );
                 }
             }
 
@@ -409,7 +402,7 @@ namespace RPGGame.Items.Inventories
         /// </summary>
         /// <param name="pos">(doesn't need to be origin)</param>
         /// <returns></returns>
-        public virtual int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public virtual int? CanRemoveItem( int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             // false if you click outside the area, or on a blocking slot.
 
@@ -418,7 +411,7 @@ namespace RPGGame.Items.Inventories
                 return null;
             }
 
-            ItemSlot slot = GetSlot( slotIndex );
+            GridSlot slot = slots[slotIndex];
 
             if( slot.IsNonExistent || slot.IsEmpty )
             {
@@ -434,14 +427,14 @@ namespace RPGGame.Items.Inventories
         /// <param name="amount">How many items to drop. Null for the entire stack.</param>
         /// <param name="pos">The slot you want to drop from (doesn't need to be origin).</param>
         /// <returns>Returns how many items were dropped from the inventory.</returns>
-        public virtual int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public virtual int RemoveItem( int amount, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( amount <= 0 )
             {
                 throw new ArgumentException( "Amount can't be less than 1." );
             }
 
-            ItemSlot clickedSlot = GetSlot( slotIndex );
+            GridSlot clickedSlot = slots[slotIndex];
 
             if( clickedSlot.IsNonExistent )
             {
@@ -454,7 +447,7 @@ namespace RPGGame.Items.Inventories
             }
 
             int origin = clickedSlot.OriginIndex;
-            ItemSlot originSlot = GetSlot( origin );
+            GridSlot originSlot = slots[origin];
 
             Item item = originSlot.Item;
 
@@ -467,7 +460,7 @@ namespace RPGGame.Items.Inventories
             {
                 for( int x = posX; x < posX + item.Size.x; x++ )
                 {
-                    inventorySlots[x, y] = originSlot.Copy( GetSlotIndex( x, y, SizeX ) );
+                    slots[GetSlotIndex( x, y, SizeX )] = originSlot.Copy( GetSlotIndex( x, y, SizeX ) );
                 }
             }
 
@@ -496,7 +489,7 @@ namespace RPGGame.Items.Inventories
             {
                 for( int x = 0; x < SizeX; x++ )
                 {
-                    ItemSlot slot = inventorySlots[x, y];
+                    GridSlot slot = slots[GetSlotIndex( x, y, SizeX )];
                     if( slot.IsNonExistent )
                     {
                         sb.Append( "#" );

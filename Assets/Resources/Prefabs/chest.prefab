@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2787470385590796371}
   - component: {fileID: 2787470385590796368}
   - component: {fileID: 2787470385590796369}
-  - component: {fileID: 2787470385590796374}
   - component: {fileID: 2787470385590796375}
   - component: {fileID: 2787470385590796372}
   m_Layer: 0
@@ -63,12 +62,86 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4fd16e5f42a544fa882af19dc10d52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slots:
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  <SizeX>k__BackingField: 5
   __onPickup:
     m_PersistentCalls:
       m_Calls: []
   __onDrop:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 9dee400a192360e438ef794cd5e85f74, type: 2}
+        m_TargetAssemblyTypeName: RPGGame.Globals.ObjectScripts, Assembly-CSharp
+        m_MethodName: OnDropCreatePickup
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   __onResize:
     m_PersistentCalls:
       m_Calls: []
@@ -138,20 +211,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2787470385590796374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2787470385590796373}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e5b82ee229907b41a6e084124d36faf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sizeX: 5
-  sizeY: 4
 --- !u!114 &2787470385590796375
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,9 +22,6 @@ namespace RPGGame.Items.Inventories
 
         public int Size { get => items.Length; }
 
-        [field: NonSerialized]
-        public float CreatedTime { get; private set; }
-
         [field: SerializeField]
         public UnityEvent<IInventory.PickupEventInfo> onPickup { get; private set; }
 
@@ -33,12 +30,6 @@ namespace RPGGame.Items.Inventories
 
         [field: SerializeField]
         public UnityEvent<IInventory.ResizeEventInfo> onResize { get; private set; }
-
-
-        private void OnEnable()
-        {
-            CreatedTime = Time.time;
-        }
 
         public void SetSize( int size )
         {
@@ -75,7 +66,7 @@ namespace RPGGame.Items.Inventories
             return slots;
         }
 
-        public (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
+        public (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             int amountLeft = itemStack.Amount;
 
@@ -112,7 +103,7 @@ namespace RPGGame.Items.Inventories
                 .ToList();
         }
 
-        public int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -129,7 +120,7 @@ namespace RPGGame.Items.Inventories
             return clickedSlot.AmountToAdd( itemStack, false );
         }
 
-        public int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int AddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( itemStack == null || itemStack.IsEmpty )
             {
@@ -162,7 +153,7 @@ namespace RPGGame.Items.Inventories
             return amountAdded;
         }
 
-        public int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int? CanRemoveItem( int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( !IsValidIndex( slotIndex ) )
             {
@@ -179,7 +170,7 @@ namespace RPGGame.Items.Inventories
             return slot.Amount;
         }
 
-        public int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int RemoveItem( int amount, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( amount <= 0 )
             {

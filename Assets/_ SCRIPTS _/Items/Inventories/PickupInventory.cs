@@ -15,8 +15,14 @@ namespace RPGGame.Items.Inventories
     /// Attach to the root object.
     /// </remarks>
     [DisallowMultipleComponent]
-    public class PickupInventory : ListInventory
+    public sealed class PickupInventory : ListInventory
     {
+        [field: NonSerialized]
+        public float CreatedTime { get; private set; }
 
+        void OnEnable()
+        {
+            CreatedTime = Time.time;
+        }
     }
 }

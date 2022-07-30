@@ -16,12 +16,14 @@ namespace RPGGame.Items.Inventories
 
         public Item[] Drops;
 
-        [SerializeField] UnityEvent<IInventory.PickupEventInfo> __onPickup;
-        public UnityEvent<IInventory.PickupEventInfo> onPickup { get => __onPickup; }
-        [SerializeField] UnityEvent<IInventory.DropEventInfo> __onDrop;
-        public UnityEvent<IInventory.DropEventInfo> onDrop { get => __onDrop; }
-        [SerializeField] UnityEvent<IInventory.ResizeEventInfo> __onResize;
-        public UnityEvent<IInventory.ResizeEventInfo> onResize { get => __onResize; }
+        [field: SerializeField]
+        public UnityEvent<IInventory.PickupEventInfo> onPickup { get; private set; }
+
+        [field: SerializeField]
+        public UnityEvent<IInventory.DropEventInfo> onDrop { get; private set; }
+
+        [field: SerializeField]
+        public UnityEvent<IInventory.ResizeEventInfo> onResize { get; private set; }
 
         public bool IsValidIndex( int slotIndex, Item item )
         {
@@ -42,7 +44,7 @@ namespace RPGGame.Items.Inventories
             return indices;
         }
 
-        public (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack )
+        public (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
@@ -70,23 +72,23 @@ namespace RPGGame.Items.Inventories
             return items;
         }
 
-        public int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
 
-        public int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int AddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             return 0;
             throw new System.NotImplementedException();
         }
 
-        public int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int? CanRemoveItem( int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             throw new System.NotImplementedException();
         }
 
-        public int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public int RemoveItem( int amount, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             throw new System.NotImplementedException();
         }

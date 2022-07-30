@@ -18,21 +18,33 @@ namespace RPGGame.Player
     {
         private PlayerInventory inventory;
 
-        private float lastUsedTimestamp;
-        private float timeSinceLastUsed => Time.time - lastUsedTimestamp;
+        private float lastUsedHandTimestamp;
+        private float timeSinceLastUsedHand => Time.time - lastUsedHandTimestamp;
+        
+        private float lastUsedOffhandTimestamp;
+        private float timeSinceLastUsedOffhand => Time.time - lastUsedOffhandTimestamp;
 
         void Awake()
         {
+#warning TODO - prevent player from using offhand when interacting.
             inventory = this.GetComponent<PlayerInventory>();
         }
 
         void Update()
         {
-            if( Input.GetMouseButtonDown( 0 ) )
+            if( Input.GetMouseButtonDown( (int)MouseCode.LeftMouseButton ) )
             {
                 if( !EventSystem.current.IsPointerOverGameObject() )
                 {
-                    UseEquipHand();
+                    UseHand();
+                }
+            }
+
+            if( Input.GetMouseButtonDown( (int)MouseCode.RightMouseButton ) )
+            {
+                if( !EventSystem.current.IsPointerOverGameObject() )
+                {
+                    UseOffhand();
                 }
             }
         }
@@ -83,7 +95,7 @@ namespace RPGGame.Player
             return closestEnemy.t;
         }
 
-        private void UseEquipHand()
+        private void UseHand()
         {
             UsableItem usableHand = inventory.EquipHand.Item as UsableItem;
             if( usableHand == null )
@@ -91,7 +103,7 @@ namespace RPGGame.Player
                 return;
             }
 
-            if( timeSinceLastUsed < usableHand.UseTime )
+            if( timeSinceLastUsedHand < usableHand.UseTime )
             {
                 return;
             }
@@ -99,7 +111,26 @@ namespace RPGGame.Player
             Transform target = FindTarget();
 
             usableHand.Use( this.transform, target );
-            lastUsedTimestamp = Time.time;
+            lastUsedHandTimestamp = Time.time;
+        }
+
+        private void UseOffhand()
+        {
+            UsableItem usableHand = inventory.EquipOffhand.Item as UsableItem;
+            if( usableHand == null )
+            {
+                return;
+            }
+
+            if( timeSinceLastUsedOffhand < usableHand.UseTime )
+            {
+                return;
+            }
+
+            Transform target = FindTarget();
+
+            usableHand.Use( this.transform, target );
+            lastUsedOffhandTimestamp = Time.time;
         }
     }
 }

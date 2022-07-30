@@ -461,6 +461,224 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ec591b9f6869fe4b9f4922fb1b79100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slots:
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  - IsNonExistent: 0
+    OriginIndex: 0
+    Index: 0
+  <SizeX>k__BackingField: 6
   __onPickup:
     m_PersistentCalls:
       m_Calls: []

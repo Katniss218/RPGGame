@@ -41,17 +41,17 @@ namespace RPGGame.Items.Inventories
         void Awake()
         {
             SetSize( 6, 12 );
+            
+            slots[GetSlotIndex( 0, 0, SizeX )].MakeNonExistent();
+            slots[GetSlotIndex( 5, 0, SizeX )].MakeNonExistent();
 
-            inventorySlots[0, 0].MakeNonExistent();
-            inventorySlots[5, 0].MakeNonExistent();
-
-            inventorySlots[0, 11].MakeNonExistent();
-            inventorySlots[5, 11].MakeNonExistent();
+            slots[GetSlotIndex( 0, 11, SizeX )].MakeNonExistent();
+            slots[GetSlotIndex( 5, 11, SizeX )].MakeNonExistent();
         }
 
         void Start()
         {
-            AddItem( new ItemStack( AssetManager.Items.Get( "item.spear" ), 1 ), SLOT_HAND, IInventory.Reason.PERSISTENCE );
+            AddItem( new ItemStack( AssetManager.Items.Get( "item.spear" ), 1 ), SLOT_HAND, IInventory.ChangeReason.PERSISTENCE );
         }
 
         public static int MapSlotIndexToEquipIndex( int slotIndex )
@@ -117,13 +117,13 @@ namespace RPGGame.Items.Inventories
             return base.GetItemSlot( slotIndex );
         }
 
-        public override int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public override int? CanAddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( slotIndex < 0 )
             {
                 // Do not allow the picked up items, etc to fall into the equipment slots directly.
 
-                if( reason == IInventory.Reason.GENERIC )
+                if( reason == IInventory.ChangeReason.GENERIC )
                 {
                     return null;
                 }
@@ -140,7 +140,7 @@ namespace RPGGame.Items.Inventories
             return base.CanAddItem( itemStack, slotIndex );
         }
 
-        public override int AddItem( ItemStack itemStack, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public override int AddItem( ItemStack itemStack, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( slotIndex < 0 )
             {
@@ -165,7 +165,7 @@ namespace RPGGame.Items.Inventories
             return base.AddItem( itemStack, slotIndex, reason );
         }
 
-        public override int? CanRemoveItem( int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public override int? CanRemoveItem( int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( slotIndex < 0 )
             {
@@ -182,7 +182,7 @@ namespace RPGGame.Items.Inventories
             return base.CanRemoveItem( slotIndex, reason );
         }
 
-        public override int RemoveItem( int amount, int slotIndex, IInventory.Reason reason = IInventory.Reason.GENERIC )
+        public override int RemoveItem( int amount, int slotIndex, IInventory.ChangeReason reason = IInventory.ChangeReason.GENERIC )
         {
             if( slotIndex < 0 )
             {

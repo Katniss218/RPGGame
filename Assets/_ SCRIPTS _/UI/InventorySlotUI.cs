@@ -55,7 +55,7 @@ namespace RPGGame.UI
 
                 // slot empty, cursor non-empty.
 
-                int? canFit = Inventory.CanAddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+                int? canFit = Inventory.CanAddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.ChangeReason.INVENTORY_REARRANGEMENT );
                 if( canFit == null || canFit < slotItem.Amount )
                 {
                     return;
@@ -70,9 +70,9 @@ namespace RPGGame.UI
             ItemDragAndDrop.Instance.SetIcon( null );
             ItemDragAndDrop.Instance.SetAmount( null );
 
-            Inventory.AddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            Inventory.AddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.ChangeReason.INVENTORY_REARRANGEMENT );
+            AudioManager.PlaySound( ItemDragAndDrop.cursorItem.Item.DropSound );
             ItemDragAndDrop.cursorItem.MakeEmpty();
-            AudioManager.PlaySound( slotItem.Item.DropSound );
         }
 
         private void FullSlotToEmptyHand( ItemStack slotItem, int slotIndex )
@@ -88,13 +88,13 @@ namespace RPGGame.UI
 
             ItemDragAndDrop.cursorItem = slotItem.Copy();
             AudioManager.PlaySound( slotItem.Item.PickupSound );
-            Inventory.RemoveItem( slotItem.Amount, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            Inventory.RemoveItem( slotItem.Amount, slotIndex, IInventory.ChangeReason.INVENTORY_REARRANGEMENT );
         }
 
         private void FullHandToFullSlot( ItemStack slotItem, int slotIndex )
         {
             AudioClip sound = slotItem.Item.DropSound;
-            int amountAdded = Inventory.AddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.Reason.INVENTORY_REARRANGEMENT );
+            int amountAdded = Inventory.AddItem( ItemDragAndDrop.cursorItem, slotIndex, IInventory.ChangeReason.INVENTORY_REARRANGEMENT );
             if( amountAdded > 0 )
             {
                 ItemDragAndDrop.cursorItem.Sub( amountAdded );
