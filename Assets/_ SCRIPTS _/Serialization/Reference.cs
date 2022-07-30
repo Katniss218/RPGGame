@@ -56,6 +56,8 @@ namespace RPGGame.Serialization
         /// </summary>
         public static RPGObject ObjectRef( JToken jsonRef )
         {
+#warning TODO - placeholders in references, like "$ref": "$id;%player%"
+
             return ReferenceToObject( (string)jsonRef[KEY] );
         }
 

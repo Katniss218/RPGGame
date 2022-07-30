@@ -173,5 +173,59 @@ namespace RPGGame.Serialization
                 }
             }
         }
+
+        //-------------------------------------
+        //-------------------------------------
+        //-------------------------------------
+        //-------------------------------------
+        //-------------------------------------
+
+        /*
+
+        {
+            "$type": "<AssenblyQualifiedName>",
+
+            // ... Other data.
+        }
+
+        */
+
+        /// <summary>
+        /// Deserializes an object while preserving the original derived type it was serializes with.
+        /// </summary>
+        public static T DeserializeTyped<T>( JObject json ) where T : ISerializedComponent
+        {
+            string typeS = (string)json["$type"];
+
+            Type type = Type.GetType( typeS ); // type must be serialized as 'Type.AssemblyQualifiedName'.
+
+            if( !typeof( T ).IsAssignableFrom( type ) )
+            {
+                throw new Exception( $"The serialized type is not a '{typeof( T ).AssemblyQualifiedName}' or a class derived from it." );
+            }
+
+#warning TODO - this is slow, there are other (several tens of times faster methods) methods that can replace it.
+            T o = (T)Activator.CreateInstance( type );
+
+            o.SetData( json );
+
+            return o;
+        }
+
+        /// <summary>
+        /// Serializes the object while preserving its derived type.
+        /// </summary>
+        public static JObject SerializeTyped<T>( T obj ) where T : ISerializedComponent
+        {
+            Type type = obj.GetType();
+
+            string typeS = type.AssemblyQualifiedName;
+
+            JObject json = obj.GetData();
+
+            json.Add( "$type", typeS );
+
+            return json;
+        }
     }
 }
