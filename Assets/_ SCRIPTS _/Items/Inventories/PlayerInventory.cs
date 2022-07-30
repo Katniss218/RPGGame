@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPGGame.Items
+namespace RPGGame.Items.Inventories
 {
     /// <remarks>
     /// Attach to the root object.
@@ -68,10 +68,10 @@ namespace RPGGame.Items
             return -(equipIndex + 1);
         }
 
-        public override List<int> GetAllSlots()
+        public override IEnumerable<int> GetAllSlots()
         {
             List<int> equip = new List<int>()
-            { 
+            {
                 SLOT_FEET,
                 SLOT_LEGS,
                 SLOT_CHEST,
@@ -87,7 +87,7 @@ namespace RPGGame.Items
         /// <summary>
         /// Returns the complete list of items in the inventory.
         /// </summary>
-        public override List<(ItemStack, int orig)> GetItemSlots()
+        public override IEnumerable<(ItemStack, int orig)> GetItemSlots()
         {
             List<(ItemStack, int orig)> items = new List<(ItemStack, int orig)>();
 
@@ -204,6 +204,17 @@ namespace RPGGame.Items
             }
 
             return base.RemoveItem( amount, slotIndex, reason );
+        }
+
+
+        public override JObject GetData()
+        {
+            return IInventoryEx.GetData( this );
+        }
+
+        public override void SetData( JObject data )
+        {
+            IInventoryEx.SetData( this, data );
         }
     }
 }

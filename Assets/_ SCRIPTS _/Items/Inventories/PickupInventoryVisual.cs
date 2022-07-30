@@ -1,9 +1,9 @@
 using RPGGame.Assets;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-namespace RPGGame.Items
+namespace RPGGame.Items.Inventories
 {
     [RequireComponent( typeof( PickupInventory ) )]
     public class PickupInventoryVisual : MonoBehaviour
@@ -24,7 +24,7 @@ namespace RPGGame.Items
             Destroy( model );
             model = null;
 
-            List<(ItemStack, int orig)> items = e.Self.GetItemSlots();
+            List<(ItemStack, int orig)> items = e.Self.GetItemSlots().ToList();
             if( items.Count > 1 )
             {
                 model = Instantiate( AssetManager.Prefabs.Get( "Prefabs/pickup_box" ), this.transform );

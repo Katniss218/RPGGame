@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RPGGame.Items
+namespace RPGGame.Items.Inventories
 {
     /// <remarks>
     /// Attach to the root object.
@@ -28,7 +28,7 @@ namespace RPGGame.Items
             throw new System.NotImplementedException();
         }
 
-        public List<int> GetAllSlots()
+        public IEnumerable<int> GetAllSlots()
         {
             List<int> indices = new List<int>();
             if( EquipHand != null )
@@ -56,7 +56,7 @@ namespace RPGGame.Items
             return (new ItemStack( Drops[slotIndex], 1 ), slotIndex);
         }
 
-        public List<(ItemStack, int orig)> GetItemSlots()
+        public IEnumerable<(ItemStack, int orig)> GetItemSlots()
         {
             List<(ItemStack, int orig)> items = new List<(ItemStack, int orig)>();
             if( EquipHand != null )

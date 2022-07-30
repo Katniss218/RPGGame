@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RPGGame.Items
+namespace RPGGame.Items.Inventories
 {
     [DisallowMultipleComponent]
     public class GridInventory : MonoBehaviour, IInventory
@@ -83,7 +83,8 @@ namespace RPGGame.Items
             }
         }
 
-        [SerializeField] protected ItemSlot[,] inventorySlots = new ItemSlot[0, 0]; // each slot points to an object containing the reference to the and amount.
+#warning TODO - change this to a jagged array perhaps? (so it can be set up without the runtime grid inventory creator thing). - 2D arrays can't be serialized into a prefab/scene at all. Not just viewed.
+        protected ItemSlot[,] inventorySlots = new ItemSlot[0, 0]; // each slot points to an object containing the reference to the and amount.
 
         [SerializeField] UnityEvent<IInventory.PickupEventInfo> __onPickup;
         public UnityEvent<IInventory.PickupEventInfo> onPickup { get => __onPickup; }
@@ -159,7 +160,7 @@ namespace RPGGame.Items
             return IsValidIndex( slotIndex, item.Size.x, item.Size.y );
         }
 
-        public virtual List<int> GetAllSlots()
+        public virtual IEnumerable<int> GetAllSlots()
         {
             List<int> indexArray = new List<int>();
 
@@ -285,7 +286,7 @@ namespace RPGGame.Items
             return (GetSlot( slot.OriginIndex ), slot.OriginIndex);
         }
 
-        public virtual List<(ItemStack, int orig)> GetItemSlots()
+        public virtual IEnumerable<(ItemStack, int orig)> GetItemSlots()
         {
             List<(ItemStack, int orig)> items = new List<(ItemStack, int orig)>();
 
@@ -514,13 +515,19 @@ namespace RPGGame.Items
         //      SERIALIZATION
         //
 
-        public JObject GetData()
+        public virtual JObject GetData()
         {
-            return IInventoryEx.GetData( this );
+            JObject data = IInventoryEx.GetData( this );
+            data.Add( "Size", new Vector2Int( SizeX, SizeY ).ToJson() );
+
+            return data;
         }
 
-        public void SetData( JObject data )
+        public virtual void SetData( JObject data )
         {
+            Vector2Int size = data["Size"].ToVector2Int();
+
+            this.SetSize( size.x, size.y );
             IInventoryEx.SetData( this, data );
         }
     }

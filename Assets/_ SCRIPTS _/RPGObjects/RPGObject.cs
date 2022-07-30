@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using RPGGame.Assets;
 using System;
 using System.Collections;
@@ -65,8 +66,7 @@ namespace RPGGame
         {
             if( !Application.isPlaying )
             {
-                throw new Exception( $"Detected an RPGObject in scene. - '{this.gameObject.name}'." );
-                //PrefabPath = GetLoadablePrefabPath( this.gameObject );
+                throw new Exception( $"Detected an RPGObject in scene. - '{this.gameObject.name}'. RPGObjects are supposed to exist only at runtime." );
             }
         }
 #endif
@@ -169,7 +169,7 @@ namespace RPGGame
                 throw new Exception( "Object must have its guid set." );
             }
 
-            Object.Destroy( obj );
+            Object.Destroy( obj.gameObject );
             allRpgObjects.Remove( obj.guid );
         }
 

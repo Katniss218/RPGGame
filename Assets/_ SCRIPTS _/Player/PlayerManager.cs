@@ -1,5 +1,6 @@
 using RPGGame.Assets;
 using RPGGame.Items;
+using RPGGame.Items.Inventories;
 using RPGGame.UI;
 using RPGGame.UI.Windows;
 using System.Collections;

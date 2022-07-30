@@ -2757,6 +2757,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: chest (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2787470385590796374, guid: 85d662bdd8b671449ad0bd85977e1e81, type: 3}
+      propertyPath: sizeX
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2787470385590796381, guid: 85d662bdd8b671449ad0bd85977e1e81, type: 3}
       propertyPath: m_RootOrder
       value: 19

@@ -1,5 +1,6 @@
 using QueuedInputSystem;
 using RPGGame.Items;
+using RPGGame.Items.Inventories;
 using RPGGame.Player;
 using System;
 using UnityEngine;
@@ -105,7 +106,8 @@ namespace RPGGame
             GameObject go = RPGObject.Instantiate( "Prefabs/pickup", "pickup", default, null, position + randomOffset, rotation );
 
             PickupInventory inventory = go.GetComponent<PickupInventory>();
-            inventory.SetCapacityAndPickUp( new ItemStack( item, amount ) );
+            inventory.SetSize( 1 );
+            inventory.AddItem( new ItemStack( item, amount ), 0 );
 
             if( applyForce )
             {

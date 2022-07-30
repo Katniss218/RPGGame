@@ -1,6 +1,7 @@
 using RPGGame.Animation;
 using RPGGame.Interactions;
 using RPGGame.Items;
+using RPGGame.Items.Inventories;
 using RPGGame.UI;
 using RPGGame.UI.Windows;
 using System;

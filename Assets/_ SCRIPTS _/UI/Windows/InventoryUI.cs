@@ -1,5 +1,6 @@
 using RPGGame.Assets;
 using RPGGame.Items;
+using RPGGame.Items.Inventories;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,16 +50,12 @@ namespace RPGGame.UI.Windows
             slotUIs.Clear();
             itemUIs.Clear();
 
-            List<int> slotIndices = Inventory.GetAllSlots();
-
-            foreach( int index in slotIndices )
+            foreach( int index in Inventory.GetAllSlots() )
             {
                 SpawnSlot( index );
             }
 
-            List<(ItemStack, int orig)> items = Inventory.GetItemSlots();
-
-            foreach( var (item, orig) in items )
+            foreach( var (item, orig) in Inventory.GetItemSlots() )
             {
                 if( itemUIs.ContainsKey( orig ) )
                 {

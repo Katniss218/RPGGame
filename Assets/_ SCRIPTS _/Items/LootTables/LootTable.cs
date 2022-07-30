@@ -52,17 +52,16 @@ namespace RPGGame.Items.LootTables
         //      SERIALIZATION
         //
 
+        // LootTable is serialized as the reference (doesn't contain a reference, it IS a reference).
+
         public static implicit operator JToken( LootTable self )
         {
-            return new JObject()
-            {
-                { "$ref", SerializationHelper.ToReferenceString( ReferenceType.ASSET, self.ID ) }
-            };
+            return Reference.AssetRef( self.ID );
         }
 
         public static explicit operator LootTable( JToken json )
         {
-            return AssetManager.LootTables.Get( SerializationHelper.ToAssetID( (string)json["$ref"] ).assetID );
+            return AssetManager.LootTables.Get( Reference.AssetRef( json ) );
         }
     }
 }

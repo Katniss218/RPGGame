@@ -11,12 +11,6 @@ using Object = UnityEngine.Object;
 
 namespace RPGGame.Serialization
 {
-    public enum ReferenceType
-    {
-        ID,
-        ASSET
-    }
-
     /// <summary>
     /// A helper class converting Unity types to JSON and the other way around.
     /// </summary>
@@ -36,46 +30,6 @@ namespace RPGGame.Serialization
         {
             return obj.transform.parent == null
                 && obj.tag != TAG_NO_SERIALIZATION;
-        }
-
-        // Reference path stuff.
-
-        const char REF = '$';
-        const char REF_SEPARATOR = ';';
-        const string ID = "id";
-        const string ASSET = "asset";
-
-        public static string ToReferenceString( ReferenceType type, string assetID )
-        {
-            if( assetID.Contains( REF_SEPARATOR ) )
-            {
-                throw new ArgumentException( $"The string can't contain the '{REF_SEPARATOR}' char." );
-            }
-
-            return type switch
-            {
-                ReferenceType.ID => $"{REF}{ID}{REF_SEPARATOR}{assetID}",
-                ReferenceType.ASSET => $"{REF}{ASSET}{REF_SEPARATOR}{assetID}",
-                _ => throw new Exception( $"Unknown reference type '{type}'." )
-            };
-        }
-
-        public static (ReferenceType type, string assetID) ToAssetID( string refStr )
-        {
-            string start;
-
-            start = $"{REF}{ID}{REF_SEPARATOR}";
-            if( refStr.StartsWith( start ) )
-            {
-                return (ReferenceType.ID, refStr.Substring( start.Length ));
-            }
-            start = $"{REF}{ASSET}{REF_SEPARATOR}";
-            if( refStr.StartsWith( start ) )
-            {
-                return (ReferenceType.ASSET, refStr.Substring( start.Length ));
-            }
-
-            throw new ArgumentException( $"A reference string must follow the format '{REF}<ref_type>{REF_SEPARATOR}<string>'." );
         }
 
         //

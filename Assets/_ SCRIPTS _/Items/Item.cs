@@ -39,17 +39,21 @@ namespace RPGGame.Items
             return this.ID == other.ID;
         }
 
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        // Item is serialized as the reference (doesn't contain a reference, it IS a reference).
+
         public static implicit operator JToken( Item self )
         {
-            return new JObject()
-            {
-                { "$ref", SerializationHelper.ToReferenceString(ReferenceType.ASSET, self.ID) }
-            };
+            return Reference.AssetRef( self.ID );
         }
 
         public static explicit operator Item( JToken json )
         {
-            return AssetManager.Items.Get( SerializationHelper.ToAssetID( (string)json["$ref"] ).assetID );
+            return AssetManager.Items.Get( Reference.AssetRef(json) );
         }
     }
 }

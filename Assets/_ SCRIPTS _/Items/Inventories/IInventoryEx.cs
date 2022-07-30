@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace RPGGame.Items
+namespace RPGGame.Items.Inventories
 {
     public static class IInventoryEx
     {
@@ -87,9 +87,8 @@ namespace RPGGame.Items
             }
 
             int amountLeft = itemStack.Amount;
-            List<(ItemStack, int orig)> items = inv.GetItemSlots();
 
-            foreach( var (existingItemStack, orig) in items )
+            foreach( var (existingItemStack, orig) in inv.GetItemSlots() )
             {
                 int amountDropped = inv.RemoveItem( amountLeft, orig, reason );
 
@@ -109,12 +108,11 @@ namespace RPGGame.Items
         //      SERIALIZATION
         //
 
-        public static JObject GetData( this IInventory inv )
+        public static JObject GetData( IInventory inv )
         {
             JObject itemsKeyedBySlot = new JObject();
-
-            List<(ItemStack, int orig)> items = inv.GetItemSlots();
-            foreach( var (itemStack, slot) in items )
+            
+            foreach( var (itemStack, slot) in inv.GetItemSlots() )
             {
                 itemsKeyedBySlot.Add( slot.ToString(), itemStack );
             }
@@ -125,7 +123,7 @@ namespace RPGGame.Items
             };
         }
 
-        public static void SetData( this IInventory inv, JObject data )
+        public static void SetData( IInventory inv, JObject data )
         {
             inv.Clear( IInventory.Reason.PERSISTENCE );
 

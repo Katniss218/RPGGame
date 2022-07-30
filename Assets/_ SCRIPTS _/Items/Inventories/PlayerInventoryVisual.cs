@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPGGame.Items
+namespace RPGGame.Items.Inventories
 {
     [RequireComponent( typeof( PlayerInventory ) )]
     public class PlayerInventoryVisual : MonoBehaviour

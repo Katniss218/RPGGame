@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RPGGame.Globals;
+using RPGGame.Items.Inventories;
 using RPGGame.Serialization;
 using System.Collections;
 using System.Collections.Generic;

@@ -1,5 +1,6 @@
 using RPGGame.Audio;
 using RPGGame.Items;
+using RPGGame.Items.Inventories;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine;
 namespace RPGGame.Abilities
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(PlayerInventory))]
+    [RequireComponent( typeof( PlayerInventory ) )]
     public class ItemPickup : MonoBehaviour
     {
         public float PickupRange = 1.25f;
@@ -38,7 +39,7 @@ namespace RPGGame.Abilities
         /// <summary>
         /// Try to pickup every item that's on the ground and is in range.
         /// </summary>
-        private void TryPickupNearby(float maxItemStacks)
+        private void TryPickupNearby( float maxItemStacks )
         {
             Collider[] collidersInRange = Physics.OverlapSphere( this.transform.position, PickupRange );
 
@@ -57,14 +58,12 @@ namespace RPGGame.Abilities
                     continue;
                 }
                 // Only pick from items that have been on the ground for some time.
-                if( Time.time < pickupInv.createdTime + 1.5f )
+                if( Time.time < pickupInv.CreatedTime + 1.5f )
                 {
                     continue;
                 }
 
-                List<(ItemStack, int orig)> items = pickupInv.GetItemSlots();
-
-                foreach( var (itemStack, orig) in items )
+                foreach( var (itemStack, orig) in pickupInv.GetItemSlots() )
                 {
                     int leftover = inventory.TryAdd( itemStack );
 
@@ -74,7 +73,7 @@ namespace RPGGame.Abilities
                     {
                         AudioManager.PlaySound( itemStack.Item.PickupSound );
                         pickupInv.TryRemove( new ItemStack( itemStack.Item, amtPickedUp ) );
-                        
+
                         // Only count if we actually picked something up because \/
                         // Do not skip any inventories or itemstacks due to some items might only fall into some slots (mostly small items when your inventory is almost full).
                         itemStacksLeftTopickUp--;

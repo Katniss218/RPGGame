@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RPGGame.Items
+namespace RPGGame.Items.Inventories
 {
     /// <summary>
     /// A generic inventory that can hold items.
@@ -65,7 +65,7 @@ namespace RPGGame.Items
         UnityEvent<ResizeEventInfo> onResize { get; }
 
         /// <summary>
-        /// Checks if the slot index is a valid index for a given item.
+        /// Checks if the slot index is a valid index for a given item (NOT regarding stacking items, in the case of grid inventories some slots would make the item out of bounds).
         /// </summary>
         /// <returns>True if the slot is a valid slot index, and can accept the item, otherwise false.</returns>
         bool IsValidIndex( int slotIndex, Item item );
@@ -73,19 +73,24 @@ namespace RPGGame.Items
         /// <summary>
         /// Returns the slot indices for all valid slots.
         /// </summary>
-        List<int> GetAllSlots();
+        IEnumerable<int> GetAllSlots();
 
         /// <summary>
         /// Returns a sequence of slot and amount pairs that can be used at the time to fill the inventory with the specified items.
         /// A leftover value is provided, if the inventory can't fit all the items.
         /// </summary>
+#warning TODO - probably best to add the reason to this too.
         (List<(int index, int amt)>, int leftover) GetNeededSlots( ItemStack itemStack );
+
+        /// <summary>
+        /// Returns the item at a given slot.
+        /// </summary>
         (ItemStack, int orig) GetItemSlot( int slotIndex );
 
         /// <summary>
         /// Returns the complete list of items in the inventory.
         /// </summary>
-        List<(ItemStack, int orig)> GetItemSlots();
+        IEnumerable<(ItemStack, int orig)> GetItemSlots();
 
         /// <summary>
         /// Checks whether the item can be added to a particular slot, given a reason.
@@ -105,7 +110,7 @@ namespace RPGGame.Items
         /// <summary>
         /// Checks whether the item can be removed from a particular slot, given a reason.
         /// </summary>
-        /// <returns>If the item is compatible, the amount of space in the slot. Null if the item is incompatible.</returns>
+        /// <returns>If the item is compatible, the amount of space in the slot. If the item is incompatible or the slot is empty, null.</returns>
         int? CanRemoveItem( int slotIndex, Reason reason = Reason.GENERIC );
         /// <summary>
         /// Removes an amount of the item from a slot.

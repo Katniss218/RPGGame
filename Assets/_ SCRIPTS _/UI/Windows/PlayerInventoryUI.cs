@@ -1,4 +1,5 @@
 using RPGGame.Items;
+using RPGGame.Items.Inventories;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

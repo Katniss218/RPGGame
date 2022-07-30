@@ -1,5 +1,6 @@
 using RPGGame.Audio;
 using RPGGame.Items;
+using RPGGame.Items.Inventories;
 using RPGGame.UI.Windows;
 using System.Collections;
 using System.Collections.Generic;
