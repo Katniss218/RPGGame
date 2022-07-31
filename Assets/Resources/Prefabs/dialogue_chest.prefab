@@ -78,7 +78,20 @@ MonoBehaviour:
         m_CallState: 2
   onStopInteraction:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8428776652737648003}
+        m_TargetAssemblyTypeName: RPGGame.Progression.Dialogues.DialogueSpeaker,
+          Assembly-CSharp
+        m_MethodName: StopDialogue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8428776652737648003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,20 +104,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 822ca69f628b9a74c9b17e5117d53f75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <DisplayName>k__BackingField: 
-  <Dialogue>k__BackingField:
-    <StartingOption>k__BackingField:
-      <Text>k__BackingField: Hello Player!
-      <IsInteractorSpeaking>k__BackingField: 0
+  <DisplayName>k__BackingField: Chest
+  <AvailableDialogues>k__BackingField:
+  - <StartingOption>k__BackingField:
+      <Text>k__BackingField: Hello, Player!
+      <InteractorSpeaks>k__BackingField: 0
       <ContraOptions>k__BackingField:
-      - <Text>k__BackingField: Hi, where is iron?
-        <IsInteractorSpeaking>k__BackingField: 1
-        <ContraOptions>k__BackingField:
-        - <Text>k__BackingField: There is no iron yet!
-          <IsInteractorSpeaking>k__BackingField: 0
-          <ContraOptions>k__BackingField: []
-      - <Text>k__BackingField: Hi, I wanna buy something.
-        <IsInteractorSpeaking>k__BackingField: 1
+      - <Text>k__BackingField: Hi
+        <InteractorSpeaks>k__BackingField: 1
+        <ContraOptions>k__BackingField: []
+      - <Text>k__BackingField: Hello
+        <InteractorSpeaks>k__BackingField: 1
         <ContraOptions>k__BackingField: []
 --- !u!1001 &2787470386406941544
 PrefabInstance:

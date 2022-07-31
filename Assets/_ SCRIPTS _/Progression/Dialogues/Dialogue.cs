@@ -12,7 +12,5 @@ namespace RPGGame.Progression.Dialogues
 
         [field: SerializeField]
         public DialogueOption StartingOption { get; set; }
-
-        public bool InteractorStarts => StartingOption.IsInteractorSpeaking;
     }
 }

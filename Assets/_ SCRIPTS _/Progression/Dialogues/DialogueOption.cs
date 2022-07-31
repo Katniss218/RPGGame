@@ -1,3 +1,4 @@
+using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,11 +14,8 @@ namespace RPGGame.Progression.Dialogues
         [field: SerializeField]
         public string Text { get; set; }
 
-        /// <summary>
-        /// If true,
-        /// </summary>
         [field: SerializeField]
-        public bool IsInteractorSpeaking { get; set; }
+        public bool InteractorSpeaks { get; set; }
 
         /// <summary>
         /// The list of conditions that must be met in order to enable this dialogue option.
