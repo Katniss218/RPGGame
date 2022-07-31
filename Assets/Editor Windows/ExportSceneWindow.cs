@@ -24,6 +24,7 @@ namespace RPGGame.Editor
             startingAreaId = EditorGUILayout.TextField( "Starting Area ID", startingAreaId );
             defaultPlayer = EditorGUILayout.ObjectField( "Starting Player", defaultPlayer, typeof( GameObject ), false ) as GameObject;
 
+#warning TODO - change this to a single button.
             if( GUILayout.Button( "Export Save Data" ) )
             {
                 SaveGameUtils.SaveSaveData( save, new SaveData()

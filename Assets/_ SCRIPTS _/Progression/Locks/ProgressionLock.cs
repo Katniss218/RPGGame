@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPGGame.Progression
+namespace RPGGame.Progression.Locks
 {
     /// <summary>
     /// Represents an abstract type of prerequisite that must be met in order to do something.

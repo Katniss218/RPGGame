@@ -1,3 +1,4 @@
+using RPGGame.Progression.Locks;
 using RPGGame.Serialization;
 using System;
 using System.Collections;
@@ -15,13 +16,13 @@ namespace RPGGame.Progression.Dialogues
         public string Text { get; set; }
 
         [field: SerializeField]
-        public bool InteractorSpeaks { get; set; }
+        public DialogueSpeaker Speaker { get; set; }
 
         /// <summary>
         /// The list of conditions that must be met in order to enable this dialogue option.
         /// </summary>
         [field: SerializeField]
-        public List<ProgressionLock> Conditions { get; set; }
+        public List<ProgressionLock> Conditions { get; set; } = new List<ProgressionLock>();
 
         /// <summary>
         /// The dialogue options following this specific option.

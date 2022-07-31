@@ -1,15 +1,27 @@
 using RPGGame.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace RPGGame.Progression.Dialogues
 {
     public static class DialogueManager
     {
+        /// <summary>
+        /// Stores all dialogues at runtime.
+        /// </summary>
+        static Dictionary<Guid, Dialogue> allDialogues = new Dictionary<Guid, Dialogue>();
+
         static DialogueUI Dui;
 
-       public static DialogueOption currentOption;
+        public static DialogueOption currentOption;
+
+        public static List<Dialogue> GetDialogues( DialogueSpeaker speaker )
+        {
+            throw new NotImplementedException();
+        }
 
         public static void StartDialogue( DialogueSpeaker speaker, Dialogue dialogue )
         {
@@ -20,7 +32,8 @@ namespace RPGGame.Progression.Dialogues
             }
             Dui = DialogueUI.Create();
 
-            if( dialogue.StartingOption.InteractorSpeaks )
+#warning TODO - fix this.
+            if( true )// dialogue.StartingOption.InteractorSpeaks )
             {
                 Dui.AddSelect( new List<DialogueOption>() { dialogue.StartingOption } );
             }
@@ -42,9 +55,10 @@ namespace RPGGame.Progression.Dialogues
 
         public static void ProgressDialogue( string displayName, DialogueOption option )
         {
+#warning TODO - the dialogue speaker needs to progress too.
             if( currentOption != null && !currentOption.ContraOptions.Contains( option ) )
             {
-                throw new System.Exception( "The option must be one of the ContraOptions of the current dialogue option" );
+                throw new Exception( "The option must be one of the ContraOptions of the current dialogue option" );
             }
 
             currentOption = option;

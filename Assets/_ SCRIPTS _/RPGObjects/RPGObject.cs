@@ -20,10 +20,10 @@ namespace RPGGame
     [ExecuteAlways]
     public sealed class RPGObject : MonoBehaviour
     {
-        // Store each object's guid at runtime.
-        // Also store a dictionary for fast and easy lookups.
-
-        private static Dictionary<Guid, RPGObject> allRpgObjects = new Dictionary<Guid, RPGObject>();
+        /// <summary>
+        /// Stores all loaded RPGObjects at runtime.
+        /// </summary>
+        static Dictionary<Guid, RPGObject> allRpgObjects = new Dictionary<Guid, RPGObject>();
 
         /// <summary>
         /// The 'Resources/Prefabs/' path of this particular RPGObject.
@@ -61,7 +61,7 @@ namespace RPGGame
             return obj.guid;
         }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR // Throw an error if an RPGObject component exists in the editor.
         void Awake()
         {
             if( !Application.isPlaying )
@@ -72,13 +72,7 @@ namespace RPGGame
 #endif
 
         void Start()
-        {/*
-#if UNITY_EDITOR
-            if( !Application.isPlaying )
-            {
-                return;
-            }
-#endif*/
+        {
             if( PrefabPath == null )
             {
                 throw new InvalidOperationException( $"The PrefabPath for object '{this.gameObject.name}' wasn't set. It must've been spawned incorrectly. Use 'RPGObject.Instantiate' methods." );

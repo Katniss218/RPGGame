@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: 8563486464037737608}
   - component: {fileID: 8563486464037737615}
   - component: {fileID: 8462492208260487119}
+  - component: {fileID: 4539746002593004170}
   - component: {fileID: 8563486464037737614}
   - component: {fileID: 8563486464037737612}
   m_Layer: 0
@@ -718,6 +719,18 @@ MonoBehaviour:
   chest: {fileID: 6641740244812635937}
   legs: {fileID: 2765348399301925765}
   feet: {fileID: 2702569608081718590}
+--- !u!114 &4539746002593004170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8563486464037737600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c2c18b751f9db64fa661c4d4f597c06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8563486464037737614
 MonoBehaviour:
   m_ObjectHideFlags: 0

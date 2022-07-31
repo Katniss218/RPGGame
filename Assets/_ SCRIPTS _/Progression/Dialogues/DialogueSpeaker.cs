@@ -10,7 +10,7 @@ namespace RPGGame.Progression.Dialogues
     {
         [field: SerializeField]
         public string DisplayName { get; set; }
-
+        /*
         [field: SerializeField]
         public List<Dialogue> AvailableDialogues { get; set; }
 
@@ -24,6 +24,6 @@ namespace RPGGame.Progression.Dialogues
         public void StopDialogue()
         {
             DialogueManager.StopDialogue( this, AvailableDialogues[0] );
-        }
+        }*/
     }
 }
