@@ -44,7 +44,7 @@ namespace RPGGame.Serialization
         /// <summary>
         /// Returns a JSON reference to a given object.
         /// </summary>
-        public static JToken ObjectRef( RPGObject obj )
+        public static JToken ObjectRef( this RPGObject obj )
         {
             return new JObject()
             {

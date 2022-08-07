@@ -49,8 +49,7 @@ namespace RPGGame.Serialization
 
             foreach( var obj in allObjects )
             {
-#warning TODO - move the player to be a normal object in the scene, since there will only be one scene.
-                if( SerializationHelper.ShouldSerialize( obj.gameObject ) )
+                if( SerializationHelper.ShouldAutoSerialize( obj.gameObject ) )
                 {
                     try
                     {

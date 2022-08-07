@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,10 +6,20 @@ using UnityEngine;
 
 namespace RPGGame.Progression.Dialogues
 {
-    [Serializable]
-    public class Dialogue
+    public interface IReferenceable
     {
-        // GUID
+#warning TODO - Reference class can take any Referenceable type, extend the registry to work with them.
+        // Alternatively:
+        // - remove this from here and add 2 dictionaries, for O(1) both way access. Arguably, the Guid -> Object is more important, but we don't have it sped up.
+
+        Guid Guid { get; }
+    }
+
+    [Serializable]
+    public class Dialogue : IReferenceable
+    {
+        [field: NonSerialized]
+        public Guid Guid { get; set; }
 
         [field: SerializeField]
         public DialogueOption StartingOption { get; set; }
@@ -33,5 +44,29 @@ namespace RPGGame.Progression.Dialogues
 
 
         */
+
+
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public static implicit operator JToken( Dialogue self )
+        {
+            return new JObject()
+            {
+                { "Guid", self.Guid },
+                { "StartingOption", self.StartingOption }
+            };
+        }
+
+        public static explicit operator Dialogue( JToken json )
+        {
+            return new Dialogue()
+            {
+                Guid = (Guid)json["Guid"],
+                StartingOption = (DialogueOption)json["StartingOption"]
+            };
+        }
     }
 }

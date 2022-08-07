@@ -2,28 +2,24 @@ using RPGGame.Interactions;
 using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RPGGame.Progression.Dialogues
 {
-    public class DialogueSpeaker : MonoBehaviour
+    public class DialogueSpeaker : RPGObjectComponent
     {
         [field: SerializeField]
         public string DisplayName { get; set; }
-        /*
-        [field: SerializeField]
-        public List<Dialogue> AvailableDialogues { get; set; }
 
         public void StartDialogue()
         {
-            DialogueManager.StartDialogue( this, AvailableDialogues[0] );
-
-           // DialogueManager.ProgressDialogue( "Player (Hardcoded)", DialogueManager.currentOption.ContraOptions[0] );
+            DialogueManager.StartDialogue( this, DialogueManager.GetDialogues( this ).First() );
         }
 
         public void StopDialogue()
         {
-            DialogueManager.StopDialogue( this, AvailableDialogues[0] );
-        }*/
+            DialogueManager.StopDialogue( this, DialogueManager.GetDialogues( this ).First() );
+        }
     }
 }

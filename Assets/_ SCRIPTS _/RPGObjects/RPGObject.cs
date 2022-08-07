@@ -74,11 +74,15 @@ namespace RPGGame
         {
             if( PrefabPath == null )
             {
-                throw new InvalidOperationException( $"The PrefabPath for object '{this.gameObject.name}' wasn't set. It must've been spawned incorrectly. Use 'RPGObject.Instantiate' methods." );
+                throw new InvalidOperationException( $"The RPGObject '{this.gameObject.name}' doesn't have its prefab path assigned." );
             }
             if( guid == default )
             {
-                throw new InvalidOperationException( $"The Guid for object '{this.gameObject.name}' wasn't set. It must've been spawned incorrectly. Use 'RPGObject.Instantiate' methods." );
+                throw new InvalidOperationException( $"The RPGObject '{this.gameObject.name}' doesn't have its guid set." );
+            }
+            if( this.transform.parent != null )
+            {
+                throw new InvalidOperationException( $"The RPGOoject '{this.gameObject.name}' isn't attached to the root object." );
             }
         }
 
@@ -111,11 +115,11 @@ namespace RPGGame
         /// <summary>
         /// Use this to create an RPGObject.
         /// </summary>
-        public static (RPGObject, Guid) Instantiate( string prefabPath, string name, Guid guid = default, Transform parent = null, Vector3? localPos = null, Quaternion? localRot = null )
+        public static (RPGObject obj, Guid guid) Instantiate( string prefabPath, string name, Guid guid = default, Vector3? localPos = null, Quaternion? localRot = null )
         {
             GameObject prefab = AssetManager.Prefabs.Get( prefabPath );
 
-            GameObject clone = Instantiate( prefab, parent );
+            GameObject clone = Instantiate( prefab, null );
             clone.name = name;
 
             if( localPos != null )

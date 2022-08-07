@@ -16,17 +16,15 @@ namespace RPGGame.Serialization
     /// </summary>
     public static class SerializationHelper
     {
-        // Should-serialize stuff
-#warning TODO - we need to store the guids when serializing so we can reference them later.
         /// <summary>
         /// This tag indicates that the object should not be serialized.
         /// </summary>
         public static string TAG_NO_SERIALIZATION = "NonSerialized";
 
         /// <summary>
-        /// Checks whether a given object should be serialized or not.
+        /// Checks whether a given object should be auto-serialized or not.
         /// </summary>
-        public static bool ShouldSerialize( GameObject obj )
+        public static bool ShouldAutoSerialize( GameObject obj )
         {
             return obj.transform.parent == null
                 && obj.tag != TAG_NO_SERIALIZATION;

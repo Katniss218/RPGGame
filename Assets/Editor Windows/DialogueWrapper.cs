@@ -11,7 +11,8 @@ namespace RPGGame.Editor
     /// </summary>
     public class DialogueWrapper : MonoBehaviour
     {
-        [SerializeField]
-        public List<Dialogue> dialogue = new List<Dialogue>() { new Dialogue() };
+#warning TODO - all dialogues have empty guid because Unity can't serialize it.
+        [field: SerializeField]
+        public List<Dialogue> Dialogues { get; set; } = new List<Dialogue>() { new Dialogue() };
     }
 }

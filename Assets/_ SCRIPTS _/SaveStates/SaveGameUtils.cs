@@ -2,12 +2,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RPGGame.Editor;
 using RPGGame.Player;
+using RPGGame.Progression.Dialogues;
 using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace RPGGame.SaveStates
 {
@@ -112,7 +114,7 @@ namespace RPGGame.SaveStates
             DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
             File.WriteAllText( path, str );
         }
-        /*
+        
         /// <summary>
         /// Loads the empty scene and deserializes a particular save and area into it.
         /// </summary>
@@ -121,7 +123,12 @@ namespace RPGGame.SaveStates
             string path = GetSaveDialoguesFile( save );
 
             string str = File.ReadAllText( path );
-            ( JsonConvert.DeserializeObject<JObject>( str ) );
+
+            JToken json = JsonConvert.DeserializeObject<JToken>( str );
+            foreach( var d in json )
+            {
+                DialogueManager.Register( (Dialogue)d );
+            }
         }
 
         /// <summary>
@@ -131,16 +138,20 @@ namespace RPGGame.SaveStates
         {
             string path = GetSaveDialoguesFile( save );
 
-            DialogueWrapper w = GameObject.FindObjectOfType<DialogueWrapper>();
+            DialogueWrapper w = Object.FindObjectOfType<DialogueWrapper>();
 
+            List<JToken> json = new List<JToken>();
+            foreach( Dialogue d in w.Dialogues )
+            {
+                json.Add( d );
+            }
 
-
-            string str = JsonConvert.SerializeObject( , Formatting.Indented );
+            string str = JsonConvert.SerializeObject( json, Formatting.Indented );
 
             DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
             File.WriteAllText( path, str );
         }
-        */
+        
         /// <summary>
         /// Spawns the player from a particular save into the current scene.
         /// </summary>

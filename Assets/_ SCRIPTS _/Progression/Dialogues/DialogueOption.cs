@@ -11,13 +11,11 @@ namespace RPGGame.Progression.Dialogues
     [Serializable]
     public class DialogueOption
     {
-        // GUID
+        [field: SerializeField]
+        public string Text { get; set; } = null;
 
         [field: SerializeField]
-        public string Text { get; set; }
-
-        [field: SerializeField]
-        public DialogueSpeaker Speaker { get; set; }
+        public DialogueSpeaker Speaker { get; set; } = null;
 
         /// <summary>
         /// The list of conditions that must be met in order to enable this dialogue option.
@@ -29,7 +27,7 @@ namespace RPGGame.Progression.Dialogues
         /// The dialogue options following this specific option.
         /// </summary>
         [field: SerializeField]
-        public List<DialogueOption> ContraOptions { get; set; }
+        public List<DialogueOption> FollowingOptions { get; set; } = new List<DialogueOption>();
 
         public bool CanSay()
         {
@@ -44,14 +42,48 @@ namespace RPGGame.Progression.Dialogues
             return true;
         }
 
-        public JObject GetData()
+        //  ---------------------
+
+        //      SERIALIZATION
+        //
+
+        public static implicit operator JToken( DialogueOption self )
         {
-            throw new Exception();
+            List<JToken> followingOptions = new List<JToken>();
+            foreach( var opt in self.FollowingOptions )
+            {
+                followingOptions.Add( opt );
+            }
+
+            return new JObject()
+            {
+                { "Text", self.Text },
+                { "Speaker", self.Speaker.RpgObject.ObjectRef() },
+#warning TODO - serialize locks properly.
+               // { "Conditions", ... },
+                { "FollowingOptions", new JArray()
+                {
+                    followingOptions
+                } }
+            };
         }
 
-        public void SetData( JObject json )
+        public static explicit operator DialogueOption( JToken json )
         {
+            DialogueOption opt = new DialogueOption();
+            opt.Text = (string)json["Text"];
 
+            opt.Speaker = Reference.ObjectRef( json["Speaker"] ).GetComponent<DialogueSpeaker>();
+
+            opt.Conditions = new List<ProgressionLock>();
+
+            opt.FollowingOptions = new List<DialogueOption>();
+            foreach( JObject opt2Json in json["FollowingOptions"] )
+            {
+                opt.FollowingOptions.Add( (DialogueOption)opt2Json );
+            }
+
+            return opt;
         }
     }
 }
