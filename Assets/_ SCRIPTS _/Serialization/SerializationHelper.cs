@@ -17,7 +17,7 @@ namespace RPGGame.Serialization
     public static class SerializationHelper
     {
         // Should-serialize stuff
-
+#warning TODO - we need to store the guids when serializing so we can reference them later.
         /// <summary>
         /// This tag indicates that the object should not be serialized.
         /// </summary>
@@ -36,7 +36,7 @@ namespace RPGGame.Serialization
         //      Unity object serialization stuff.
         //
 
-        public static GameObject SpawnAndRegisterGameObject( JObject data )
+        public static (RPGObject, Guid) SpawnRpgObject( JObject data )
         {
             string prefabPath = (string)data["Prefab"];
             if( prefabPath == null )
@@ -44,33 +44,33 @@ namespace RPGGame.Serialization
                 throw new Exception( "Prefab Path was null, can't spawn" );
             }
 
-            GameObject gameObject = RPGObject.Instantiate( prefabPath, "<not_assigned_yet>", (Guid)data["$id"] );
+            (RPGObject, Guid) pair = RPGObject.Instantiate( prefabPath, "<not_assigned_yet>", (Guid)data["$id"] );
 
-            return gameObject;
+            return pair;
         }
 
         /// <summary>
         /// Returns the JSON containing the saved data of this particular object.
         /// </summary>
-        public static JObject GetDataGameObject( GameObject obj )
+        public static JObject GetDataRpgObject( RPGObject obj )
         {
-            RPGObject rpgObject = obj.GetComponent<RPGObject>();
-
-            Guid objectId;
+            Guid objGuid;
             string prefabPath;
 
-            if( rpgObject == null )
+            RPGObject rpgObject = obj.GetComponent<RPGObject>();
+
+            if( !Application.isPlaying ) // Serialize within the editor (save scene button).
             {
 #if UNITY_EDITOR
-                prefabPath = RPGObject.GetLoadablePrefabPath( obj );
+                prefabPath = RPGObject.GetLoadablePrefabPath( obj.gameObject );
+                rpgObject.guid = Guid.NewGuid();
 #else
                 throw new Exception( "Can't serialize a non-RPGObject outside of the editor." );
 #endif
-                objectId = Guid.NewGuid();
             }
-            else
+            else // Serialize within the game.
             {
-                objectId = RPGObject.Get( rpgObject );
+                objGuid = RPGObject.Get( rpgObject );
                 prefabPath = rpgObject.PrefabPath;
             }
 
@@ -78,11 +78,9 @@ namespace RPGGame.Serialization
 
             JToken componentData = GetComponentData( obj );
 
-           // SerializationManager.RegisterObject( objectId, obj );
-
             JObject full = new JObject()
             {
-                { "$id", objectId },
+                { "$id", rpgObject.guid },
                 { "Prefab", prefabPath },
                 { "Name", obj.name },
                 { "Transform", transformData },
@@ -96,7 +94,7 @@ namespace RPGGame.Serialization
         /// Applies the saved data to this object.
         /// </summary>
         /// <param name="data">The data. It's supposed to have come from the same object, saved earlier.</param>
-        public static void SetDataGameObject( GameObject obj, JObject data )
+        public static void SetDataGameObject( RPGObject obj, JObject data )
         {
             obj.name = (string)data["Name"];
 
@@ -111,7 +109,7 @@ namespace RPGGame.Serialization
         /// <summary>
         /// Gets the data for every <see cref="ISerializedComponent"/> component on this object.
         /// </summary>
-        public static JToken GetComponentData( GameObject obj )
+        public static JToken GetComponentData( RPGObject obj )
         {
             ISerializedComponent[] serializedComponents = obj.GetComponents<ISerializedComponent>();
 
@@ -146,7 +144,7 @@ namespace RPGGame.Serialization
         /// <summary>
         /// Sets the data for every <see cref="ISerializedComponent"/> component on this object.
         /// </summary>
-        public static void SetComponentData( GameObject obj, JToken data )
+        public static void SetComponentData( RPGObject obj, JToken data )
         {
             ISerializedComponent[] serializedComponents = obj.GetComponents<ISerializedComponent>();
 
@@ -183,7 +181,7 @@ namespace RPGGame.Serialization
         /*
 
         {
-            "$type": "<AssenblyQualifiedName>",
+            "$type": "<AssemblyQualifiedName>",
 
             // ... Other data.
         }

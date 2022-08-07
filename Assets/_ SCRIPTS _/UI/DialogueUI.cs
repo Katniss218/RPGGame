@@ -49,11 +49,9 @@ namespace RPGGame.UI
             }
         }
 
-        public void AddSpoken( string h, DialogueOption option )
+        public void AddSpoken( string speakerName, DialogueOption option )
         {
-#warning TODO - we need to get the display name of the speaking object somehow.
-
-            (GameObject header, GameObject content) = SpawnSpoken( h, option );
+            (GameObject header, GameObject content) = SpawnSpoken( speakerName, option );
             spokenList.Add( header );
             spokenList.Add( content );
         }

@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using RPGGame.Progression.Locks;
 using RPGGame.Serialization;
 using System;
@@ -41,6 +42,16 @@ namespace RPGGame.Progression.Dialogues
             }
 
             return true;
+        }
+
+        public JObject GetData()
+        {
+            throw new Exception();
+        }
+
+        public void SetData( JObject json )
+        {
+
         }
     }
 }

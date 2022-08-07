@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2787470385590796381}
+  - component: {fileID: 4831834572450547450}
   - component: {fileID: 2787470385590796371}
   - component: {fileID: 2787470385590796369}
   - component: {fileID: 8428776652737648003}
@@ -35,6 +36,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &4831834572450547450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2787470385590796373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 335b0c1c52800eb408f78b210c6c3f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &2787470385590796371
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -105,17 +118,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <DisplayName>k__BackingField: Chest
-  <AvailableDialogues>k__BackingField:
-  - <StartingOption>k__BackingField:
-      <Text>k__BackingField: Hello, Player!
-      <InteractorSpeaks>k__BackingField: 0
-      <ContraOptions>k__BackingField:
-      - <Text>k__BackingField: Hi
-        <InteractorSpeaks>k__BackingField: 1
-        <ContraOptions>k__BackingField: []
-      - <Text>k__BackingField: Hello
-        <InteractorSpeaks>k__BackingField: 1
-        <ContraOptions>k__BackingField: []
 --- !u!1001 &2787470386406941544
 PrefabInstance:
   m_ObjectHideFlags: 0

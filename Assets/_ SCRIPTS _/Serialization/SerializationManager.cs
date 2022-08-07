@@ -19,21 +19,42 @@ namespace RPGGame.Serialization
         // - ISerializedComponent interface (Get/Set Data methods)
         //   - monobehaviours / components
 
+
+        /* ### ###  FUTURE OPEN WORLD LOADING SYSTEM  ### ###
+        
+        Saving in the editor saves the ENTIRE WORLD.
+
+        Saving in game saves the part that is loaded.
+
+
+        Loading in the editor ---
+
+        Loading in game loads the part around the player (dynamically) as well as any parts that are referenced.
+        - Potentially allow loading parts that are nearby to far away quest targets, etc.
+
+        */
+
+
         /// <summary>
         /// Serializes and saves the scene to a JSON JObject.
         /// </summary>
         public static JObject SaveScene()
         {
-            GameObject[] allObjects = Object.FindObjectsOfType<GameObject>(); //find all the persistent objects in the level
+            RPGObject[] allObjects = Object.FindObjectsOfType<RPGObject>(); //find all the persistent objects in the level
 
             JArray dataJson = new JArray();
+#warning TODO - How do we deal with circular dependencies in serialized objects?
+            // - Assign guids to everything that is referenced first.
+            // - Serialize everything later.
+
             foreach( var obj in allObjects )
             {
-                if( SerializationHelper.ShouldSerialize( obj ) )
+#warning TODO - move the player to be a normal object in the scene, since there will only be one scene.
+                if( SerializationHelper.ShouldSerialize( obj.gameObject ) )
                 {
                     try
                     {
-                        JObject data = SerializationHelper.GetDataGameObject( obj.gameObject );
+                        JObject data = SerializationHelper.GetDataRpgObject( obj );
                         dataJson.Add( data );
                     }
                     catch( Exception ex )
@@ -58,12 +79,12 @@ namespace RPGGame.Serialization
         {
             foreach( var objData in json["Objects"] )
             {
-                SerializationHelper.SpawnAndRegisterGameObject( (JObject)objData );
+                (RPGObject go, Guid guid) = SerializationHelper.SpawnRpgObject( (JObject)objData );
             }
 
             foreach( var objData in json["Objects"] )
             {
-                SerializationHelper.SetDataGameObject( RPGObject.Get( (Guid)objData["$id"] ).gameObject, (JObject)objData );
+                SerializationHelper.SetDataGameObject( RPGObject.Get( (Guid)objData["$id"] ), (JObject)objData );
             }
         }
     }

@@ -1,27 +1,30 @@
 using RPGGame.Assets;
 using RPGGame.Items;
 using RPGGame.Items.Inventories;
+using RPGGame.Serialization;
 using RPGGame.UI;
 using RPGGame.UI.Windows;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace RPGGame.Player
 {
     public static class PlayerManager
     {
-        private static Transform __player = null;
+        private static RPGObject __player = null;
         /// <summary>
         /// The player's root object, null if none exist.
         /// </summary>
-        public static Transform Player
+        public static RPGObject Player
         {
             get
             {
                 if( __player == null )
                 {
-                    __player = Object.FindObjectOfType<PlayerMovementController>()?.transform;
+                    __player = Object.FindObjectOfType<PlayerMovementController>()?.GetComponent<RPGObject>();
                 }
                 return __player;
             }
@@ -30,9 +33,9 @@ namespace RPGGame.Player
         /// <summary>
         /// Spawns the player object.
         /// </summary>
-        public static GameObject SpawnPlayer()
+        public static RPGObject SpawnPlayer()
         {
-            GameObject player = RPGObject.Instantiate( "Prefabs/player", "player" );
+            (RPGObject player, Guid guid) = RPGObject.Instantiate( "Prefabs/player", "player" );
 
             return player;
         }
@@ -42,13 +45,13 @@ namespace RPGGame.Player
         /// </summary>
         public static void SetUpPlayerHooks()
         {
-            CameraController.Instance.FollowTarget = Player;
+            CameraController.Instance.FollowTarget = Player.transform;
 
             PlayerMovementController pmc = Player.GetComponent<PlayerMovementController>();
             if( pmc != null )
             {
                 pmc.CameraPivot = CameraController.Instance.transform;
-                PlayerInventoryUI.CreateUIWindow( Player.GetComponent<PlayerInventory>(), Player );
+                PlayerInventoryUI.CreateUIWindow( Player.GetComponent<PlayerInventory>(), Player.transform );
             }
 
             HealthHandler health = Player.GetComponent<HealthHandler>();

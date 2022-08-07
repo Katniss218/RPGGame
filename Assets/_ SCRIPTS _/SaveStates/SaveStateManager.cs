@@ -25,6 +25,7 @@ namespace RPGGame.SaveStates
 
         public static void SwitchAreas( string newArea )
         {
+            throw new NotImplementedException( "Switching areas is not supported because of reference serialization not being finished with it in mind" );
             if( CurrentSave == null )
             {
                 throw new InvalidOperationException( "Current save state can't be null." );
@@ -34,7 +35,7 @@ namespace RPGGame.SaveStates
                 throw new InvalidOperationException( "Current area can't be null." );
             }
 
-            Save( CurrentSave, CurrentAreaID );
+            Save( CurrentSave, CurrentAreaID, PlayerManager.Player );
 
             Load( CurrentSave, newArea );
         }
@@ -45,12 +46,13 @@ namespace RPGGame.SaveStates
         /// <param name="save">The name of the save state (must exist).</param>
         public static void Load( string save )
         {
+            SaveGameUtils.StartSavingLoading();
             SaveData data = SaveGameUtils.LoadSaveData( save );
 
             Load( save, data.CurrentArea );
         }
 
-        private static void Load( string save, string area )
+        static void Load( string save, string area )
         {
             SceneSwitcher.ChangeScene( SceneSwitcher.GAME_SCENE_NAME, null, () =>
             {
@@ -58,7 +60,7 @@ namespace RPGGame.SaveStates
             } );
         }
 
-        private static void FinishLoading( string save, string area )
+        static void FinishLoading( string save, string area )
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -68,6 +70,8 @@ namespace RPGGame.SaveStates
 
             SaveGameUtils.LoadArea( save, area );
             SaveGameUtils.LoadPlayer( save );
+            //SaveGameUtils.LoadDialogues( save );
+            SaveGameUtils.EndSavingLoading();
 
             sw.Stop();
             Debug.LogWarning( $"Loaded '{save}:{area}' in {sw.ElapsedTicks / 10000f} ms" );
@@ -84,20 +88,23 @@ namespace RPGGame.SaveStates
                 throw new InvalidOperationException( "Area can't be null." );
             }
 
-            Save( save, CurrentAreaID );
+            Save( save, CurrentAreaID, PlayerManager.Player );
         }
 
-        private static void Save( string save, string area )
+        public static void Save( string save, string area, RPGObject player )
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            SaveGameUtils.StartSavingLoading();
             SaveGameUtils.SaveSaveData( save, new SaveData()
             {
-                CurrentArea = CurrentAreaID
+                CurrentArea = area
             } );
             SaveGameUtils.SaveArea( save, area );
-            SaveGameUtils.SavePlayer( save, PlayerManager.Player.gameObject );
+            SaveGameUtils.SavePlayer( save, player );
+            //SaveGameUtils.SaveDialogues( save );
+            SaveGameUtils.EndSavingLoading();
 
             sw.Stop();
             Debug.LogWarning( $"Saved '{save}:{area}' in {sw.ElapsedTicks / 10000f} ms" );

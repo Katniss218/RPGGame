@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RPGGame.Editor;
 using RPGGame.Player;
 using RPGGame.Serialization;
 using System;
@@ -58,10 +59,34 @@ namespace RPGGame.SaveStates
         {
             return Path.Combine( GetSaveDirectory( save ), "save.json" );
         }
-        
+
         static string GetSaveObjectsFile( string save )
         {
             return Path.Combine( GetSaveDirectory( save ), "objects.json" );
+        }
+
+        static string GetSaveDialoguesFile( string save )
+        {
+            return Path.Combine( GetSaveDirectory( save ), "dialogues.json" );
+        }
+
+        static string GetSaveQuestsFile( string save )
+        {
+            return Path.Combine( GetSaveDirectory( save ), "quests.json" );
+        }
+
+        //
+        //
+        //
+
+        public static void StartSavingLoading()
+        {
+
+        }
+
+        public static void EndSavingLoading()
+        {
+
         }
 
         /// <summary>
@@ -87,7 +112,35 @@ namespace RPGGame.SaveStates
             DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
             File.WriteAllText( path, str );
         }
+        /*
+        /// <summary>
+        /// Loads the empty scene and deserializes a particular save and area into it.
+        /// </summary>
+        public static void LoadDialogues( string save )
+        {
+            string path = GetSaveDialoguesFile( save );
 
+            string str = File.ReadAllText( path );
+            ( JsonConvert.DeserializeObject<JObject>( str ) );
+        }
+
+        /// <summary>
+        /// Saves the current scene as a particular save and area.
+        /// </summary>
+        public static void SaveDialogues( string save )
+        {
+            string path = GetSaveDialoguesFile( save );
+
+            DialogueWrapper w = GameObject.FindObjectOfType<DialogueWrapper>();
+
+
+
+            string str = JsonConvert.SerializeObject( , Formatting.Indented );
+
+            DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
+            File.WriteAllText( path, str );
+        }
+        */
         /// <summary>
         /// Spawns the player from a particular save into the current scene.
         /// </summary>
@@ -99,7 +152,7 @@ namespace RPGGame.SaveStates
 
             JObject json = JsonConvert.DeserializeObject<JObject>( str );
 
-            GameObject player = PlayerManager.SpawnPlayer();
+            RPGObject player = PlayerManager.SpawnPlayer();
             PlayerManager.SetUpPlayerHooks();
             SerializationHelper.SetDataGameObject( player, json );
         }
@@ -109,33 +162,21 @@ namespace RPGGame.SaveStates
         /// </summary>
         public static void SavePlayer( string save )
         {
-            SavePlayer( save, PlayerManager.Player.gameObject );
+            SavePlayer( save, PlayerManager.Player );
         }
 
         /// <summary>
         /// Saves the specified player object into a particular save.
         /// </summary>
         /// <param name="player">The specific player object to serialize.</param>
-        public static void SavePlayer( string save, GameObject player )
+        public static void SavePlayer( string save, RPGObject player )
         {
-            //SerializationManager.ClearRegistry();
-            //try
-           // {
-                string path = GetSaveObjectsFile( save );
+            string path = GetSaveObjectsFile( save );
 
-                string str = JsonConvert.SerializeObject( SerializationHelper.GetDataGameObject( player ), Formatting.Indented );
+            string str = JsonConvert.SerializeObject( SerializationHelper.GetDataRpgObject( player ), Formatting.Indented );
 
-                DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
-                File.WriteAllText( path, str );
-           /* }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                SerializationManager.ClearRegistry();
-            }*/
+            DirectoryEx.EnsureExists( Path.GetDirectoryName( path ) );
+            File.WriteAllText( path, str );
         }
 
         public static SaveData LoadSaveData( string save )
