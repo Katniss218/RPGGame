@@ -140,6 +140,8 @@ namespace RPGGame.SaveStates
 
             DialogueWrapper w = Object.FindObjectOfType<DialogueWrapper>();
 
+            string s = w.onTest..GetPersistentMethodName( 0 );
+
             List<JToken> json = new List<JToken>();
             foreach( Dialogue d in w.Dialogues )
             {

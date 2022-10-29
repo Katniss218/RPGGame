@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RPGGame.Progression.Dialogues
 {
-    public class DialogueSpeaker : RPGObjectComponent
+    public abstract class DialogueSpeaker : RPGObjectComponent
     {
         [field: SerializeField]
         public string DisplayName { get; set; }
@@ -21,5 +21,7 @@ namespace RPGGame.Progression.Dialogues
         {
             DialogueManager.StopDialogue( this, DialogueManager.GetDialogues( this ).First() );
         }
+
+        public abstract void ProgressDialogue( DialogueUI dui, List<DialogueOption> currentOptions );
     }
 }

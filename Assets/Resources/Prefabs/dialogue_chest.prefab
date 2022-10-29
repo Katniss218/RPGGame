@@ -114,10 +114,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2787470385590796373}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 822ca69f628b9a74c9b17e5117d53f75, type: 3}
+  m_Script: {fileID: 11500000, guid: 1fad53be3dc861a47b5e7180f132cc7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <DisplayName>k__BackingField: Chest
+  <DisplayName>k__BackingField: Dialogue Chest
 --- !u!1001 &2787470386406941544
 PrefabInstance:
   m_ObjectHideFlags: 0

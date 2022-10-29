@@ -76,7 +76,7 @@ namespace RPGGame.Progression.Dialogues
             }
             else
             {
-                ProgressDialogue( speaker.DisplayName, dialogue.StartingOption );
+                ProgressDialogue( speaker, dialogue.StartingOption );
             }
         }
 
@@ -91,19 +91,15 @@ namespace RPGGame.Progression.Dialogues
             currentOption = null;
         }
 
-#warning TODO - Better to split this into AIDialogueSpeaker and PlayerDialogueSpeaker derived from DialogueSpeaker.
-        public static void ProgressDialogue( string displayName, DialogueOption option )
+        public static void ProgressDialogue( DialogueSpeaker speaker, DialogueOption option )
         {
-#warning TODO - the dialogue speaker needs to progress too.
             if( currentOption != null && !currentOption.FollowingOptions.Contains( option ) )
             {
                 throw new Exception( "The option must be one of the ContraOptions of the current dialogue option" );
             }
 
             currentOption = option;
-            dui.AddSpoken( displayName, option );
-            dui.ClearSelect();
-            dui.AddSelect( option.FollowingOptions );
+            speaker.ProgressDialogue( dui, currentOption.FollowingOptions );
         }
     }
 }

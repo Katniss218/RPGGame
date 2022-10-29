@@ -21,7 +21,7 @@ namespace RPGGame.UI
 
         public void OnClickCallback()
         {
-            DialogueManager.ProgressDialogue( "button", Option );
+            DialogueManager.ProgressDialogue( Option.Speaker, Option );
         }
     }
 }

@@ -49,20 +49,20 @@ namespace RPGGame.UI
             }
         }
 
-        public void AddSpoken( string speakerName, DialogueOption option )
+        public void AddSpoken( DialogueOption option )
         {
-            (GameObject header, GameObject content) = SpawnSpoken( speakerName, option );
+            (GameObject header, GameObject content) = SpawnSpoken( option );
             spokenList.Add( header );
             spokenList.Add( content );
         }
 
-        private (GameObject header, GameObject content) SpawnSpoken( string header, DialogueOption option )
+        private (GameObject header, GameObject content) SpawnSpoken( DialogueOption option )
         {
             GameObject headerGameObject = Instantiate( dialogueContentHeaderPrefab, spokenTextContainer );
 
             TMPro.TextMeshProUGUI headerText = headerGameObject.GetComponent<TMPro.TextMeshProUGUI>();
 
-            headerText.text = header;
+            headerText.text = option.Speaker.DisplayName;
 
             GameObject contentGameObject = Instantiate( dialogueContentPrefab, spokenTextContainer );
 

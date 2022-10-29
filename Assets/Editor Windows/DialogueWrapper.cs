@@ -1,7 +1,9 @@
 using RPGGame.Progression.Dialogues;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPGGame.Editor
 {
@@ -14,5 +16,19 @@ namespace RPGGame.Editor
 #warning TODO - all dialogues have empty guid because Unity can't serialize it.
         [field: SerializeField]
         public List<Dialogue> Dialogues { get; set; } = new List<Dialogue>() { new Dialogue() };
+
+        public class EventInfo
+        {
+            public string Value;
+        }
+
+        public UnityEvent<EventInfo> onTest;
+
+        public event Action<EventInfo> onTest2;
+
+        public void Callback( EventInfo e )
+        {
+            Debug.Log( "test" );
+        }
     }
 }
