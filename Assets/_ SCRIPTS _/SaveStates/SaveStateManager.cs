@@ -70,7 +70,7 @@ namespace RPGGame.SaveStates
 
             SaveGameUtils.LoadArea( save, area );
             SaveGameUtils.LoadPlayer( save );
-            SaveGameUtils.LoadDialogues( save );
+            //SaveGameUtils.LoadDialogues( save );
             SaveGameUtils.EndSavingLoading();
 
             sw.Stop();
@@ -103,7 +103,7 @@ namespace RPGGame.SaveStates
             } );
             SaveGameUtils.SaveArea( save, area );
             SaveGameUtils.SavePlayer( save, player );
-            SaveGameUtils.SaveDialogues( save );
+            //SaveGameUtils.SaveDialogues( save );
             SaveGameUtils.EndSavingLoading();
 
             sw.Stop();

@@ -290,9 +290,8 @@ GameObject:
   - component: {fileID: 4539746002593004170}
   - component: {fileID: 8563486464037737614}
   - component: {fileID: 8563486464037737612}
-  - component: {fileID: 478486922218769287}
   m_Layer: 0
-  m_Name: player
+  m_Name: Player
   m_TagString: NonSerialized
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -775,16 +774,3 @@ MonoBehaviour:
   PickupRange: 2
   PickupDelay: 0.1
   MaxItemStacksPerPickup: 1
---- !u!114 &478486922218769287
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8563486464037737600}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 605c7b581d1f12542baabe3fa7660405, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <DisplayName>k__BackingField: Player
