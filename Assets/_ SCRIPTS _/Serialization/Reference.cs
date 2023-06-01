@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace RPGGame.Serialization
 {
+    [Serializable]
     /// <summary>
     /// A helper static class for serializing references to things.
     /// </summary>
@@ -20,7 +21,7 @@ namespace RPGGame.Serialization
 
         "ObjectRefField": 
         {
-            "$ref": "$id;<guid>"
+            "$ref": "$obj;<guid>"
         }
 
         */
@@ -33,9 +34,9 @@ namespace RPGGame.Serialization
         const char REF = '$';
         const char REF_SEPARATOR = ';';
 
-        const string ID = "id";
+        const string OBJ = "obj";
         const string ASSET = "asset";
-
+        
         //
         //      OBJECT REFERENCES
         //
@@ -43,7 +44,7 @@ namespace RPGGame.Serialization
         /// <summary>
         /// Returns a JSON reference to a given object.
         /// </summary>
-        public static JToken ObjectRef( RPGObject obj )
+        public static JToken ObjectRef( this RPGObject obj )
         {
             return new JObject()
             {
@@ -56,17 +57,19 @@ namespace RPGGame.Serialization
         /// </summary>
         public static RPGObject ObjectRef( JToken jsonRef )
         {
+#warning TODO - placeholders in references, like "$ref": "$id;%player%"
+
             return ReferenceToObject( (string)jsonRef[KEY] );
         }
 
         static string ObjectToReference( RPGObject obj )
         {
-            return $"{REF}{ASSET}{REF_SEPARATOR}{obj.guid}";
+            return $"{REF}{OBJ}{REF_SEPARATOR}{obj.guid}";
         }
 
         static RPGObject ReferenceToObject( string refStr )
         {
-            string start = $"{REF}{ID}{REF_SEPARATOR}";
+            string start = $"{REF}{OBJ}{REF_SEPARATOR}";
 
             if( !refStr.StartsWith( start ) )
             {

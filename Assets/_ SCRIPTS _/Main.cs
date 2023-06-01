@@ -103,20 +103,19 @@ namespace RPGGame
             // This helps de-clump the items if multiple are spawned by the same dropping entity.
             Vector3 randomOffset = new Vector3( Random.Range( -JITTER_RANGE, JITTER_RANGE ), HEIGHT_OFFSET, Random.Range( -JITTER_RANGE, JITTER_RANGE ) );
 
-            GameObject go = RPGObject.Instantiate( "Prefabs/pickup", "pickup", default, null, position + randomOffset, rotation );
+            (RPGObject obj, Guid _) = RPGObject.Instantiate( "Prefabs/pickup", "pickup", default, position + randomOffset, rotation );
 
-            PickupInventory inventory = go.GetComponent<PickupInventory>();
+            PickupInventory inventory = obj.GetComponent<PickupInventory>();
             inventory.SetSize( 1 );
             inventory.AddItem( new ItemStack( item, amount ), 0 );
 
             if( applyForce )
             {
-                Rigidbody rigidbody = go.GetComponent<Rigidbody>();
+                Rigidbody rigidbody = obj.GetComponent<Rigidbody>();
 
                 Vector3 dir = ((rotation * Vector3.forward) + new Vector3( 0.0f, 0.4f, 0.0f )).normalized;
                 rigidbody.velocity = dir * 60f;
             }
         }
-
     }
 }

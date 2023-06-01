@@ -16,17 +16,15 @@ namespace RPGGame.Serialization
     /// </summary>
     public static class SerializationHelper
     {
-        // Should-serialize stuff
-
         /// <summary>
         /// This tag indicates that the object should not be serialized.
         /// </summary>
         public static string TAG_NO_SERIALIZATION = "NonSerialized";
 
         /// <summary>
-        /// Checks whether a given object should be serialized or not.
+        /// Checks whether a given object should be auto-serialized or not.
         /// </summary>
-        public static bool ShouldSerialize( GameObject obj )
+        public static bool ShouldAutoSerialize( GameObject obj )
         {
             return obj.transform.parent == null
                 && obj.tag != TAG_NO_SERIALIZATION;
@@ -36,7 +34,7 @@ namespace RPGGame.Serialization
         //      Unity object serialization stuff.
         //
 
-        public static GameObject SpawnAndRegisterGameObject( JObject data )
+        public static (RPGObject, Guid) SpawnRpgObject( JObject data )
         {
             string prefabPath = (string)data["Prefab"];
             if( prefabPath == null )
@@ -44,33 +42,33 @@ namespace RPGGame.Serialization
                 throw new Exception( "Prefab Path was null, can't spawn" );
             }
 
-            GameObject gameObject = RPGObject.Instantiate( prefabPath, "<not_assigned_yet>", (Guid)data["$id"] );
+            (RPGObject, Guid) pair = RPGObject.Instantiate( prefabPath, "<not_assigned_yet>", (Guid)data["$id"] );
 
-            return gameObject;
+            return pair;
         }
 
         /// <summary>
         /// Returns the JSON containing the saved data of this particular object.
         /// </summary>
-        public static JObject GetDataGameObject( GameObject obj )
+        public static JObject GetDataRpgObject( RPGObject obj )
         {
-            RPGObject rpgObject = obj.GetComponent<RPGObject>();
-
-            Guid objectId;
+            Guid objGuid;
             string prefabPath;
 
-            if( rpgObject == null )
+            RPGObject rpgObject = obj.GetComponent<RPGObject>();
+
+            if( !Application.isPlaying ) // Serialize within the editor (save scene button).
             {
 #if UNITY_EDITOR
-                prefabPath = RPGObject.GetLoadablePrefabPath( obj );
+                prefabPath = RPGObject.GetLoadablePrefabPath( obj.gameObject );
+                rpgObject.guid = Guid.NewGuid();
 #else
                 throw new Exception( "Can't serialize a non-RPGObject outside of the editor." );
 #endif
-                objectId = Guid.NewGuid();
             }
-            else
+            else // Serialize within the game.
             {
-                objectId = RPGObject.Get( rpgObject );
+                objGuid = RPGObject.Get( rpgObject );
                 prefabPath = rpgObject.PrefabPath;
             }
 
@@ -78,11 +76,9 @@ namespace RPGGame.Serialization
 
             JToken componentData = GetComponentData( obj );
 
-           // SerializationManager.RegisterObject( objectId, obj );
-
             JObject full = new JObject()
             {
-                { "$id", objectId },
+                { "$id", rpgObject.guid },
                 { "Prefab", prefabPath },
                 { "Name", obj.name },
                 { "Transform", transformData },
@@ -96,7 +92,7 @@ namespace RPGGame.Serialization
         /// Applies the saved data to this object.
         /// </summary>
         /// <param name="data">The data. It's supposed to have come from the same object, saved earlier.</param>
-        public static void SetDataGameObject( GameObject obj, JObject data )
+        public static void SetDataGameObject( RPGObject obj, JObject data )
         {
             obj.name = (string)data["Name"];
 
@@ -111,7 +107,7 @@ namespace RPGGame.Serialization
         /// <summary>
         /// Gets the data for every <see cref="ISerializedComponent"/> component on this object.
         /// </summary>
-        public static JToken GetComponentData( GameObject obj )
+        public static JToken GetComponentData( RPGObject obj )
         {
             ISerializedComponent[] serializedComponents = obj.GetComponents<ISerializedComponent>();
 
@@ -146,7 +142,7 @@ namespace RPGGame.Serialization
         /// <summary>
         /// Sets the data for every <see cref="ISerializedComponent"/> component on this object.
         /// </summary>
-        public static void SetComponentData( GameObject obj, JToken data )
+        public static void SetComponentData( RPGObject obj, JToken data )
         {
             ISerializedComponent[] serializedComponents = obj.GetComponents<ISerializedComponent>();
 
@@ -172,6 +168,60 @@ namespace RPGGame.Serialization
                     i++;
                 }
             }
+        }
+
+        //-------------------------------------
+        //-------------------------------------
+        //-------------------------------------
+        //-------------------------------------
+        //-------------------------------------
+
+        /*
+
+        {
+            "$type": "<AssemblyQualifiedName>",
+
+            // ... Other data.
+        }
+
+        */
+
+        /// <summary>
+        /// Deserializes an object while preserving the original derived type it was serializes with.
+        /// </summary>
+        public static T DeserializeTyped<T>( JObject json ) where T : ISerializedComponent
+        {
+            string typeS = (string)json["$type"];
+
+            Type type = Type.GetType( typeS ); // type must be serialized as 'Type.AssemblyQualifiedName'.
+
+            if( !typeof( T ).IsAssignableFrom( type ) )
+            {
+                throw new Exception( $"The serialized type is not a '{typeof( T ).AssemblyQualifiedName}' or a class derived from it." );
+            }
+
+#warning TODO - this is slow, there are other (several tens of times faster methods) methods that can replace it.
+            T o = (T)Activator.CreateInstance( type );
+
+            o.SetData( json );
+
+            return o;
+        }
+
+        /// <summary>
+        /// Serializes the object while preserving its derived type.
+        /// </summary>
+        public static JObject SerializeTyped<T>( T obj ) where T : ISerializedComponent
+        {
+            Type type = obj.GetType();
+
+            string typeS = type.AssemblyQualifiedName;
+
+            JObject json = obj.GetData();
+
+            json.Add( "$type", typeS );
+
+            return json;
         }
     }
 }

@@ -32,13 +32,13 @@ namespace RPGGame.Interactions
                         return;
                     }
 
-                    if( inter.IsInteracting( PlayerManager.Player ) )
+                    if( inter.IsInteracting( PlayerManager.Player.transform ) )
                     {
-                        inter.StopInteracting( PlayerManager.Player );
+                        inter.StopInteracting( PlayerManager.Player.transform );
                     }
                     else
                     {
-                        inter.StartInteracting( PlayerManager.Player );
+                        inter.StartInteracting( PlayerManager.Player.transform );
                     }
                 }
             }

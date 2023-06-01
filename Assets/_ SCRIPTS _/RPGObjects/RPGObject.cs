@@ -14,28 +14,27 @@ namespace RPGGame
     /// RPGObjects are basically the non-static serialized scene objects.
     /// </summary>
     /// <remarks>
-    /// You're not supposed to have these in scene.
+    /// RPGObjects are not supposed to be persistent, they just store the data during the play.
     /// </remarks>
     [DisallowMultipleComponent]
-    [ExecuteAlways]
     public sealed class RPGObject : MonoBehaviour
     {
-        // Store each object's guid at runtime.
-        // Also store a dictionary for fast and easy lookups.
-
-        private static Dictionary<Guid, RPGObject> allRpgObjects = new Dictionary<Guid, RPGObject>();
+        /// <summary>
+        /// Stores all loaded RPGObjects at runtime.
+        /// </summary>
+        static Dictionary<Guid, RPGObject> allRpgObjects = new Dictionary<Guid, RPGObject>();
 
         /// <summary>
-        /// The 'Resources/Prefabs/' path of this particular RPGObject.
+        /// The 'Resources/Prefabs/' path of this particular RPGObject. 'Set' only for editor serialization.
         /// </summary>
         [field: NonSerialized]
-        public string PrefabPath { get; private set; } = null;
+        public string PrefabPath { get; internal set; } = null;
 
         /// <summary>
-        /// The globally unique identifier of this particular RPGObject.
+        /// The globally unique identifier of this particular RPGObject. 'Set' only for editor serialization.
         /// </summary>
         [field: NonSerialized]
-        public Guid guid { get; private set; } = default;
+        public Guid guid { get; internal set; } = default;
 
         /// <summary>
         /// Returns the RPGObject corresponding to the given identifier, O(1).
@@ -61,31 +60,29 @@ namespace RPGGame
             return obj.guid;
         }
 
-#if UNITY_EDITOR
-        void Awake()
+        static void RegisterNew( RPGObject obj )
         {
-            if( !Application.isPlaying )
+            if( obj.guid == Guid.Empty )
             {
-                throw new Exception( $"Detected an RPGObject in scene. - '{this.gameObject.name}'. RPGObjects are supposed to exist only at runtime." );
+                obj.guid = Guid.NewGuid();
             }
+
+            allRpgObjects[obj.guid] = obj;
         }
-#endif
 
         void Start()
-        {/*
-#if UNITY_EDITOR
-            if( !Application.isPlaying )
-            {
-                return;
-            }
-#endif*/
+        {
             if( PrefabPath == null )
             {
-                throw new InvalidOperationException( $"The PrefabPath for object '{this.gameObject.name}' wasn't set. It must've been spawned incorrectly. Use 'RPGObject.Instantiate' methods." );
+                throw new InvalidOperationException( $"The RPGObject '{this.gameObject.name}' doesn't have its prefab path assigned." );
             }
             if( guid == default )
             {
-                throw new InvalidOperationException( $"The Guid for object '{this.gameObject.name}' wasn't set. It must've been spawned incorrectly. Use 'RPGObject.Instantiate' methods." );
+                throw new InvalidOperationException( $"The RPGObject '{this.gameObject.name}' doesn't have its guid set." );
+            }
+            if( this.transform.parent != null )
+            {
+                throw new InvalidOperationException( $"The RPGOoject '{this.gameObject.name}' isn't attached to the root object." );
             }
         }
 
@@ -118,16 +115,11 @@ namespace RPGGame
         /// <summary>
         /// Use this to create an RPGObject.
         /// </summary>
-        public static GameObject Instantiate( string prefabPath, string name, Guid guid = default, Transform parent = null, Vector3? localPos = null, Quaternion? localRot = null )
+        public static (RPGObject obj, Guid guid) Instantiate( string prefabPath, string name, Guid guid = default, Vector3? localPos = null, Quaternion? localRot = null )
         {
-            if( guid == default )
-            {
-                guid = Guid.NewGuid();
-            }
-
             GameObject prefab = AssetManager.Prefabs.Get( prefabPath );
 
-            GameObject clone = Instantiate( prefab, parent );
+            GameObject clone = Instantiate( prefab, null );
             clone.name = name;
 
             if( localPos != null )
@@ -144,15 +136,15 @@ namespace RPGGame
 
             if( obj == null )
             {
-                obj = clone.AddComponent<RPGObject>();
+                throw new Exception( $"Tried to spawn a prefab '{prefabPath}' that is not an RPGObject." );
             }
 
             obj.PrefabPath = prefabPath;
             obj.guid = guid;
 
-            allRpgObjects.Add( guid, obj );
+            RegisterNew( obj );
 
-            return clone;
+            return (obj, obj.guid);
         }
 
         /// <summary>
