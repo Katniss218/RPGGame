@@ -1,0 +1,18 @@
+{
+    "name": "RPGGame",
+    "rootNamespace": "",
+    "references": [
+        "GUID:802853ce0d5fd334f9dad09466580f48",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:57316bc89b1a8514289cfcfb6d0a5f14"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

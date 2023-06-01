@@ -1,0 +1,17 @@
+{
+    "name": "QueuedInputSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:802853ce0d5fd334f9dad09466580f48",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
