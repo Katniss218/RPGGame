@@ -1,10 +1,9 @@
-using RPGGame.Assets;
 using RPGGame.Items;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 using UnityEngine.UI;
 
 namespace RPGGame
@@ -20,9 +19,9 @@ namespace RPGGame
 
         void Start()
         {
-            IEnumerable<(string assetID, Item obj)> items = AssetRegistry<Item>.GetAll();
+            IEnumerable<(string assetID, Item obj)> items = AssetRegistry.GetAll<Item>();
 
-            foreach( var (itemID, item) in items )
+            foreach( var (assetID, item) in items )
             {
                 // Doing this in awake seems to produce weird highlight artifacts and things (ambient light-related??)
                 // So we do it in Start.
@@ -39,7 +38,7 @@ namespace RPGGame
                     texResolution = 32;
                 }
                 
-                ScreenMesh( itemID, texResolution, item.model, modelRot, Quaternion.Euler( 10, -30, 0 ) );
+                ScreenMesh( assetID, texResolution, item.model, modelRot, Quaternion.Euler( 10, -30, 0 ) );
             }
         }
 

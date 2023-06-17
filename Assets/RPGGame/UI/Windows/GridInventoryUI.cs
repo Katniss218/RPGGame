@@ -3,6 +3,7 @@ using RPGGame.Items.Inventories;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.UI.Windows
 {
@@ -64,7 +65,7 @@ namespace RPGGame.UI.Windows
         {
             // some mapping with other slots here.
 
-            float texWorldSize = RenderedIconManager.GetTextureWorldSize( item.ID );
+            float texWorldSize = RenderedIconManager.GetTextureWorldSize( AssetRegistry.GetAssetID( item ) );
 
             Vector2 newSize = new Vector2(
                texWorldSize * SLOT_ITEM_SIZE,

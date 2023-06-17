@@ -1,11 +1,10 @@
 using Newtonsoft.Json.Linq;
-using RPGGame.Assets;
 using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.Items
 {
@@ -54,7 +53,7 @@ namespace RPGGame.Items
 
         public static explicit operator Item( JToken json )
         {
-            return AssetRegistry<Item>.GetAsset( Reference.AssetRef(json) );
+            return AssetRegistry.Get<Item>( Reference.AssetRef(json) );
         }
     }
 }

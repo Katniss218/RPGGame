@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.UI.Windows
 {
@@ -73,7 +73,7 @@ namespace RPGGame.UI.Windows
         /// </summary>
         protected void SpawnSlot( int index )
         {
-            GameObject go = Instantiate( AssetRegistry<GameObject>.GetAsset( "Prefabs/UI/inventory_slot" ), slotContainer );
+            GameObject go = Instantiate( AssetRegistry.Get<GameObject>( "builtin::Resources/Prefabs/UI/inventory_slot" ), slotContainer );
             RectTransform rt = (RectTransform)go.transform;
 
             InventorySlotUI slotUI = go.GetComponent<InventorySlotUI>();
@@ -90,11 +90,11 @@ namespace RPGGame.UI.Windows
         /// </summary>
         protected void SpawnItem( Item item, int amount, int slotIndex )
         {
-            GameObject go = Instantiate( AssetRegistry<GameObject>.GetAsset( "Prefabs/UI/inventory_item" ), itemContainer );
+            GameObject go = Instantiate( AssetRegistry.Get<GameObject>( "builtin::Resources/Prefabs/UI/inventory_item" ), itemContainer );
             InventoryItemUI itemUI = go.GetComponent<InventoryItemUI>();
             itemUI.SetAmount( amount );
 
-            Texture2D tex = RenderedIconManager.GetTexture( item.ID );
+            Texture2D tex = RenderedIconManager.GetTexture( AssetRegistry.GetAssetID( item ) );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
 
             itemUI.SetIcon( sprite );
@@ -114,7 +114,7 @@ namespace RPGGame.UI.Windows
         {
             InventoryItemUI itemUI = itemUIs[slotIndex];
 
-            Texture2D tex = RenderedIconManager.GetTexture( item.ID );
+            Texture2D tex = RenderedIconManager.GetTexture( AssetRegistry.GetAssetID( item ) );
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
 
             itemUI.SetIcon( sprite );

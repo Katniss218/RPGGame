@@ -1,11 +1,10 @@
 using Newtonsoft.Json.Linq;
-using RPGGame.Assets;
 using RPGGame.Player;
 using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.Mobs
 {
@@ -41,7 +40,7 @@ namespace RPGGame.Mobs
         {
             HealthHandler healthHandler = this.GetComponent<HealthHandler>();
 
-            GameObject hud = Instantiate( AssetRegistry<GameObject>.GetAsset( "Prefabs/UI/MobHud" ), Main.MobHudCanvas.transform );
+            GameObject hud = Instantiate( AssetRegistry.Get<GameObject>( "builtin::Resources/Prefabs/UI/mobHud" ), Main.MobHudCanvas.transform );
             FollowObjectUI follower = hud.GetComponent<FollowObjectUI>();
             follower.TrackedObject = this.transform;
             follower.WorldOffset = new Vector3( 0, 2, 0 ); // in the future, change depending on the size of the monster.

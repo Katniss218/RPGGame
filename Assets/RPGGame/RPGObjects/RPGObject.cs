@@ -1,12 +1,10 @@
-using Newtonsoft.Json.Linq;
-using RPGGame.Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 using Object = UnityEngine.Object;
 
 namespace RPGGame
@@ -118,7 +116,7 @@ namespace RPGGame
         /// </summary>
         public static (RPGObject obj, Guid guid) Instantiate( string prefabPath, string name, Guid guid = default, Vector3? localPos = null, Quaternion? localRot = null )
         {
-            GameObject prefab = AssetRegistry<GameObject>.GetAsset( prefabPath );
+            GameObject prefab = AssetRegistry.Get<GameObject>( prefabPath );
 
             GameObject clone = Instantiate( prefab, null );
             clone.name = name;

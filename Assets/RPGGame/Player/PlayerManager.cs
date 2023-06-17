@@ -1,4 +1,3 @@
-using RPGGame.Assets;
 using RPGGame.Items;
 using RPGGame.Items.Inventories;
 using RPGGame.Serialization;
@@ -35,7 +34,7 @@ namespace RPGGame.Player
         /// </summary>
         public static RPGObject SpawnPlayer()
         {
-            (RPGObject player, Guid guid) = RPGObject.Instantiate( "Prefabs/player", "player" );
+            (RPGObject player, Guid guid) = RPGObject.Instantiate( "builtin::Resources/Prefabs/Player", "player" );
 
             return player;
         }

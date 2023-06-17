@@ -1,8 +1,7 @@
-using RPGGame.Assets;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.Items.Inventories
 {
@@ -28,7 +27,7 @@ namespace RPGGame.Items.Inventories
             List<(ItemStack, int orig)> items = e.Self.GetItemSlots().ToList();
             if( items.Count > 1 )
             {
-                model = Instantiate( AssetRegistry<GameObject>.GetAsset( "Prefabs/pickup_box" ), this.transform );
+                model = Instantiate( AssetRegistry.Get<GameObject>( "builtin::Resources/Prefabs/pickup_box" ), this.transform );
             }
             else
             {

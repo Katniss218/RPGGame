@@ -1,9 +1,8 @@
-using RPGGame.Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -169,13 +168,13 @@ namespace RPGGame.UI.Windows
             rt.gameObject.AddComponent<CanvasRenderer>();
             Image image = rt.gameObject.AddComponent<Image>();
             image.type = Image.Type.Sliced;
-            image.sprite = AssetRegistry<Sprite>.GetAsset( "Sprites/ui_window" );
+            image.sprite = AssetRegistry.Get<Sprite>( "builtin::Resources/Sprites/ui_window" );
 
-            GameObject dragStrip = Instantiate( AssetRegistry<GameObject>.GetAsset( "Prefabs/UI/drag_strip" ), rt );
+            GameObject dragStrip = Instantiate( AssetRegistry.Get<GameObject>( "builtin::Resources/Prefabs/UI/drag_strip" ), rt );
             dragStrip.GetComponent<DraggableUI>().Window = rt;
             dragStrip.GetComponent<FocusableUI>().Window = rt;
 
-            GameObject closeButtonGO = Instantiate( AssetRegistry<GameObject>.GetAsset( "Prefabs/UI/x_button" ), rt );
+            GameObject closeButtonGO = Instantiate( AssetRegistry.Get<GameObject>( "builtin::Resources/Prefabs/UI/x_button" ), rt );
 
             Button closeButton = closeButtonGO.GetComponent<Button>();
 

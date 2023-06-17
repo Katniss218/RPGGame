@@ -1,11 +1,10 @@
 using Newtonsoft.Json.Linq;
-using RPGGame.Assets;
 using RPGGame.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.Items.LootTables
 {
@@ -62,7 +61,7 @@ namespace RPGGame.Items.LootTables
 
         public static explicit operator LootTable( JToken json )
         {
-            return AssetRegistry<LootTable>.GetAsset( Reference.AssetRef( json ) );
+            return AssetRegistry.Get<LootTable>( Reference.AssetRef( json ) );
         }
     }
 }

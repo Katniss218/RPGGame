@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.UI
 {
@@ -77,13 +78,13 @@ namespace RPGGame.UI
 
         private void FullSlotToEmptyHand( ItemStack slotItem, int slotIndex )
         {
-            Texture2D tex = RenderedIconManager.GetTexture( slotItem.Item.ID );
+            Texture2D tex = RenderedIconManager.GetTexture( AssetRegistry.GetAssetID( slotItem.Item ) );
 
             Sprite sprite = Sprite.Create( tex, new Rect( 0, 0, tex.width, tex.height ), Vector2.zero );
             ItemDragAndDrop.Instance.SetIcon( sprite );
             ItemDragAndDrop.Instance.SetAmount( slotItem.Amount );
 
-            float texWorldSize = RenderedIconManager.GetTextureWorldSize( slotItem.Item.ID );
+            float texWorldSize = RenderedIconManager.GetTextureWorldSize( AssetRegistry.GetAssetID( slotItem.Item ) );
             ItemDragAndDrop.Instance.SetIconSize( new Vector2( texWorldSize * InventoryUI.SLOT_ITEM_SIZE, texWorldSize * InventoryUI.SLOT_ITEM_SIZE ) );
 
             ItemDragAndDrop.cursorItem = slotItem.Copy();

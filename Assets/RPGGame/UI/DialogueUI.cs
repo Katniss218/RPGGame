@@ -1,9 +1,8 @@
-using RPGGame.Assets;
 using RPGGame.Progression.Dialogues;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.UI
 {
@@ -87,7 +86,7 @@ namespace RPGGame.UI
 
         public static DialogueUI Create()
         {
-            GameObject dialogueWindow = Instantiate( AssetRegistry<GameObject>.GetAsset( "Prefabs/UI/dialogue_window" ), Main.UIWindowCanvas.transform );
+            GameObject dialogueWindow = Instantiate( AssetRegistry.Get<GameObject>( "Prefabs/UI/dialogue_window" ), Main.UIWindowCanvas.transform );
 
             return dialogueWindow.GetComponent<DialogueUI>();
         }

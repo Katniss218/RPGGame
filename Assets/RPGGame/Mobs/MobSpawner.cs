@@ -1,4 +1,3 @@
-using RPGGame.Assets;
 using RPGGame.UI;
 using System.Collections;
 using System.Collections.Generic;

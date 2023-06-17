@@ -1,9 +1,8 @@
 using Newtonsoft.Json.Linq;
-using RPGGame.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AssetManagement;
+using UnityPlus.AssetManagement;
 
 namespace RPGGame.Items.Inventories
 {
@@ -52,7 +51,7 @@ namespace RPGGame.Items.Inventories
 
         void Start()
         {
-            AddItem( new ItemStack( AssetRegistry<Item>.GetAsset( "item.spear" ), 1 ), SLOT_HAND, IInventory.ChangeReason.PERSISTENCE );
+            AddItem( new ItemStack( AssetRegistry.Get<Item>( "builtin::Resources/_ OBJECTS _/Items/spear" ), 1 ), SLOT_HAND, IInventory.ChangeReason.PERSISTENCE );
         }
 
         public static int MapSlotIndexToEquipIndex( int slotIndex )
