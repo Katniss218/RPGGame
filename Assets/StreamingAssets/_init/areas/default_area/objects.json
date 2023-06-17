@@ -1,0 +1,940 @@
+{
+  "Objects": [
+    {
+      "$id": "02334787-4d9a-47dd-bfb3-5a313d8a04b4",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (4)",
+      "Transform": {
+        "Position": [
+          -3.0,
+          0.0,
+          2.08
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -3.0,
+              0.0,
+              2.08
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "c50a68e5-1d01-4733-bdf5-26666db19266",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (11)",
+      "Transform": {
+        "Position": [
+          -21.06,
+          0.0,
+          10.51
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -21.06,
+              0.0,
+              10.51
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "7eb41e32-d5be-429c-9474-ba7befcc1f66",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin_warrior",
+      "Name": "mob.goblin_warrior (1)",
+      "Transform": {
+        "Position": [
+          -0.7,
+          0.0,
+          9.51
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -0.7,
+              0.0,
+              9.51
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 25.0,
+            "MaxHealth": 25.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/sword"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin_warrior.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "7ea43649-a8cb-4fa6-9814-ff4bc041a952",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (3)",
+      "Transform": {
+        "Position": [
+          -1.07,
+          0.0,
+          5.7
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -1.07,
+              0.0,
+              5.7
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "d705ed9c-73f2-4483-beb3-fc8c2c9bfec2",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin_warrior",
+      "Name": "mob.goblin_warrior (2)",
+      "Transform": {
+        "Position": [
+          -8.94,
+          0.0,
+          9.7
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -8.94,
+              0.0,
+              9.7
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 25.0,
+            "MaxHealth": 25.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/sword"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin_warrior.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "1f0fe556-2ea3-4181-bc64-1c2fc9f2a6d5",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (2)",
+      "Transform": {
+        "Position": [
+          -6.38,
+          0.0,
+          5.77
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -6.38,
+              0.0,
+              5.77
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "185c00ea-1af3-48c7-95e4-8cf18a881055",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (8)",
+      "Transform": {
+        "Position": [
+          25.51,
+          0.0,
+          12.85
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              25.51,
+              0.0,
+              12.85
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "4e8fc5de-9a9f-46fb-9695-c2cfd4888026",
+      "Prefab": "builtin::Resources/Prefabs/playerrespawn",
+      "Name": "playerrespawn",
+      "Transform": {
+        "Position": [
+          0.0,
+          0.0,
+          -10.0
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {}
+    },
+    {
+      "$id": "8f38a4d3-0cbe-4763-8434-6345456efad8",
+      "Prefab": "builtin::Resources/Prefabs/chest",
+      "Name": "chest",
+      "Transform": {
+        "Position": [
+          5.05,
+          0.1,
+          -5.52
+        ],
+        "Rotation": [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Items.Inventories.GridInventory": [
+          {
+            "Items": {},
+            "Size": [
+              5,
+              4
+            ]
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/chest.loot"
+            },
+            "DropOnGround": false,
+            "OnStart": true,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "e0536210-2816-4b5f-ae56-2be35e60689e",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (5)",
+      "Transform": {
+        "Position": [
+          14.15,
+          0.0,
+          4.76
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              14.15,
+              0.0,
+              4.76
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "84954e50-ca4a-4956-921d-20179ce95b54",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (7)",
+      "Transform": {
+        "Position": [
+          15.68,
+          0.0,
+          -3.19
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              15.68,
+              0.0,
+              -3.19
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "965bf83b-6221-4c50-a5f9-7ac3a19492ca",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin_warrior",
+      "Name": "mob.goblin_warrior",
+      "Transform": {
+        "Position": [
+          7.93,
+          0.0,
+          9.57
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              7.93,
+              0.0,
+              9.57
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 25.0,
+            "MaxHealth": 25.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/sword"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin_warrior.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "5f202b26-ccd8-4110-abf6-f891d09ae09d",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (6)",
+      "Transform": {
+        "Position": [
+          15.17,
+          0.0,
+          0.79
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              15.17,
+              0.0,
+              0.79
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "92a6782a-003e-4392-a3fe-78816327b2e4",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (10)",
+      "Transform": {
+        "Position": [
+          -21.16,
+          0.0,
+          -12.46
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -21.16,
+              0.0,
+              -12.46
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "546a9f12-90b2-443d-814f-2cc1fb0752c6",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (1)",
+      "Transform": {
+        "Position": [
+          -3.32,
+          0.0,
+          6.12
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              -3.32,
+              0.0,
+              6.12
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    },
+    {
+      "$id": "87ed30b0-b3b2-4c96-9c24-156cd2b751c5",
+      "Prefab": "builtin::Resources/Prefabs/Mobs/mob.goblin",
+      "Name": "mob.goblin (9)",
+      "Transform": {
+        "Position": [
+          21.96,
+          0.0,
+          -12.66
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LocalScale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "Components": {
+        "RPGGame.Mobs.MobTargetTracking": [
+          {
+            "Position": [
+              21.96,
+              0.0,
+              -12.66
+            ]
+          }
+        ],
+        "RPGGame.HealthHandler": [
+          {
+            "Health": 15.0,
+            "MaxHealth": 15.0
+          }
+        ],
+        "RPGGame.Items.Inventories.MobInventory": [
+          {
+            "Items": {
+              "-1": {
+                "Item": {
+                  "$ref": "$asset;builtin::Resources/_ OBJECTS _/Items/goblin_mace"
+                },
+                "Amount": 1
+              }
+            }
+          }
+        ],
+        "RPGGame.Items.LootTables.LootTableController": [
+          {
+            "LootTable": {
+              "$ref": "$asset;builtin::Resources/_ OBJECTS _/LootTables/mob.goblin.loot"
+            },
+            "DropOnGround": true,
+            "OnStart": false,
+            "Used": false
+          }
+        ]
+      }
+    }
+  ]
+}

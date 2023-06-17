@@ -1,0 +1,39 @@
+{
+  "$id": "1ae23417-d352-4aef-b95c-57bcf7a17589",
+  "Prefab": "builtin::Resources/Prefabs/Player",
+  "Name": "Player",
+  "Transform": {
+    "Position": [
+      0.0,
+      0.0,
+      -10.0
+    ],
+    "Rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "LocalScale": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "Components": {
+    "RPGGame.HealthHandler": [
+      {
+        "Health": 75.0,
+        "MaxHealth": 75.0
+      }
+    ],
+    "RPGGame.Items.Inventories.PlayerInventory": [
+      {
+        "Items": {}
+      }
+    ],
+    "RPGGame.Progression.Tracking.ProgressionTracker": [
+      {}
+    ]
+  }
+}

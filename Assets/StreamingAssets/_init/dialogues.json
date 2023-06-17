@@ -1,0 +1,27 @@
+[
+  {
+    "Guid": "00000000-0000-0000-0000-000000000000",
+    "StartingOption": {
+      "Text": "Hello",
+      "Speaker": {
+        "$ref": "$obj;bdea6852-9426-44f3-b4de-fd8ed93900d7"
+      },
+      "FollowingOptions": [
+        {
+          "Text": "Hi v2",
+          "Speaker": {
+            "$ref": "$obj;bdea6852-9426-44f3-b4de-fd8ed93900d7"
+          },
+          "FollowingOptions": []
+        },
+        {
+          "Text": "Another hi v2",
+          "Speaker": {
+            "$ref": "$obj;bdea6852-9426-44f3-b4de-fd8ed93900d7"
+          },
+          "FollowingOptions": []
+        }
+      ]
+    }
+  }
+]
